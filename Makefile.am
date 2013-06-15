@@ -39,6 +39,7 @@ nobase_include_HEADERS= \
 if HAVE_VERSIONING
 lib_libriemann_client_la_LDFLAGS += \
 	-Wl,--version-script,$(top_srcdir)/lib/libriemann.ver
+lib_libriemann_client_la_DEPENDENCIES	= ${top_srcdir}/lib/libriemann.ver
 endif
 
 # -- Testcases --

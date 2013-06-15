@@ -17,6 +17,8 @@ START_TEST (test_riemann_event_init)
   riemann_event_t event;
 
   ck_assert (riemann_event_init (&event) != NULL);
+  ck_assert (riemann_event_init (NULL) == NULL);
+  ck_assert_errno (EINVAL);
 }
 END_TEST
 
@@ -34,6 +36,9 @@ END_TEST
 START_TEST (test_riemann_event_set)
 {
   riemann_event_t *event;
+
+  ck_assert (riemann_event_set (NULL) == -1);
+  ck_assert_errno (EINVAL);
 
   event = riemann_event_new ();
   ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_NONE) == 0);

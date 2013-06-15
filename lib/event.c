@@ -25,6 +25,12 @@
 riemann_event_t *
 riemann_event_init (riemann_event_t *event)
 {
+  if (!event)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
   event__init((Event *) event);
   return event;
 }
@@ -69,6 +75,12 @@ riemann_event_set (riemann_event_t *event, ...)
 {
   va_list ap;
   riemann_event_field_t field;
+
+  if (!event)
+    {
+      errno = EINVAL;
+      return -1;
+    }
 
   va_start (ap, event);
   do

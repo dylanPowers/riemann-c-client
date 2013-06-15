@@ -34,29 +34,11 @@ riemann_message_new (void)
   return message;
 }
 
-static void
-_riemann_message_free_events (riemann_message_t *message)
-{
-  size_t i;
-
-  if (!message || !message->events)
-    return;
-
-  for (i = 0; i < message->n_events; i++)
-    riemann_event_free (message->events[i]);
-
-  message->n_events = 0;
-  free (message->events);
-  message->events = NULL;
-}
-
 void
 riemann_message_free (riemann_message_t *message)
 {
   if (!message)
     return;
-
-  _riemann_message_free_events (message);
 
   msg__free_unpacked ((Msg *)message, NULL);
 }
@@ -75,7 +57,15 @@ riemann_message_set_events_n (riemann_message_t *message,
   if (!events)
     return -EINVAL;
 
-  _riemann_message_free_events (message);
+  if (message->events)
+    {
+      size_t i;
+
+      for (i = 0; i < message->n_events; i++)
+        riemann_event_free (message->events[i]);
+
+      free (message->events);
+    }
 
   message->n_events = n_events;
   message->events = events;

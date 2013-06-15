@@ -125,6 +125,24 @@ START_TEST (test_riemann_event_set_one)
 }
 END_TEST
 
+START_TEST (test_riemann_event_create)
+{
+  riemann_event_t *event;
+
+  event = riemann_event_create (RIEMANN_EVENT_EMPTY);
+  ck_assert (event != NULL);
+  riemann_event_free (event);
+
+  event = riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
+                                RIEMANN_EVENT_FIELD_SERVICE, "test",
+                                RIEMANN_EVENT_FIELD_NONE);
+  ck_assert (event != NULL);
+  ck_assert_str_eq (event->host, "localhost");
+  ck_assert_str_eq (event->service, "test");
+  riemann_event_free (event);
+}
+END_TEST
+
 int
 main (void)
 {
@@ -141,6 +159,7 @@ main (void)
   tcase_add_test (test_events, test_riemann_event_new);
   tcase_add_test (test_events, test_riemann_event_set);
   tcase_add_test (test_events, test_riemann_event_set_one);
+  tcase_add_test (test_events, test_riemann_event_create);
   suite_add_tcase (suite, test_events);
 
   runner = srunner_create (suite);

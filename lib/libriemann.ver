@@ -5,6 +5,7 @@ global:
 
         riemann_event_init;
         riemann_event_new;
+        riemann_event_create;
         riemann_event_free;
         riemann_event_set;
 

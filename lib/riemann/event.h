@@ -26,6 +26,7 @@ typedef Event riemann_event_t;
 typedef enum
   {
     RIEMANN_EVENT_FIELD_NONE = 0,
+    RIEMANN_EVENT_EMPTY = 0,
     RIEMANN_EVENT_FIELD_TIME,
     RIEMANN_EVENT_FIELD_STATE,
     RIEMANN_EVENT_FIELD_SERVICE,
@@ -47,5 +48,7 @@ int riemann_event_set (riemann_event_t *event, ...);
 #define riemann_event_set_one(event, field, value) \
   riemann_event_set (event, RIEMANN_EVENT_FIELD_##field, value, \
                      RIEMANN_EVENT_FIELD_NONE)
+
+riemann_event_t *riemann_event_create (riemann_event_field_t field, ...);
 
 #endif

@@ -70,8 +70,9 @@ _riemann_event_set_string (char **str, const char *value)
   *str = strdup (value);
 }
 
-int
-riemann_event_set (riemann_event_t *event, ...)
+static int
+_riemann_event_set_va (riemann_event_t *event,
+                       riemann_event_field_t first_field, va_list aq)
 {
   va_list ap;
   riemann_event_field_t field;
@@ -79,11 +80,10 @@ riemann_event_set (riemann_event_t *event, ...)
   if (!event)
     return -EINVAL;
 
-  va_start (ap, event);
+  va_copy (ap, aq);
+  field = first_field;
   do
     {
-      field = (riemann_event_field_t) va_arg (ap, riemann_event_field_t);
-
       switch (field)
         {
         case RIEMANN_EVENT_FIELD_NONE:
@@ -142,8 +142,50 @@ riemann_event_set (riemann_event_t *event, ...)
           va_end (ap);
           return -EPROTO;
         }
+
+      if (field != RIEMANN_EVENT_FIELD_NONE)
+        field = va_arg (ap, riemann_event_field_t);
     }
   while (field != RIEMANN_EVENT_FIELD_NONE);
 
   return 0;
+}
+
+int
+riemann_event_set (riemann_event_t *event, ...)
+{
+  va_list ap;
+  int r;
+  riemann_event_field_t first_field;
+
+  va_start (ap, event);
+  first_field = va_arg (ap, riemann_event_field_t);
+  r = _riemann_event_set_va (event, first_field, ap);
+  va_end (ap);
+  return r;
+}
+
+riemann_event_t *
+riemann_event_create (riemann_event_field_t field, ...)
+{
+  riemann_event_t *event;
+  va_list ap;
+
+  event = riemann_event_new ();
+  if (!event)
+    return NULL;
+
+  va_start (ap, field);
+  if (_riemann_event_set_va (event, field, ap) != 0)
+    {
+      int e = errno;
+
+      va_end (ap);
+      riemann_event_free (event);
+      errno = e;
+      return NULL;
+    }
+  va_end (ap);
+
+  return event;
 }

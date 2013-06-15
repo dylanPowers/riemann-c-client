@@ -50,20 +50,11 @@ riemann_event_free (riemann_event_t *event)
   if (!event)
     return;
 
-  if (event->state)
-    free (event->state);
-  if (event->service)
-    free (event->service);
-  if (event->host)
-    free (event->host);
-  if (event->description)
-    free (event->description);
-
-  free (event);
+  event__free_unpacked (event, NULL);
 }
 
 static void
-_riemann_event_set_string (char **str, const char *value)
+_riemann_event_set_string (char **str, char *value)
 {
   if (*str)
     free (*str);

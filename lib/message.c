@@ -29,8 +29,25 @@ riemann_message_new (void)
   riemann_message_t *message;
 
   message = (riemann_message_t *)malloc (sizeof (riemann_message_t));
-  msg__init ((Msg *) message);
+  msg__init (message);
+
   return message;
+}
+
+static void
+_riemann_message_free_events (riemann_message_t *message)
+{
+  size_t i;
+
+  if (!message || !message->events)
+    return;
+
+  for (i = 0; i < message->n_events; i++)
+    riemann_event_free (message->events[i]);
+
+  message->n_events = 0;
+  free (message->events);
+  message->events = NULL;
 }
 
 void
@@ -39,7 +56,9 @@ riemann_message_free (riemann_message_t *message)
   if (!message)
     return;
 
-  free (message);
+  _riemann_message_free_events (message);
+
+  msg__free_unpacked ((Msg *)message, NULL);
 }
 
 int
@@ -55,6 +74,8 @@ riemann_message_set_events_n (riemann_message_t *message,
 
   if (!events)
     return -EINVAL;
+
+  _riemann_message_free_events (message);
 
   message->n_events = n_events;
   message->events = events;
@@ -101,18 +122,25 @@ int
 riemann_message_set_events (riemann_message_t *message, ...)
 {
   size_t n_events = 1;
-  riemann_event_t **events;
+  riemann_event_t **events, **nevents, *event;
   va_list ap;
   int result;
 
   if (!message)
     return -EINVAL;
 
+  va_start (ap, message);
+  event = va_arg (ap, riemann_event_t *);
+  if (!event)
+    {
+      va_end (ap);
+      return -ERANGE;
+    }
+
   events = malloc (sizeof (riemann_event_t *));
 
-  va_start (ap, message);
-  events[0] = va_arg (ap, riemann_event_t *);
-  events = _riemann_message_combine_events (events, events[0], &n_events, ap);
+  events[0] = event;
+  nevents = _riemann_message_combine_events (events, events[0], &n_events, ap);
   va_end (ap);
 
   if (n_events == 0)
@@ -121,7 +149,12 @@ riemann_message_set_events (riemann_message_t *message, ...)
       return -EINVAL;
     }
 
-  result = riemann_message_set_events_n (message, n_events - 1, events);
+  result = riemann_message_set_events_n (message, n_events, nevents);
+
+  if (result != 0)
+    {
+      free (events);
+    }
 
   return result;
 }
@@ -155,7 +188,6 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
   if (n_events == 0)
     {
       riemann_message_free (message);
-      free (events);
       errno = EINVAL;
       return NULL;
     }
@@ -165,7 +197,6 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
   if (result != 0)
     {
       riemann_message_free (message);
-      free (events);
       errno = EINVAL;
       return NULL;
     }

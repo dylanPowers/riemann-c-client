@@ -22,8 +22,7 @@ END_TEST
 START_TEST (test_riemann_message_set_events_n)
 {
   riemann_message_t *message;
-  riemann_event_t *event1, *event2;
-  riemann_event_t *events[2];
+  riemann_event_t *event1, *event2, **events;
 
   ck_assert_errno (riemann_message_set_events_n (NULL, 0, NULL), EINVAL);
 
@@ -46,6 +45,8 @@ START_TEST (test_riemann_message_set_events_n)
                      RIEMANN_EVENT_FIELD_SERVICE, "test",
                      RIEMANN_EVENT_FIELD_STATE, "failed",
                      RIEMANN_EVENT_FIELD_NONE);
+
+  events = malloc (sizeof (riemann_event_t *) * 3);
   events[0] = event1;
   events[1] = event2;
 
@@ -62,9 +63,11 @@ END_TEST
 START_TEST (test_riemann_message_to_buffer)
 {
   riemann_message_t *message;
-  riemann_event_t *events[1];
+  riemann_event_t **events;
   uint8_t *buffer;
   size_t len;
+
+  events = malloc (sizeof (riemann_event_t *));
 
   message = riemann_message_new ();
   events[0] = riemann_event_new ();

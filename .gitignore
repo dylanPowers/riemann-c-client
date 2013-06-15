@@ -21,6 +21,7 @@
 /lib/libriemann-client.la
 /lib/riemann/proto/
 /src/riemann-client
+/tests/check_libriemann
 *~
 *.o
 *.lo

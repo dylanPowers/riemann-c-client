@@ -18,6 +18,8 @@
 #ifndef __MADHOUSE_RIEMANN_CLIENT_H__
 #define __MADHOUSE_RIEMANN_CLIENT_H__
 
+#include <riemann/event.h>
+
 const char *riemann_client_version (void);
 const char * riemann_client_version_string (void);
 

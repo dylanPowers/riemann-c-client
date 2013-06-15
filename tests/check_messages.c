@@ -1,12 +1,5 @@
-#include <check.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <riemann/message.h>
 #include <riemann/event.h>
-
-#include "tests.h"
 
 START_TEST (test_riemann_message_new)
 {
@@ -139,16 +132,10 @@ START_TEST (test_riemann_message_create_with_events)
 }
 END_TEST
 
-int
-main (void)
+static TCase *
+test_riemann_messages (void)
 {
-  Suite *suite;
-  SRunner *runner;
   TCase *test_messages;
-
-  int nfailed;
-
-  suite = suite_create ("Riemann C client library tests");
 
   test_messages = tcase_create ("Messages");
   tcase_add_test (test_messages, test_riemann_message_new);
@@ -156,13 +143,6 @@ main (void)
   tcase_add_test (test_messages, test_riemann_message_to_buffer);
   tcase_add_test (test_messages, test_riemann_message_set_events);
   tcase_add_test (test_messages, test_riemann_message_create_with_events);
-  suite_add_tcase (suite, test_messages);
 
-  runner = srunner_create (suite);
-
-  srunner_run_all (runner, CK_ENV);
-  nfailed = srunner_ntests_failed (runner);
-  srunner_free (runner);
-
-  return (nfailed == 0) ? EXIT_SUCCESS : EXIT_FAILURE;
+  return test_messages;
 }

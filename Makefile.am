@@ -45,16 +45,18 @@ lib_libriemann_client_la_DEPENDENCIES	= ${top_srcdir}/lib/libriemann.ver
 endif
 
 # -- Testcases --
-UNIT_TESTS			= \
-	tests/check_library	  \
-	tests/check_events	  \
-	tests/check_messages
+UNIT_TESTS			= tests/check_libriemann
 TESTS				= ${UNIT_TESTS}
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
 tests/check_%: LDADD += ${CHECK_LIBS} lib/libriemann-client.la
 
 check_PROGRAMS			= ${TESTS}
+
+check_libriemann_srcs		= \
+	tests/check_library.c	  \
+	tests/check_events.c	  \
+	tests/check_messages.c
 
 # -- Binaries --
 bin_PROGRAMS			= src/riemann-client
@@ -65,4 +67,5 @@ src_riemann_client_LDADD	= lib/libriemann-client.la
 EXTRA_DIST			= README.md GPL LGPL \
 				  lib/proto/riemann.proto \
 				  lib/libriemann.ver \
-				  tests/tests.h
+				  tests/tests.h \
+				  ${check_libriemann_srcs}

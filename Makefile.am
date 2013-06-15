@@ -54,6 +54,11 @@ tests/check_%: LDADD += ${CHECK_LIBS} lib/libriemann-client.la
 
 check_PROGRAMS			= ${TESTS}
 
+# -- Binaries --
+bin_PROGRAMS			= src/riemann-client
+
+src_riemann_client_LDADD	= lib/libriemann-client.la
+
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md GPL LGPL \
 				  lib/proto/riemann.proto \

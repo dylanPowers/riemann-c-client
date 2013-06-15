@@ -49,17 +49,8 @@ UNIT_TESTS			= \
 	tests/check_messages
 TESTS				= ${UNIT_TESTS}
 
-test_cflags			= ${AM_CFLAGS} ${CHECK_CFLAGS}
-test_ldadd			= ${CHECK_LIBS} lib/libriemann-client.la
-
-tests_check_library_CFLAGS	= ${test_cflags}
-tests_check_library_LDADD	= ${test_ldadd}
-
-tests_check_events_CFLAGS	= ${test_cflags}
-tests_check_events_LDADD	= ${test_ldadd}
-
-tests_check_messages_CFLAGS	= ${test_cflags}
-tests_check_messages_LDADD	= ${test_ldadd}
+tests/check_%: CFLAGS += ${CHECK_CFLAGS}
+tests/check_%: LDADD += ${CHECK_LIBS} lib/libriemann-client.la
 
 check_PROGRAMS			= ${TESTS}
 

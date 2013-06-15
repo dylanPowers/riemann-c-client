@@ -107,6 +107,23 @@ START_TEST (test_riemann_event_set)
 }
 END_TEST
 
+START_TEST (test_riemann_event_set_one)
+{
+  riemann_event_t *event;
+
+  event = riemann_event_new ();
+
+  ck_assert (riemann_event_set_one (event, TIME, (int64_t) 1234) == 0);
+  ck_assert_int_eq (event->has_time, 1);
+  ck_assert_int_eq (event->time, 1234);
+
+  ck_assert (riemann_event_set_one (event, HOST, "localhost") == 0);
+  ck_assert_str_eq (event->host, "localhost");
+
+  riemann_event_free (event);
+}
+END_TEST
+
 int
 main (void)
 {
@@ -122,6 +139,7 @@ main (void)
   tcase_add_test (test_events, test_riemann_event_init);
   tcase_add_test (test_events, test_riemann_event_new);
   tcase_add_test (test_events, test_riemann_event_set);
+  tcase_add_test (test_events, test_riemann_event_set_one);
   suite_add_tcase (suite, test_events);
 
   runner = srunner_create (suite);

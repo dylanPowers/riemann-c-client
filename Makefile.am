@@ -27,9 +27,10 @@ proto_files			= \
 	lib/riemann/proto/riemann.pb-c.c  \
 	lib/riemann/proto/riemann.pb-c.h
 
+BUILT_SOURCES			= ${proto_files}
 CLEANFILES			= ${proto_files}
 
-${proto_files}: ${top_srcdir}/lib/proto/riemann.proto
+${BUILT_SOURCES}: ${top_srcdir}/lib/proto/riemann.proto
 	${AM_V_at} ${mkinstalldirs} ${top_builddir}/lib/riemann/proto
 	${AM_V_GEN} protoc-c $^ -I${top_srcdir}/lib/proto --c_out=${top_builddir}/lib/riemann/proto
 

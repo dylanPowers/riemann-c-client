@@ -98,6 +98,11 @@ START_TEST (test_riemann_event_set)
   ck_assert_int_eq (event->has_metric_f, 1);
   ck_assert_float_eq (event->metric_f, 1.5);
 
+  ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_METRIC_F * 2,
+                                0,
+                                RIEMANN_EVENT_FIELD_NONE) == -1);
+  ck_assert_errno (EPROTO);
+
   riemann_event_free (event);
 }
 END_TEST

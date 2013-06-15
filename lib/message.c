@@ -61,38 +61,116 @@ riemann_message_set_events_n (riemann_message_t *message,
   return 0;
 }
 
+static riemann_event_t **
+_riemann_message_combine_events (riemann_event_t **events,
+                                 riemann_event_t *event, size_t *n_events,
+                                 va_list aq)
+{
+  size_t alloced = *n_events;
+  va_list ap;
+
+  if (!events || !event || !n_events)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  va_copy (ap, aq);
+
+  do
+    {
+      if (*n_events >= alloced)
+        {
+          alloced *= 2;
+          events = realloc (events, sizeof (riemann_event_t *) * alloced);
+        }
+
+      event = va_arg (ap, riemann_event_t *);
+      events[*n_events] = event;
+      if (event)
+        (*n_events)++;
+    }
+  while (event != NULL);
+
+  va_end (ap);
+
+  return events;
+}
+
 int
 riemann_message_set_events (riemann_message_t *message, ...)
 {
-  size_t n_events = 0, alloced = 10;
-  riemann_event_t **events, *event;
+  size_t n_events = 1;
+  riemann_event_t **events;
   va_list ap;
   int result;
 
   if (!message)
     return -EINVAL;
 
-  events = malloc (sizeof (riemann_event_t *) * alloced);
+  events = malloc (sizeof (riemann_event_t *));
 
   va_start (ap, message);
+  events[0] = va_arg (ap, riemann_event_t *);
+  events = _riemann_message_combine_events (events, events[0], &n_events, ap);
+  va_end (ap);
 
-  do
+  if (n_events == 0)
     {
-      event = va_arg (ap, riemann_event_t *);
-      events[n_events] = event;
-
-      n_events++;
-      if (n_events >= alloced)
-        {
-          alloced *= 2;
-          events = realloc (events, sizeof (riemann_event_t *) * alloced);
-        }
+      free (events);
+      return -EINVAL;
     }
-  while (event != NULL);
 
   result = riemann_message_set_events_n (message, n_events - 1, events);
 
   return result;
+}
+
+riemann_message_t *
+riemann_message_create_with_events (riemann_event_t *event, ...)
+{
+  riemann_message_t *message;
+  riemann_event_t **events;
+  va_list ap;
+  size_t n_events = 1;
+  int result;
+
+  if (!event)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  message = riemann_message_new ();
+  if (!message)
+    return NULL;
+
+  events = malloc (sizeof (riemann_event_t *));
+  events[0] = event;
+
+  va_start (ap, event);
+  events = _riemann_message_combine_events (events, event, &n_events, ap);
+  va_end (ap);
+
+  if (n_events == 0)
+    {
+      riemann_message_free (message);
+      free (events);
+      errno = EINVAL;
+      return NULL;
+    }
+
+  result = riemann_message_set_events_n (message, n_events, events);
+
+  if (result != 0)
+    {
+      riemann_message_free (message);
+      free (events);
+      errno = EINVAL;
+      return NULL;
+    }
+
+  return message;
 }
 
 uint8_t *

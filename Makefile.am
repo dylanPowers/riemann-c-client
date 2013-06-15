@@ -65,4 +65,6 @@ check_PROGRAMS			= ${TESTS}
 
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md GPL LGPL \
+				  lib/proto/riemann.proto \
+				  lib/libriemann.ver \
 				  tests/tests.h

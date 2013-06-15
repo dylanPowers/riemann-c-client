@@ -19,6 +19,11 @@ lib_libriemann_client_la_SOURCES= \
 nobase_include_HEADERS= \
 	lib/riemann/client.h
 
+if HAVE_VERSIONING
+lib_libriemann_client_la_LDFLAGS += \
+	-Wl,--version-script,$(top_srcdir)/lib/libriemann.ver
+endif
+
 # -- Testcases --
 UNIT_TESTS			= tests/check_library
 TESTS				= ${UNIT_TESTS}

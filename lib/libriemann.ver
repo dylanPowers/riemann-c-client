@@ -1,0 +1,8 @@
+RIEMANN_C_0 {
+global:
+        riemann_client_version;
+        riemann_client_version_string;
+
+local:
+        *;
+};

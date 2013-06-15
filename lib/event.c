@@ -1,4 +1,4 @@
-/* riemann/event.h -- Riemann C client library
+/* riemann/event.c -- Riemann C client library
  * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or

@@ -32,4 +32,4 @@ tests_check_library_LDADD	= ${test_ldadd}
 check_PROGRAMS			= ${TESTS}
 
 # -- Extra files to distribute --
-EXTRA_DIST			= README.md COPYING
+EXTRA_DIST			= README.md GPL LGPL

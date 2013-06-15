@@ -224,7 +224,7 @@ riemann_message_to_buffer (riemann_message_t *message, size_t *len)
   buff = malloc (l);
   msg__pack (message, buff->data);
 
-  buff->header = htonl (l);
+  buff->header = htonl (l - sizeof (buff->header));
 
   if (len)
     *len = l;

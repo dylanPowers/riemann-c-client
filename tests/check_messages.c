@@ -85,6 +85,36 @@ START_TEST (test_riemann_message_to_buffer)
 }
 END_TEST
 
+START_TEST (test_riemann_message_set_events)
+{
+  riemann_message_t *message;
+  int result;
+
+  ck_assert_errno (riemann_message_set_events (NULL), EINVAL);
+
+  message = riemann_message_new ();
+
+  ck_assert_errno (riemann_message_set_events (message, NULL), ERANGE);
+
+  result = riemann_message_set_events
+    (message,
+     riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
+                           RIEMANN_EVENT_FIELD_SERVICE, "test",
+                           RIEMANN_EVENT_FIELD_STATE, "ok",
+                           RIEMANN_EVENT_FIELD_NONE),
+     riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
+                           RIEMANN_EVENT_FIELD_SERVICE, "test-two",
+                           RIEMANN_EVENT_FIELD_STATE, "ok",
+                           RIEMANN_EVENT_FIELD_NONE),
+     NULL);
+  ck_assert_int_eq (result, 0);
+  ck_assert_str_eq (message->events[0]->service, "test");
+  ck_assert_str_eq (message->events[1]->service, "test-two");
+
+  riemann_message_free (message);
+}
+END_TEST
+
 int
 main (void)
 {
@@ -100,6 +130,7 @@ main (void)
   tcase_add_test (test_messages, test_riemann_message_new);
   tcase_add_test (test_messages, test_riemann_message_set_events_n);
   tcase_add_test (test_messages, test_riemann_message_to_buffer);
+  tcase_add_test (test_messages, test_riemann_message_set_events);
   suite_add_tcase (suite, test_messages);
 
   runner = srunner_create (suite);

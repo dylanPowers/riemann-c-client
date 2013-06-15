@@ -12,6 +12,7 @@ global:
         riemann_message_new;
         riemann_message_free;
         riemann_message_set_events_n;
+        riemann_message_set_events;
         riemann_message_to_buffer;
 
 local:

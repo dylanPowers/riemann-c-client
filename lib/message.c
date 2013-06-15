@@ -61,6 +61,40 @@ riemann_message_set_events_n (riemann_message_t *message,
   return 0;
 }
 
+int
+riemann_message_set_events (riemann_message_t *message, ...)
+{
+  size_t n_events = 0, alloced = 10;
+  riemann_event_t **events, *event;
+  va_list ap;
+  int result;
+
+  if (!message)
+    return -EINVAL;
+
+  events = malloc (sizeof (riemann_event_t *) * alloced);
+
+  va_start (ap, message);
+
+  do
+    {
+      event = va_arg (ap, riemann_event_t *);
+      events[n_events] = event;
+
+      n_events++;
+      if (n_events >= alloced)
+        {
+          alloced *= 2;
+          events = realloc (events, sizeof (riemann_event_t *) * alloced);
+        }
+    }
+  while (event != NULL);
+
+  result = riemann_message_set_events_n (message, n_events - 1, events);
+
+  return result;
+}
+
 uint8_t *
 riemann_message_to_buffer (riemann_message_t *message, size_t *len)
 {

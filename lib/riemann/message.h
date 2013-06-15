@@ -30,7 +30,7 @@ void riemann_message_free (riemann_message_t *message);
 int riemann_message_set_events_n (riemann_message_t *message,
                                   size_t n_events,
                                   riemann_event_t **events);
-/* int riemann_message_set_events (riemann_message_t *message, ...); */
+int riemann_message_set_events (riemann_message_t *message, ...);
 
 uint8_t *riemann_message_to_buffer (riemann_message_t *message, size_t *len);
 

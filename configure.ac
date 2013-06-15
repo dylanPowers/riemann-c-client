@@ -7,6 +7,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
 
 AC_CONFIG_SRCDIR([lib/client.c])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
 AC_PROG_CC_C_O

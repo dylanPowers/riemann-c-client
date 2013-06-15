@@ -1,6 +1,7 @@
 # -- Global settings --
 AM_MAKEFLAGS			= --no-print-directory
 AM_CFLAGS			= -I${top_srcdir}/lib -I${top_builddir}/lib
+ACLOCAL_AMFLAGS			= -Im4
 
 includedir			= ${prefix}/include/riemann
 

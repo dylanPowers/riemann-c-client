@@ -6,7 +6,7 @@
 #include <riemann/message.h>
 #include <riemann/event.h>
 
-#define ck_assert_errno(X, E) ck_assert_msg((X) == -(E), "Assertion '"#X" == -"#E"' failed: errno==%d (%s), expected==%d (%s)", errno, (char *)strerror (errno), E, (char *)strerror (E))
+#include "tests.h"
 
 START_TEST (test_riemann_message_new)
 {

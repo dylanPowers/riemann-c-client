@@ -64,4 +64,5 @@ tests_check_messages_LDADD	= ${test_ldadd}
 check_PROGRAMS			= ${TESTS}
 
 # -- Extra files to distribute --
-EXTRA_DIST			= README.md GPL LGPL
+EXTRA_DIST			= README.md GPL LGPL \
+				  tests/tests.h

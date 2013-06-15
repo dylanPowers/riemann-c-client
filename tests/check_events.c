@@ -10,7 +10,7 @@
 #define _ck_assert_float(X, O, Y) ck_assert_msg((X) O (Y), "Assertion '"#X#O#Y"' failed: "#X"==%f, "#Y"==%f", X, Y)
 #define ck_assert_float_eq(X, Y) _ck_assert_float(X, ==, Y)
 
-#define ck_assert_errno(E) ck_assert_msg(errno == (E), "Assertion 'errno == "#E"' failed: errno==%d (%s), expected==%d (%s)", errno, (char *)strerror (errno), E, (char *)strerror (E))
+#define ck_assert_errno(X, E) ck_assert_msg((X) == -(E), "Assertion '"#X" == -"#E"' failed: errno==%d (%s), expected==%d (%s)", errno, (char *)strerror (errno), E, (char *)strerror (E))
 
 START_TEST (test_riemann_event_init)
 {
@@ -18,7 +18,7 @@ START_TEST (test_riemann_event_init)
 
   ck_assert (riemann_event_init (&event) != NULL);
   ck_assert (riemann_event_init (NULL) == NULL);
-  ck_assert_errno (EINVAL);
+  ck_assert_errno (-errno, EINVAL);
 }
 END_TEST
 
@@ -37,8 +37,7 @@ START_TEST (test_riemann_event_set)
 {
   riemann_event_t *event;
 
-  ck_assert (riemann_event_set (NULL) == -1);
-  ck_assert_errno (EINVAL);
+  ck_assert_errno (riemann_event_set (NULL), EINVAL);
 
   event = riemann_event_new ();
   ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_NONE) == 0);
@@ -68,22 +67,20 @@ START_TEST (test_riemann_event_set)
   ck_assert (event->description != NULL);
   ck_assert_str_eq (event->description, "something");
 
-  ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_TAGS,
-                                "tag-1", "tag-2",
-                                RIEMANN_EVENT_FIELD_NONE) == -1);
-  ck_assert_errno (ENOSYS);
+  ck_assert_errno (riemann_event_set (event, RIEMANN_EVENT_FIELD_TAGS,
+                                      "tag-1", "tag-2",
+                                      RIEMANN_EVENT_FIELD_NONE), ENOSYS);
 
   ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_TTL, (float) 1,
                                 RIEMANN_EVENT_FIELD_NONE) == 0);
   ck_assert_int_eq (event->has_ttl, 1);
   ck_assert_float_eq (event->ttl, (float) 1);
 
-  ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_ATTRIBUTES,
-                                "key-1", "value-1",
-                                "key-2", "value-2",
-                                NULL,
-                                RIEMANN_EVENT_FIELD_NONE) == -1);
-  ck_assert_errno (ENOSYS);
+  ck_assert_errno (riemann_event_set (event, RIEMANN_EVENT_FIELD_ATTRIBUTES,
+                                      "key-1", "value-1",
+                                      "key-2", "value-2",
+                                      NULL,
+                                      RIEMANN_EVENT_FIELD_NONE), ENOSYS);
 
   ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_METRIC_S64,
                                 (int64_t) 12345,
@@ -103,10 +100,9 @@ START_TEST (test_riemann_event_set)
   ck_assert_int_eq (event->has_metric_f, 1);
   ck_assert_float_eq (event->metric_f, 1.5);
 
-  ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_METRIC_F * 2,
-                                0,
-                                RIEMANN_EVENT_FIELD_NONE) == -1);
-  ck_assert_errno (EPROTO);
+  ck_assert_errno (riemann_event_set (event, RIEMANN_EVENT_FIELD_METRIC_F * 2,
+                                      0,
+                                      RIEMANN_EVENT_FIELD_NONE), EPROTO);
 
   riemann_event_free (event);
 }

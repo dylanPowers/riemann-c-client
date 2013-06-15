@@ -77,10 +77,7 @@ riemann_event_set (riemann_event_t *event, ...)
   riemann_event_field_t field;
 
   if (!event)
-    {
-      errno = EINVAL;
-      return -1;
-    }
+    return -EINVAL;
 
   va_start (ap, event);
   do
@@ -115,8 +112,7 @@ riemann_event_set (riemann_event_t *event, ...)
 
         case RIEMANN_EVENT_FIELD_TAGS:
           va_end (ap);
-          errno = ENOSYS;
-          return -1;
+          return -ENOSYS;
 
         case RIEMANN_EVENT_FIELD_TTL:
           event->ttl = (float) va_arg (ap, double);
@@ -125,8 +121,7 @@ riemann_event_set (riemann_event_t *event, ...)
 
         case RIEMANN_EVENT_FIELD_ATTRIBUTES:
           va_end (ap);
-          errno = ENOSYS;
-          return -1;
+          return -ENOSYS;
 
         case RIEMANN_EVENT_FIELD_METRIC_S64:
           event->metric_sint64 = va_arg (ap, int64_t);
@@ -145,8 +140,7 @@ riemann_event_set (riemann_event_t *event, ...)
 
         default:
           va_end (ap);
-          errno = EPROTO;
-          return -1;
+          return -EPROTO;
         }
     }
   while (field != RIEMANN_EVENT_FIELD_NONE);

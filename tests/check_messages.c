@@ -6,7 +6,7 @@
 #include <riemann/message.h>
 #include <riemann/event.h>
 
-#define ck_assert_errno(E) ck_assert_msg(errno == (E), "Assertion 'errno == "#E"' failed: errno==%d (%s), expected==%d (%s)", errno, (char *)strerror (errno), E, (char *)strerror (E))
+#define ck_assert_errno(X, E) ck_assert_msg((X) == -(E), "Assertion '"#X" == -"#E"' failed: errno==%d (%s), expected==%d (%s)", errno, (char *)strerror (errno), E, (char *)strerror (E))
 
 START_TEST (test_riemann_message_new)
 {
@@ -25,16 +25,12 @@ START_TEST (test_riemann_message_set_events_n)
   riemann_event_t *event1, *event2;
   riemann_event_t *events[2];
 
-  ck_assert (riemann_message_set_events_n (NULL, 0, NULL) == -1);
-  ck_assert_errno (EINVAL);
+  ck_assert_errno (riemann_message_set_events_n (NULL, 0, NULL), EINVAL);
 
   message = riemann_message_new ();
 
-  ck_assert (riemann_message_set_events_n (message, 0, NULL) == -1);
-  ck_assert_errno (ERANGE);
-
-  ck_assert (riemann_message_set_events_n (message, 1, NULL) == -1);
-  ck_assert_errno (EINVAL);
+  ck_assert_errno (riemann_message_set_events_n (message, 0, NULL), ERANGE);
+  ck_assert_errno (riemann_message_set_events_n (message, 1, NULL), EINVAL);
 
   /* --- */
 
@@ -76,7 +72,7 @@ START_TEST (test_riemann_message_to_buffer)
   riemann_message_set_events_n (message, 1, events);
 
   ck_assert (riemann_message_to_buffer (NULL, NULL) == NULL);
-  ck_assert_errno (EINVAL);
+  ck_assert_errno (-errno, EINVAL);
 
   ck_assert ((buffer = riemann_message_to_buffer (message, NULL)) != NULL);
   free (buffer);

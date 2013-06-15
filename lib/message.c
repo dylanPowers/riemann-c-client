@@ -48,22 +48,13 @@ riemann_message_set_events_n (riemann_message_t *message,
                               riemann_event_t **events)
 {
   if (!message)
-    {
-      errno = EINVAL;
-      return -1;
-    }
+    return -EINVAL;
 
   if (n_events < 1)
-    {
-      errno = ERANGE;
-      return -1;
-    }
+    return -ERANGE;
 
   if (!events)
-    {
-      errno = EINVAL;
-      return -1;
-    }
+    return -EINVAL;
 
   message->n_events = n_events;
   message->events = events;

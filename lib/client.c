@@ -64,7 +64,7 @@ riemann_client_new (void)
 int
 riemann_client_disconnect (riemann_client_t *client)
 {
-  if (!client || !client->sock)
+  if (!client || client->sock == -1)
     return -ENOTCONN;
 
   if (close (client->sock) != 0)

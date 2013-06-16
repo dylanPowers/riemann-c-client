@@ -21,6 +21,8 @@ lib_libriemann_client_la_SOURCES= \
 	lib/riemann/event.h	  \
 	lib/message.c		  \
 	lib/riemann/message.h	  \
+	lib/attribute.c		  \
+	lib/riemann/attribute.h	  \
 	lib/riemann/proto/riemann.pb-c.c  \
 	lib/riemann/proto/riemann.pb-c.h
 
@@ -57,7 +59,8 @@ check_libriemann_srcs		= \
 	tests/check_library.c	  \
 	tests/check_events.c	  \
 	tests/check_messages.c	  \
-	tests/check_client.c
+	tests/check_client.c	  \
+	tests/check_attribute.c
 
 # -- Binaries --
 bin_PROGRAMS			= src/riemann-client

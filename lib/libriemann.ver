@@ -3,6 +3,13 @@ global:
         riemann_client_version;
         riemann_client_version_string;
 
+        riemann_attribute_new;
+        riemann_attribute_create;
+        riemann_attribute_free;
+        riemann_attribute_set_key;
+        riemann_attribute_set_value;
+        riemann_attribute_set;
+
         riemann_event_init;
         riemann_event_new;
         riemann_event_create;

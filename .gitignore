@@ -20,7 +20,7 @@
 /stamp-h1
 /lib/libriemann-client.la
 /lib/riemann/proto/
-/src/riemann-client
+/src/riemann-send-events
 /tests/check_libriemann
 *~
 *.o

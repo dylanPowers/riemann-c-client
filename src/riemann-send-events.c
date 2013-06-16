@@ -1,4 +1,4 @@
-/* riemann/riemann-client.c -- Riemann C client library
+/* riemann/riemann-send-events.c -- Riemann C client library
  * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
@@ -32,7 +32,7 @@ static void
 display_help ()
 {
   printf (PACKAGE_NAME ", version " PACKAGE_VERSION "\n"
-          "Usage: riemann-client [options...] [HOST] [PORT]\n"
+          "Usage: riemann-send-events [options...] [HOST] [PORT]\n"
           "\n"
           "Options:\n"
           " -s, --state=STATE                 Set the state of the event.\n"

@@ -66,9 +66,9 @@ check_libriemann_srcs		= \
 	tests/check_attribute.c
 
 # -- Binaries --
-bin_PROGRAMS			= src/riemann-client
+bin_PROGRAMS			= src/riemann-send-events
 
-src_riemann_client_LDADD	= lib/libriemann-client.la
+src_riemann_send_events_LDADD	= lib/libriemann-client.la
 
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md GPL LGPL \

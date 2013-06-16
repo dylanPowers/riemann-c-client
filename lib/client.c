@@ -113,7 +113,7 @@ riemann_client_connect (riemann_client_t *client,
     return -EINVAL;
 
   if (getaddrinfo (hostname, NULL, &hints, &res) != 0)
-    return -errno;
+    return -EADDRNOTAVAIL;
 
   sock = socket (res->ai_family, res->ai_socktype, 0);
   if (sock == -1)

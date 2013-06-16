@@ -15,6 +15,7 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <riemann/client.h>
 #include <riemann/event.h>
 #include <riemann/message.h>
 
@@ -23,14 +24,39 @@
 #include <stdio.h>
 #include <getopt.h>
 
+#include "config.h"
+
+static void
+display_help ()
+{
+  printf (PACKAGE_NAME ", version " PACKAGE_VERSION "\n"
+          "Usage: riemann-client [options...] [HOST] [PORT]\n"
+          "\n"
+          "Options:\n"
+          " -s, --state=STATE                 Set the state of the event.\n"
+          " -S, --service=SERVICE             Set the service sending the event.\n"
+          " -h, --host=HOST                   Set the origin host of the event.\n"
+          " -D, --description=DESCRIPTION     Set the description of the event.\n"
+          " -i, --metric-sint64=METRIC        Set the 64bit integer metric of the event.\n"
+          " -d, --metric-d=METRIC             Set the double metric of the event.\n"
+          " -f, --metric-f=METRIC             Set the float metric of the event.\n"
+          " -?, --help                        This help screen.\n"
+          "\n"
+          "The HOST and PORT arguments are optional, and they default to\n"
+          "\"localhost\" and 5555, respectively.\n"
+          "\n"
+          "Report " PACKAGE_NAME " bugs to " PACKAGE_BUGREPORT "\n");
+}
+
 int
 main (int argc, char *argv[])
 {
   int c;
   riemann_event_t *event;
   riemann_message_t *message;
-  uint8_t *data;
-  size_t len;
+  riemann_client_t *client;
+  char *host = "localhost";
+  int port = 5555;
 
   event = riemann_event_new ();
 
@@ -45,10 +71,11 @@ main (int argc, char *argv[])
         {"metric-sint64", required_argument, NULL, 'i'},
         {"metric-d", required_argument, NULL, 'd'},
         {"metric-f", required_argument, NULL, 'f'},
+        {"help", no_argument, NULL, '?'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "s:S:h:D:i:d:f:",
+      c = getopt_long (argc, argv, "s:S:h:D:i:d:f:?",
                        long_options, &option_index);
 
       if (c == -1)
@@ -84,15 +111,38 @@ main (int argc, char *argv[])
           riemann_event_set_one (event, METRIC_F, (float) atof (optarg));
           break;
 
+        case '?':
+          display_help ();
+          exit (EXIT_SUCCESS);
+
         default:
-          printf("?? getopt returned character code 0%o ??\n", c);
+          fprintf(stderr, "Unknown option: %c\n", c);
+          exit (EXIT_FAILURE);
         }
     }
 
   message = riemann_message_create_with_events (event, NULL);
-  data = riemann_message_to_buffer (message, &len);
 
-  write (1, data, len);
+  if (optind < argc)
+    {
+      host = argv[optind];
 
-  return 0;
+      if (optind + 1 < argc)
+        port = atoi (argv[optind + 1]);
+    }
+
+  if (argc - optind > 2)
+    {
+      fprintf (stderr, "Too many arguments!\n");
+      display_help ();
+      exit (EXIT_FAILURE);
+    }
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, host, port);
+  riemann_client_send_message (client, message);
+
+  riemann_client_free (client);
+  riemann_message_free (message);
+
+  return EXIT_SUCCESS;
 }

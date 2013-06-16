@@ -20,18 +20,23 @@
 
 #include <riemann/proto/riemann.pb-c.h>
 #include <riemann/event.h>
+#include <riemann/query.h>
 
 typedef Msg riemann_message_t;
 #define RIEMANN_MESSAGE_INIT MSG__INIT
 
 riemann_message_t *riemann_message_new (void);
 riemann_message_t *riemann_message_create_with_events (riemann_event_t *event, ...);
+riemann_message_t *riemann_message_create_with_query (riemann_query_t *query);
 void riemann_message_free (riemann_message_t *message);
 
 int riemann_message_set_events_n (riemann_message_t *message,
                                   size_t n_events,
                                   riemann_event_t **events);
 int riemann_message_set_events (riemann_message_t *message, ...);
+
+int riemann_message_set_query (riemann_message_t *message,
+                               riemann_query_t *query);
 
 uint8_t *riemann_message_to_buffer (riemann_message_t *message, size_t *len);
 riemann_message_t *riemann_message_from_buffer (uint8_t *buffer, size_t len);

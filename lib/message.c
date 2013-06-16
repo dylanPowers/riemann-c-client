@@ -194,6 +194,48 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
   return message;
 }
 
+
+int
+riemann_message_set_query (riemann_message_t *message,
+                           riemann_query_t *query)
+{
+  if (!message || !query)
+    return -EINVAL;
+
+  if (message->query)
+    riemann_query_free (message->query);
+  message->query = query;
+
+  return 0;
+}
+
+riemann_message_t *
+riemann_message_create_with_query (riemann_query_t *query)
+{
+  riemann_message_t *message;
+  int result;
+
+  if (!query)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  message = riemann_message_new ();
+  if (!message)
+    return NULL;
+
+  result = riemann_message_set_query (message, query);
+  if (result != 0)
+    {
+      riemann_message_free (message);
+      errno = -result;
+      return NULL;
+    }
+
+  return message;
+}
+
 uint8_t *
 riemann_message_to_buffer (riemann_message_t *message, size_t *len)
 {

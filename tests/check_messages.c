@@ -158,6 +158,32 @@ START_TEST (test_riemann_message_create_with_events)
 }
 END_TEST
 
+START_TEST (test_riemann_message_set_query)
+{
+  riemann_message_t *message;
+  riemann_query_t *query = riemann_query_new ("state = \"ok\"");
+
+  message = riemann_message_new ();
+  ck_assert_errno (riemann_message_set_query (message, query), 0);
+  ck_assert_str_eq (message->query->string, "state = \"ok\"");
+
+  riemann_message_free (message);
+}
+END_TEST
+
+START_TEST (test_riemann_message_create_with_query)
+{
+  riemann_message_t *message;
+
+  message = riemann_message_create_with_query
+    (riemann_query_new ("state = \"ok\""));
+  ck_assert (message != NULL);
+  ck_assert_str_eq (message->query->string, "state = \"ok\"");
+
+  riemann_message_free (message);
+}
+END_TEST
+
 static TCase *
 test_riemann_messages (void)
 {
@@ -170,6 +196,8 @@ test_riemann_messages (void)
   tcase_add_test (test_messages, test_riemann_message_from_buffer);
   tcase_add_test (test_messages, test_riemann_message_set_events);
   tcase_add_test (test_messages, test_riemann_message_create_with_events);
+  tcase_add_test (test_messages, test_riemann_message_set_query);
+  tcase_add_test (test_messages, test_riemann_message_create_with_query);
 
   return test_messages;
 }

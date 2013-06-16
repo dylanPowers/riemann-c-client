@@ -22,9 +22,11 @@ global:
 
         riemann_message_new;
         riemann_message_create_with_events;
+        riemann_message_create_with_query;
         riemann_message_free;
         riemann_message_set_events_n;
         riemann_message_set_events;
+        riemann_message_set_query;
         riemann_message_to_buffer;
         riemann_message_from_buffer;
 

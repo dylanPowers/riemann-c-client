@@ -19,9 +19,11 @@
 #include <riemann/event.h>
 #include <riemann/message.h>
 
+#include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <getopt.h>
 
 #include "config.h"
@@ -51,12 +53,11 @@ display_help ()
 int
 main (int argc, char *argv[])
 {
-  int c;
   riemann_event_t *event;
   riemann_message_t *message;
   riemann_client_t *client;
   char *host = "localhost";
-  int port = 5555;
+  int port = 5555, c, e, exit_status = EXIT_SUCCESS;
 
   event = riemann_event_new ();
 
@@ -139,10 +140,23 @@ main (int argc, char *argv[])
     }
 
   client = riemann_client_create (RIEMANN_CLIENT_TCP, host, port);
-  riemann_client_send_message (client, message);
+  if (!client)
+    {
+      fprintf (stderr, "Unable to connect: %s\n", (char *)strerror (errno));
+      exit_status = EXIT_SUCCESS;
+      goto end;
+    }
 
+  if ((e = riemann_client_send_message (client, message)) != 0)
+    {
+      fprintf (stderr, "Error sending message: %s\n", (char *)strerror (-e));
+      exit_status = EXIT_SUCCESS;
+      goto end;
+    }
+
+ end:
   riemann_client_free (client);
   riemann_message_free (message);
 
-  return EXIT_SUCCESS;
+  return exit_status;
 }

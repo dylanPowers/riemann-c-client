@@ -45,8 +45,8 @@ riemann_event_t *riemann_event_new (void);
 void riemann_event_free (riemann_event_t *event);
 
 int riemann_event_set (riemann_event_t *event, ...);
-#define riemann_event_set_one(event, field, value) \
-  riemann_event_set (event, RIEMANN_EVENT_FIELD_##field, value, \
+#define riemann_event_set_one(event, field, ...)                        \
+  riemann_event_set (event, RIEMANN_EVENT_FIELD_##field, __VA_ARGS__,   \
                      RIEMANN_EVENT_FIELD_NONE)
 
 riemann_event_t *riemann_event_create (riemann_event_field_t field, ...);

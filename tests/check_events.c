@@ -117,6 +117,10 @@ START_TEST (test_riemann_event_set_one)
   ck_assert (riemann_event_set_one (event, HOST, "localhost") == 0);
   ck_assert_str_eq (event->host, "localhost");
 
+  ck_assert (riemann_event_set_one (event, TAGS, "tag-1", "tag-2", NULL) == 0);
+  ck_assert_str_eq (event->tags[0], "tag-1");
+  ck_assert_str_eq (event->tags[1], "tag-2");
+
   riemann_event_free (event);
 }
 END_TEST

@@ -154,3 +154,49 @@ riemann_client_create (riemann_client_type_t type,
 
   return client;
 }
+
+static int
+_riemann_client_send_message_tcp (riemann_client_t *client,
+                                  riemann_message_t *message)
+{
+  uint8_t *buffer;
+  size_t len;
+  ssize_t sent;
+
+  buffer = riemann_message_to_buffer (message, &len);
+  if (!buffer)
+    return -errno;
+
+  sent = send (client->sock, buffer, len, 0);
+  if (sent != len)
+    {
+      int e = errno;
+
+      free (buffer);
+      return -e;
+    }
+  free (buffer);
+  return 0;
+}
+
+int
+riemann_client_send_message (riemann_client_t *client,
+                             riemann_message_t *message)
+{
+  if (!client)
+    return -ENOTCONN;
+  if (!message)
+    return -EINVAL;
+
+  switch (client->type)
+    {
+    case RIEMANN_CLIENT_TCP:
+      return _riemann_client_send_message_tcp (client, message);
+    case RIEMANN_CLIENT_UDP:
+      return -ENOSYS;
+    default:
+      return -ENOTCONN;
+    }
+
+  return 0;
+}

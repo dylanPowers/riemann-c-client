@@ -18,6 +18,8 @@
 #ifndef __MADHOUSE_RIEMANN_CLIENT_H__
 #define __MADHOUSE_RIEMANN_CLIENT_H__
 
+#include <riemann/message.h>
+
 typedef enum
   {
     RIEMANN_CLIENT_NONE,
@@ -38,5 +40,8 @@ void riemann_client_free (riemann_client_t *client);
 int riemann_client_connect (riemann_client_t *client, riemann_client_type_t type,
                             const char *hostname, int port);
 int riemann_client_disconnect (riemann_client_t *client);
+
+int riemann_client_send_message (riemann_client_t *client,
+                                 riemann_message_t *message);
 
 #endif

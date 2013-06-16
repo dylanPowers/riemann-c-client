@@ -8,6 +8,7 @@
 
 #include "check_library.c"
 #include "check_attributes.c"
+#include "check_queries.c"
 #include "check_events.c"
 #include "check_messages.c"
 #include "check_client.c"
@@ -24,6 +25,7 @@ main (void)
 
   suite_add_tcase (suite, test_riemann_library ());
   suite_add_tcase (suite, test_riemann_attributes ());
+  suite_add_tcase (suite, test_riemann_queries ());
   suite_add_tcase (suite, test_riemann_events ());
   suite_add_tcase (suite, test_riemann_messages ());
   suite_add_tcase (suite, test_riemann_client ());

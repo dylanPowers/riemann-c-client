@@ -81,6 +81,32 @@ START_TEST (test_riemann_message_to_buffer)
 }
 END_TEST
 
+START_TEST (test_riemann_message_from_buffer)
+{
+  riemann_message_t *message, *response;
+  uint8_t *buffer;
+  size_t len;
+
+  message = riemann_message_create_with_events
+    (riemann_event_create (RIEMANN_EVENT_FIELD_SERVICE, "test",
+                           RIEMANN_EVENT_FIELD_STATE, "ok",
+                           RIEMANN_EVENT_FIELD_NONE),
+     NULL);
+  buffer = riemann_message_to_buffer (message, &len);
+
+  response = riemann_message_from_buffer (buffer + sizeof (uint32_t),
+                                          len - sizeof (uint32_t));
+  ck_assert (response != NULL);
+  ck_assert_int_eq (response->ok, 0);
+  ck_assert_str_eq (response->events[0]->service, "test");
+  ck_assert_str_eq (response->events[0]->state, "ok");
+
+  riemann_message_free (message);
+  riemann_message_free (response);
+  free (buffer);
+}
+END_TEST
+
 START_TEST (test_riemann_message_set_events)
 {
   riemann_message_t *message;
@@ -141,6 +167,7 @@ test_riemann_messages (void)
   tcase_add_test (test_messages, test_riemann_message_new);
   tcase_add_test (test_messages, test_riemann_message_set_events_n);
   tcase_add_test (test_messages, test_riemann_message_to_buffer);
+  tcase_add_test (test_messages, test_riemann_message_from_buffer);
   tcase_add_test (test_messages, test_riemann_message_set_events);
   tcase_add_test (test_messages, test_riemann_message_create_with_events);
 

@@ -22,6 +22,7 @@ global:
         riemann_message_set_events_n;
         riemann_message_set_events;
         riemann_message_to_buffer;
+        riemann_message_from_buffer;
 
         riemann_client_new;
         riemann_client_create;

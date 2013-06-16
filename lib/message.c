@@ -221,3 +221,12 @@ riemann_message_to_buffer (riemann_message_t *message, size_t *len)
 
   return (uint8_t *)buff;
 }
+
+riemann_message_t *
+riemann_message_from_buffer (uint8_t *buffer, size_t len)
+{
+  if (!buffer || len == 0)
+    return NULL;
+
+  return msg__unpack (NULL, len, buffer);
+}

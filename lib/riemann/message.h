@@ -34,5 +34,6 @@ int riemann_message_set_events_n (riemann_message_t *message,
 int riemann_message_set_events (riemann_message_t *message, ...);
 
 uint8_t *riemann_message_to_buffer (riemann_message_t *message, size_t *len);
+riemann_message_t *riemann_message_from_buffer (uint8_t *buffer, size_t len);
 
 #endif

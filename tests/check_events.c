@@ -1,3 +1,4 @@
+#include <riemann/attribute.h>
 #include <riemann/event.h>
 
 START_TEST (test_riemann_event_init)
@@ -64,11 +65,15 @@ START_TEST (test_riemann_event_set)
   ck_assert_int_eq (event->has_ttl, 1);
   ck_assert_float_eq (event->ttl, (float) 1);
 
-  ck_assert_errno (riemann_event_set (event, RIEMANN_EVENT_FIELD_ATTRIBUTES,
-                                      "key-1", "value-1",
-                                      "key-2", "value-2",
-                                      NULL,
-                                      RIEMANN_EVENT_FIELD_NONE), ENOSYS);
+  ck_assert_errno
+    (riemann_event_set (event, RIEMANN_EVENT_FIELD_ATTRIBUTES,
+                        riemann_attribute_create ("key-1", "value-1"),
+                        riemann_attribute_create ("key-2", "value-2"),
+                        NULL,
+                        RIEMANN_EVENT_FIELD_NONE), 0);
+  ck_assert_int_eq (event->n_attributes, 2);
+  ck_assert_str_eq (event->attributes[0]->key, "key-1");
+  ck_assert_str_eq (event->attributes[1]->value, "value-2");
 
   ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_METRIC_S64,
                                 (int64_t) 12345,

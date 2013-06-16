@@ -15,6 +15,7 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <riemann/attribute.h>
 #include <riemann/event.h>
 
 #include <errno.h>
@@ -111,8 +112,30 @@ _riemann_event_set_va (riemann_event_t *event,
           break;
 
         case RIEMANN_EVENT_FIELD_ATTRIBUTES:
-          va_end (ap);
-          return -ENOSYS;
+          {
+            riemann_attribute_t *attrib;
+            size_t n;
+
+            for (n = 0; n < event->n_attributes; n++)
+              riemann_attribute_free (event->attributes[n]);
+            if (event->attributes)
+              free (event->attributes);
+            event->attributes = NULL;
+            event->n_attributes = 0;
+
+            attrib = va_arg (ap, riemann_attribute_t *);
+            while (attrib != NULL)
+              {
+                event->attributes =
+                  realloc (event->attributes,
+                           sizeof (riemann_attribute_t *) * event->n_attributes);
+                event->attributes[event->n_attributes] = attrib;
+                event->n_attributes++;
+                attrib = va_arg (ap, riemann_attribute_t *);
+              }
+
+            break;
+          }
 
         case RIEMANN_EVENT_FIELD_METRIC_S64:
           event->metric_sint64 = va_arg (ap, int64_t);

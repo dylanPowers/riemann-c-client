@@ -125,6 +125,13 @@ START_TEST (test_riemann_client_recv_message)
 
   riemann_client_free (client);
 
+  client = riemann_client_create (RIEMANN_CLIENT_UDP, "localhost", 5555);
+
+  ck_assert (riemann_client_recv_message (client) == NULL);
+  ck_assert_errno (-errno, ENOTSUP);
+
+  riemann_client_free (client);
+
   riemann_message_free (message);
 }
 END_TEST

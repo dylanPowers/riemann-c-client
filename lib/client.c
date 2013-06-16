@@ -288,7 +288,7 @@ riemann_client_recv_message (riemann_client_t *client)
     case RIEMANN_CLIENT_TCP:
       return _riemann_client_recv_message_tcp (client);
     case RIEMANN_CLIENT_UDP:
-      errno = ENOSYS;
+      errno = ENOTSUP;
       return NULL;
     default:
       errno = -ENOTCONN;

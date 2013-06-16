@@ -114,14 +114,12 @@ _riemann_event_set_va (riemann_event_t *event,
             event->tags = NULL;
             event->n_tags = 0;
 
-            tag = va_arg (ap, char *);
-            while (tag != NULL)
+            while ((tag = va_arg (ap, char *)) != NULL)
               {
                 event->tags =
                   realloc (event->tags, sizeof (char *) * (event->n_tags + 1));
                 event->tags[event->n_tags] = strdup (tag);
                 event->n_tags++;
-                tag = va_arg (ap, char *);
               }
 
             break;
@@ -144,15 +142,13 @@ _riemann_event_set_va (riemann_event_t *event,
             event->attributes = NULL;
             event->n_attributes = 0;
 
-            attrib = va_arg (ap, riemann_attribute_t *);
-            while (attrib != NULL)
+            while ((attrib = va_arg (ap, riemann_attribute_t *)) != NULL)
               {
                 event->attributes =
                   realloc (event->attributes,
                            sizeof (riemann_attribute_t *) * (event->n_attributes + 1));
                 event->attributes[event->n_attributes] = attrib;
                 event->n_attributes++;
-                attrib = va_arg (ap, riemann_attribute_t *);
               }
 
             break;

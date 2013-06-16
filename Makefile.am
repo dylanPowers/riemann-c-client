@@ -12,7 +12,10 @@ LRC_AGE				= 0
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 
-lib_libriemann_client_la_LDFLAGS= -version-info ${LRC_CURRENT}:${LRC_REVISION}:${LRC_AGE}
+lib_libriemann_client_la_CFLAGS	= ${AM_CFLAGS} ${PROTOBUF_C_CFLAGS}
+lib_libriemann_client_la_LDFLAGS= \
+	${PROTOBUF_C_LDFLAGS}	  \
+	-version-info ${LRC_CURRENT}:${LRC_REVISION}:${LRC_AGE}
 lib_libriemann_client_la_LIBADD	= -lprotobuf-c
 lib_libriemann_client_la_SOURCES= \
 	lib/client.c		  \

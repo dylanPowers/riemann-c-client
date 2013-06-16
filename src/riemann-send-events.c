@@ -15,6 +15,7 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <riemann/attribute.h>
 #include <riemann/client.h>
 #include <riemann/event.h>
 #include <riemann/message.h>
@@ -135,6 +136,12 @@ main (int argc, char *argv[])
           exit (EXIT_FAILURE);
         }
     }
+
+  riemann_event_set_one (event, TAGS, "riemann-c-client", "example:send-events",
+                         NULL);
+  riemann_event_set_one (event, ATTRIBUTES,
+                         riemann_attribute_create ("x-client", "riemann-c-client"),
+                         NULL);
 
   message = riemann_message_create_with_events (event, NULL);
 

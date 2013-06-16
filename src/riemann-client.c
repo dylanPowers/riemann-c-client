@@ -57,7 +57,7 @@ int
 main (int argc, char *argv[])
 {
   riemann_event_t *event;
-  riemann_message_t *message;
+  riemann_message_t *message, *response;
   riemann_client_t *client;
   riemann_client_type_t client_type = RIEMANN_CLIENT_TCP;
   char *host = "localhost";
@@ -167,6 +167,26 @@ main (int argc, char *argv[])
       exit_status = EXIT_SUCCESS;
       goto end;
     }
+
+  if (client_type == RIEMANN_CLIENT_UDP)
+    goto end;
+
+  response = riemann_client_recv_message (client);
+  if (!response)
+    {
+      fprintf (stderr, "Error when asking for a message receipt: %s\n",
+               strerror (errno));
+      exit_status = EXIT_FAILURE;
+      goto end;
+    }
+
+  if (response->ok != 1)
+    {
+      fprintf (stderr, "Message receipt failed: %s\n", response->error);
+      exit_status = EXIT_FAILURE;
+    }
+
+  riemann_message_free (response);
 
  end:
   riemann_client_free (client);

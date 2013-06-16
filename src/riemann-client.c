@@ -157,14 +157,14 @@ main (int argc, char *argv[])
   if (!client)
     {
       fprintf (stderr, "Unable to connect: %s\n", (char *)strerror (errno));
-      exit_status = EXIT_SUCCESS;
+      exit_status = EXIT_FAILURE;
       goto end;
     }
 
   if ((e = riemann_client_send_message (client, message)) != 0)
     {
       fprintf (stderr, "Error sending message: %s\n", (char *)strerror (-e));
-      exit_status = EXIT_SUCCESS;
+      exit_status = EXIT_FAILURE;
       goto end;
     }
 

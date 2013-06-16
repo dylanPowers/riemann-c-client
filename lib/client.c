@@ -277,7 +277,7 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
 riemann_message_t *
 riemann_client_recv_message (riemann_client_t *client)
 {
-  if (!client || client->sock == -1)
+  if (!client)
     {
       errno = ENOTCONN;
       return NULL;
@@ -291,7 +291,7 @@ riemann_client_recv_message (riemann_client_t *client)
       errno = ENOTSUP;
       return NULL;
     default:
-      errno = -ENOTCONN;
+      errno = ENOTCONN;
       return NULL;
     }
 

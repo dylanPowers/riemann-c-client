@@ -42,6 +42,9 @@ display_help ()
           " -i, --metric-sint64=METRIC        Set the 64bit integer metric of the event.\n"
           " -d, --metric-d=METRIC             Set the double metric of the event.\n"
           " -f, --metric-f=METRIC             Set the float metric of the event.\n"
+          "\n"
+          " -T, --tcp                         Send the message over TCP (default).\n"
+          " -U, --udp                         Send the message over UDP.\n"
           " -?, --help                        This help screen.\n"
           "\n"
           "The HOST and PORT arguments are optional, and they default to\n"
@@ -56,6 +59,7 @@ main (int argc, char *argv[])
   riemann_event_t *event;
   riemann_message_t *message;
   riemann_client_t *client;
+  riemann_client_type_t client_type = RIEMANN_CLIENT_TCP;
   char *host = "localhost";
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
 
@@ -72,11 +76,13 @@ main (int argc, char *argv[])
         {"metric-sint64", required_argument, NULL, 'i'},
         {"metric-d", required_argument, NULL, 'd'},
         {"metric-f", required_argument, NULL, 'f'},
+        {"tcp", no_argument, NULL, 'T'},
+        {"udp", no_argument, NULL, 'U'},
         {"help", no_argument, NULL, '?'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "s:S:h:D:i:d:f:?",
+      c = getopt_long (argc, argv, "s:S:h:D:i:d:f:?UT",
                        long_options, &option_index);
 
       if (c == -1)
@@ -112,6 +118,14 @@ main (int argc, char *argv[])
           riemann_event_set_one (event, METRIC_F, (float) atof (optarg));
           break;
 
+        case 'T':
+          client_type = RIEMANN_CLIENT_TCP;
+          break;
+
+        case 'U':
+          client_type = RIEMANN_CLIENT_UDP;
+          break;
+
         case '?':
           display_help ();
           exit (EXIT_SUCCESS);
@@ -139,7 +153,7 @@ main (int argc, char *argv[])
       exit (EXIT_FAILURE);
     }
 
-  client = riemann_client_create (RIEMANN_CLIENT_TCP, host, port);
+  client = riemann_client_create (client_type, host, port);
   if (!client)
     {
       fprintf (stderr, "Unable to connect: %s\n", (char *)strerror (errno));

@@ -43,5 +43,6 @@ int riemann_client_disconnect (riemann_client_t *client);
 
 int riemann_client_send_message (riemann_client_t *client,
                                  riemann_message_t *message);
+riemann_message_t *riemann_client_recv_message (riemann_client_t *client);
 
 #endif

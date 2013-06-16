@@ -101,6 +101,34 @@ START_TEST (test_riemann_client_send_message)
 }
 END_TEST
 
+START_TEST (test_riemann_client_recv_message)
+{
+  riemann_client_t *client, *client_fresh;
+  riemann_message_t *message, *response = NULL;
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
+  message = riemann_message_create_with_events
+    (riemann_event_create (RIEMANN_EVENT_FIELD_SERVICE, "test",
+                           RIEMANN_EVENT_FIELD_STATE, "ok",
+                           RIEMANN_EVENT_FIELD_NONE),
+     NULL);
+
+  client_fresh = riemann_client_new ();
+  ck_assert (riemann_client_recv_message (client_fresh) == NULL);
+  ck_assert_errno (-errno, ENOTCONN);
+  riemann_client_free (client_fresh);
+
+  riemann_client_send_message (client, message);
+  ck_assert ((response = riemann_client_recv_message (client)) != NULL);
+  ck_assert_int_eq (response->ok, 1);
+  riemann_message_free (response);
+
+  riemann_client_free (client);
+
+  riemann_message_free (message);
+}
+END_TEST
+
 static TCase *
 test_riemann_client (void)
 {
@@ -114,6 +142,7 @@ test_riemann_client (void)
     {
       tcase_add_test (test_client, test_riemann_client_create);
       tcase_add_test (test_client, test_riemann_client_send_message);
+      tcase_add_test (test_client, test_riemann_client_recv_message);
     }
 
   return test_client;

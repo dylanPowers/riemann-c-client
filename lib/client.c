@@ -232,3 +232,68 @@ riemann_client_send_message (riemann_client_t *client,
 
   return 0;
 }
+
+static riemann_message_t *
+_riemann_client_recv_message_tcp (riemann_client_t *client)
+{
+  uint32_t header, len;
+  uint8_t *buffer;
+  ssize_t received;
+  riemann_message_t *message;
+
+  received = recv (client->sock, &header, sizeof (header), 0);
+  if (received != sizeof (header))
+    return NULL;
+  len = ntohl (header);
+
+  buffer = malloc (len);
+  if (!buffer)
+    return NULL;
+
+  received = recv (client->sock, buffer, len, 0);
+  if (received != len)
+    {
+      int e = errno;
+
+      free (buffer);
+      errno = e;
+      return NULL;
+    }
+
+  message = riemann_message_from_buffer (buffer, len);
+  if (message == NULL)
+    {
+      int e = errno;
+
+      free (buffer);
+      errno = e;
+      return NULL;
+    }
+  free (buffer);
+
+  return message;
+}
+
+riemann_message_t *
+riemann_client_recv_message (riemann_client_t *client)
+{
+  if (!client || client->sock == -1)
+    {
+      errno = ENOTCONN;
+      return NULL;
+    }
+
+  switch (client->type)
+    {
+    case RIEMANN_CLIENT_TCP:
+      return _riemann_client_recv_message_tcp (client);
+    case RIEMANN_CLIENT_UDP:
+      errno = ENOSYS;
+      return NULL;
+    default:
+      errno = -ENOTCONN;
+      return NULL;
+    }
+
+  return 0;
+}

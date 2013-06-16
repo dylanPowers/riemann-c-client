@@ -21,6 +21,7 @@
 /lib/libriemann-client.la
 /lib/riemann/proto/
 /src/riemann-send-events
+/src/riemann-query
 /tests/check_libriemann
 *~
 *.o

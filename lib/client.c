@@ -168,7 +168,7 @@ _riemann_client_send_message_tcp (riemann_client_t *client,
     return -errno;
 
   sent = send (client->sock, buffer, len, 0);
-  if (sent != len)
+  if (sent == -1 || (size_t)sent != len)
     {
       int e = errno;
 
@@ -200,7 +200,7 @@ _riemann_client_send_message_udp (riemann_client_t *client,
 
   sent = sendto (client->sock, buffer->data, len - sizeof (buffer->header), 0,
                  client->srv_addr->ai_addr, client->srv_addr->ai_addrlen);
-  if (sent != len - sizeof (buffer->header))
+  if (sent == -1 || (size_t)sent != len - sizeof (buffer->header))
     {
       int e = errno;
 

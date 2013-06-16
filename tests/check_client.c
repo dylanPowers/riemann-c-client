@@ -80,17 +80,19 @@ START_TEST (test_riemann_client_send_message)
                            RIEMANN_EVENT_FIELD_STATE, "ok",
                            RIEMANN_EVENT_FIELD_NONE),
      NULL);
-  client_fresh = riemann_client_new ();
 
   ck_assert_errno (riemann_client_send_message (NULL, message), ENOTCONN);
   ck_assert_errno (riemann_client_send_message (client, NULL), EINVAL);
+
+  client_fresh = riemann_client_new ();
   ck_assert_errno (riemann_client_send_message (client_fresh, message), ENOTCONN);
+  riemann_client_free (client_fresh);
 
   ck_assert_errno (riemann_client_send_message (client, message), 0);
 
-  riemann_message_free (message);
   riemann_client_free (client);
-  riemann_client_free (client_fresh);
+
+  riemann_message_free (message);
 }
 END_TEST
 

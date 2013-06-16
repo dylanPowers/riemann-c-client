@@ -179,6 +179,38 @@ _riemann_client_send_message_tcp (riemann_client_t *client,
   return 0;
 }
 
+struct _riemann_buff_w_hdr
+{
+  uint32_t header;
+  uint8_t data[0];
+};
+
+static int
+_riemann_client_send_message_udp (riemann_client_t *client,
+                                  riemann_message_t *message)
+{
+  struct _riemann_buff_w_hdr *buffer;
+  size_t len;
+  ssize_t sent;
+
+  buffer = (struct _riemann_buff_w_hdr *)
+    riemann_message_to_buffer (message, &len);
+  if (!buffer)
+    return -errno;
+
+  sent = sendto (client->sock, buffer->data, len - sizeof (buffer->header), 0,
+                 client->srv_addr->ai_addr, client->srv_addr->ai_addrlen);
+  if (sent != len - sizeof (buffer->header))
+    {
+      int e = errno;
+
+      free (buffer);
+      return -e;
+    }
+  free (buffer);
+  return 0;
+}
+
 int
 riemann_client_send_message (riemann_client_t *client,
                              riemann_message_t *message)
@@ -193,7 +225,7 @@ riemann_client_send_message (riemann_client_t *client,
     case RIEMANN_CLIENT_TCP:
       return _riemann_client_send_message_tcp (client, message);
     case RIEMANN_CLIENT_UDP:
-      return -ENOSYS;
+      return _riemann_client_send_message_udp (client, message);
     default:
       return -ENOTCONN;
     }

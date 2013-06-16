@@ -103,8 +103,29 @@ _riemann_event_set_va (riemann_event_t *event,
           break;
 
         case RIEMANN_EVENT_FIELD_TAGS:
-          va_end (ap);
-          return -ENOSYS;
+          {
+            char *tag;
+            size_t n;
+
+            for (n = 0; n < event->n_tags; n++)
+              free (event->tags[n]);
+            if (event->tags)
+              free (event->tags);
+            event->tags = NULL;
+            event->n_tags = 0;
+
+            tag = va_arg (ap, char *);
+            while (tag != NULL)
+              {
+                event->tags =
+                  realloc (event->tags, sizeof (char *) * (event->n_tags + 1));
+                event->tags[event->n_tags] = strdup (tag);
+                event->n_tags++;
+                tag = va_arg (ap, char *);
+              }
+
+            break;
+          }
 
         case RIEMANN_EVENT_FIELD_TTL:
           event->ttl = (float) va_arg (ap, double);

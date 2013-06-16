@@ -58,7 +58,10 @@ START_TEST (test_riemann_event_set)
 
   ck_assert_errno (riemann_event_set (event, RIEMANN_EVENT_FIELD_TAGS,
                                       "tag-1", "tag-2",
-                                      RIEMANN_EVENT_FIELD_NONE), ENOSYS);
+                                      RIEMANN_EVENT_FIELD_NONE), 0);
+  ck_assert_int_eq (event->n_tags, 2);
+  ck_assert_str_eq (event->tags[0], "tag-1");
+  ck_assert_str_eq (event->tags[1], "tag-2");
 
   ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_TTL, (float) 1,
                                 RIEMANN_EVENT_FIELD_NONE) == 0);

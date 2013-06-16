@@ -21,8 +21,8 @@ PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES(CHECK, check,,)
 
-AC_CHECK_HEADERS([arpa/inet.h stdlib.h])
-AC_CHECK_FUNCS([strdup strerror])
+AC_CHECK_HEADERS([arpa/inet.h netdb.h stdlib.h sys/socket.h])
+AC_CHECK_FUNCS([memset socket strdup strerror])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 
@@ -30,6 +30,7 @@ AC_TYPE_SIZE_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT8_T
 AC_TYPE_INT64_T
+AC_TYPE_SSIZE_T
 
 # Check for linker version script support.
 ac_save_LDFLAGS=$LDFLAGS

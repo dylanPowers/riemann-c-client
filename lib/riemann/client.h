@@ -18,7 +18,25 @@
 #ifndef __MADHOUSE_RIEMANN_CLIENT_H__
 #define __MADHOUSE_RIEMANN_CLIENT_H__
 
+typedef enum
+  {
+    RIEMANN_CLIENT_NONE,
+    RIEMANN_CLIENT_TCP,
+    RIEMANN_CLIENT_UDP,
+  } riemann_client_type_t;
+
+typedef struct _riemann_client_t riemann_client_t;
+
 const char *riemann_client_version (void);
 const char * riemann_client_version_string (void);
+
+riemann_client_t *riemann_client_new (void);
+riemann_client_t *riemann_client_create (riemann_client_type_t type,
+                                         const char *hostname, int port);
+void riemann_client_free (riemann_client_t *client);
+
+int riemann_client_connect (riemann_client_t *client, riemann_client_type_t type,
+                            const char *hostname, int port);
+int riemann_client_disconnect (riemann_client_t *client);
 
 #endif

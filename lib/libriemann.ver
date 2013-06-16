@@ -16,6 +16,12 @@ global:
         riemann_message_set_events;
         riemann_message_to_buffer;
 
+        riemann_client_new;
+        riemann_client_create;
+        riemann_client_free;
+        riemann_client_connect;
+        riemann_client_disconnect;
+
 local:
         *;
 };

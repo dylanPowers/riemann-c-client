@@ -56,7 +56,8 @@ check_PROGRAMS			= ${TESTS}
 check_libriemann_srcs		= \
 	tests/check_library.c	  \
 	tests/check_events.c	  \
-	tests/check_messages.c
+	tests/check_messages.c	  \
+	tests/check_client.c
 
 # -- Binaries --
 bin_PROGRAMS			= src/riemann-client

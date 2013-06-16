@@ -17,6 +17,14 @@
 
 #include <riemann/client.h>
 
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+
 #include "config.h"
 
 const char *
@@ -29,4 +37,120 @@ const char *
 riemann_client_version_string (void)
 {
   return PACKAGE_STRING;
+}
+
+struct _riemann_client_t
+{
+  riemann_client_type_t type;
+  int sock;
+
+  struct addrinfo *srv_addr;
+};
+
+riemann_client_t *
+riemann_client_new (void)
+{
+  riemann_client_t *client;
+
+  client = malloc (sizeof (riemann_client_t));
+
+  client->type = RIEMANN_CLIENT_NONE;
+  client->sock = -1;
+  client->srv_addr = NULL;
+
+  return client;
+}
+
+int
+riemann_client_disconnect (riemann_client_t *client)
+{
+  if (!client || !client->sock)
+    return -ENOTCONN;
+
+  if (close (client->sock) != 0)
+    return -errno;
+  client->sock = -1;
+
+  if (client->srv_addr)
+    freeaddrinfo (client->srv_addr);
+  client->srv_addr = NULL;
+
+  return 0;
+}
+
+void
+riemann_client_free (riemann_client_t *client)
+{
+  if (!client)
+    return;
+
+  errno = -riemann_client_disconnect (client);
+
+  free (client);
+}
+
+int
+riemann_client_connect (riemann_client_t *client,
+                        riemann_client_type_t type,
+                        const char *hostname, int port)
+{
+  struct addrinfo hints, *res;
+  int sock;
+
+  if (!client || !hostname)
+    return -EINVAL;
+  if (port <= 0)
+    return -ERANGE;
+
+  memset (&hints, 0, sizeof (hints));
+  hints.ai_family = AF_INET;
+
+  if (type == RIEMANN_CLIENT_TCP)
+    hints.ai_socktype = SOCK_STREAM;
+  else if (type == RIEMANN_CLIENT_UDP)
+    hints.ai_socktype = SOCK_DGRAM;
+  else
+    return -EINVAL;
+
+  if (getaddrinfo (hostname, NULL, &hints, &res) != 0)
+    return -errno;
+
+  sock = socket (res->ai_family, res->ai_socktype, 0);
+  if (sock == -1)
+    return -errno;
+
+  ((struct sockaddr_in *)res->ai_addr)->sin_port = htons (port);
+
+  if (connect (sock, res->ai_addr, res->ai_addrlen) != 0)
+    return -errno;
+
+  riemann_client_disconnect (client);
+
+  client->type = type;
+  client->sock = sock;
+  client->srv_addr = res;
+
+  return 0;
+}
+
+riemann_client_t *
+riemann_client_create (riemann_client_type_t type,
+                       const char *hostname, int port)
+{
+  riemann_client_t *client;
+  int e;
+
+  client = riemann_client_new ();
+  if (!client)
+    return NULL;
+
+  e = riemann_client_connect (client, type, hostname, port);
+  if (e != 0)
+    {
+      riemann_client_free (client);
+      errno = -e;
+      return NULL;
+    }
+
+  return client;
 }

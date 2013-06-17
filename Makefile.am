@@ -6,6 +6,7 @@ ACLOCAL_AMFLAGS			= -Im4
 LDADD				= lib/libriemann-client.la
 
 includedir			= ${prefix}/include/riemann
+protodir			= ${includedir}/proto
 
 # -- Libraries --
 LRC_CURRENT			= 0
@@ -19,23 +20,25 @@ lib_libriemann_client_la_LDFLAGS= \
 	${PROTOBUF_C_LDFLAGS}	  \
 	-version-info ${LRC_CURRENT}:${LRC_REVISION}:${LRC_AGE}
 lib_libriemann_client_la_LIBADD	= -lprotobuf-c
-lib_libriemann_client_la_SOURCES= \
-	lib/client.c		  \
-	lib/riemann/client.h	  \
-	lib/event.c		  \
-	lib/riemann/event.h	  \
-	lib/message.c		  \
-	lib/riemann/message.h	  \
-	lib/attribute.c		  \
-	lib/riemann/attribute.h	  \
-	lib/query.c		  \
-	lib/riemann/query.h	  \
-	lib/riemann/proto/riemann.pb-c.c  \
-	lib/riemann/proto/riemann.pb-c.h
-
 proto_files			= \
 	lib/riemann/proto/riemann.pb-c.c  \
 	lib/riemann/proto/riemann.pb-c.h
+proto_HEADERS			= \
+	lib/riemann/proto/riemann.pb-c.h
+lib_libriemann_client_ladir	= ${includedir}
+lib_libriemann_client_la_HEADERS= \
+	lib/riemann/client.h	  \
+	lib/riemann/event.h	  \
+	lib/riemann/message.h	  \
+	lib/riemann/attribute.h	  \
+	lib/riemann/query.h
+lib_libriemann_client_la_SOURCES= \
+	lib/client.c		  \
+	lib/event.c		  \
+	lib/message.c		  \
+	lib/attribute.c		  \
+	lib/query.c		  \
+	${proto_files}
 
 BUILT_SOURCES			= ${proto_files}
 CLEANFILES			= ${proto_files}
@@ -43,9 +46,6 @@ CLEANFILES			= ${proto_files}
 ${BUILT_SOURCES}: ${top_srcdir}/lib/proto/riemann.proto
 	${AM_V_at} ${mkinstalldirs} ${top_builddir}/lib/riemann/proto
 	${AM_V_GEN} protoc-c $^ -I${top_srcdir}/lib/proto --c_out=${top_builddir}/lib/riemann/proto
-
-nobase_include_HEADERS= \
-	lib/riemann/client.h
 
 if HAVE_VERSIONING
 lib_libriemann_client_la_LDFLAGS += \

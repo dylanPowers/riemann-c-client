@@ -31,6 +31,8 @@ Until then, a trivial program to send a single event to
 
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 int
@@ -68,3 +70,8 @@ main (void)
   return EXIT_SUCCESS;
 }
 ```
+
+Compile and run it like:
+
+    ${CC} $(pkg-config --cflags --libs riemann-client) demo.c -o demo -Wall
+    ./demo

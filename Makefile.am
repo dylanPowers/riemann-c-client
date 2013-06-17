@@ -3,6 +3,8 @@ AM_MAKEFLAGS			= --no-print-directory
 AM_CFLAGS			= -I${top_srcdir}/lib -I${top_builddir}/lib
 ACLOCAL_AMFLAGS			= -Im4
 
+LDADD				= lib/libriemann-client.la
+
 includedir			= ${prefix}/include/riemann
 
 # -- Libraries --
@@ -56,7 +58,7 @@ UNIT_TESTS			= tests/check_libriemann
 TESTS				= ${UNIT_TESTS}
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
-tests/check_%: LDADD += ${CHECK_LIBS} lib/libriemann-client.la
+tests/check_%: LDADD += ${CHECK_LIBS}
 
 check_PROGRAMS			= ${TESTS}
 
@@ -72,8 +74,6 @@ check_libriemann_srcs		= \
 bin_PROGRAMS			= \
 	src/riemann-send-events	  \
 	src/riemann-query
-
-src/riemann-%: LDADD += lib/libriemann-client.la
 
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md GPL LGPL \

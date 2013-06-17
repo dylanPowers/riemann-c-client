@@ -53,6 +53,9 @@ lib_libriemann_client_la_LDFLAGS += \
 lib_libriemann_client_la_DEPENDENCIES	= ${top_srcdir}/lib/libriemann.ver
 endif
 
+pkgconfigdir			= $(libdir)/pkgconfig
+pkgconfig_DATA			= lib/riemann-client.pc
+
 # -- Testcases --
 UNIT_TESTS			= tests/check_libriemann
 TESTS				= ${UNIT_TESTS}
@@ -79,5 +82,6 @@ bin_PROGRAMS			= \
 EXTRA_DIST			= README.md GPL LGPL \
 				  lib/proto/riemann.proto \
 				  lib/libriemann.ver \
+				  lib/riemann-client.pc \
 				  tests/tests.h \
 				  ${check_libriemann_srcs}

@@ -11,6 +11,14 @@ START_TEST (test_riemann_event_init)
 }
 END_TEST
 
+START_TEST (test_riemann_event_static_init)
+{
+  riemann_event_t event = RIEMANN_EVENT_INIT;
+
+  ck_assert (event.host == NULL);
+}
+END_TEST
+
 START_TEST (test_riemann_event_new)
 {
   riemann_event_t *event;
@@ -150,6 +158,7 @@ test_riemann_events (void)
 
   test_events = tcase_create ("Events");
   tcase_add_test (test_events, test_riemann_event_init);
+  tcase_add_test (test_events, test_riemann_event_static_init);
   tcase_add_test (test_events, test_riemann_event_new);
   tcase_add_test (test_events, test_riemann_event_set);
   tcase_add_test (test_events, test_riemann_event_set_one);

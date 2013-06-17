@@ -1,6 +1,14 @@
 #include <riemann/message.h>
 #include <riemann/event.h>
 
+START_TEST (test_riemann_message_static_init)
+{
+  riemann_message_t message = RIEMANN_MESSAGE_INIT;
+
+  ck_assert (message.events == NULL);
+}
+END_TEST
+
 START_TEST (test_riemann_message_new)
 {
   riemann_message_t *message;
@@ -190,6 +198,7 @@ test_riemann_messages (void)
   TCase *test_messages;
 
   test_messages = tcase_create ("Messages");
+  tcase_add_test (test_messages, test_riemann_message_static_init);
   tcase_add_test (test_messages, test_riemann_message_new);
   tcase_add_test (test_messages, test_riemann_message_set_events_n);
   tcase_add_test (test_messages, test_riemann_message_to_buffer);

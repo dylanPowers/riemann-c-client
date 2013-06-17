@@ -21,6 +21,7 @@
 #include <riemann/proto/riemann.pb-c.h>
 
 typedef Query riemann_query_t;
+#define RIEMANN_QUERY_INIT QUERY__INIT
 
 riemann_query_t *riemann_query_new (const char *string);
 void riemann_query_free (riemann_query_t *query);

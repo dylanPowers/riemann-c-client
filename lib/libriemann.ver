@@ -9,16 +9,19 @@ global:
         riemann_attribute_set_key;
         riemann_attribute_set_value;
         riemann_attribute_set;
+        attribute__descriptor;
 
         riemann_query_new;
         riemann_query_free;
         riemann_query_set_string;
+        query__descriptor;
 
         riemann_event_init;
         riemann_event_new;
         riemann_event_create;
         riemann_event_free;
         riemann_event_set;
+        event__descriptor;
 
         riemann_message_new;
         riemann_message_create_with_events;
@@ -29,6 +32,7 @@ global:
         riemann_message_set_query;
         riemann_message_to_buffer;
         riemann_message_from_buffer;
+        msg__descriptor;
 
         riemann_client_new;
         riemann_client_create;

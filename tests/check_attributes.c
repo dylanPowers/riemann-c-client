@@ -1,5 +1,13 @@
 #include <riemann/attribute.h>
 
+START_TEST (test_riemann_attribute_static_init)
+{
+  riemann_attribute_t attrib = RIEMANN_ATTRIBUTE_INIT;
+
+  ck_assert (attrib.key == NULL);
+}
+END_TEST
+
 START_TEST (test_riemann_attribute_new)
 {
   riemann_attribute_t *attrib;
@@ -65,6 +73,7 @@ test_riemann_attributes (void)
   TCase *tests;
 
   tests = tcase_create ("Attributes");
+  tcase_add_test (tests, test_riemann_attribute_static_init);
   tcase_add_test (tests, test_riemann_attribute_new);
   tcase_add_test (tests, test_riemann_attribute_set);
   tcase_add_test (tests, test_riemann_attribute_create);

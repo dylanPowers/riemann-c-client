@@ -33,6 +33,8 @@ The library follows the usual autotools way of installation (one will
 need libtool 2.2+ to build from git, along with the other
 dependency, the [protobuf-c compiler][protoc]):
 
+ [protoc]: http://protobuf-c.googlecode.com
+
     $ git clone git://github.com/algernon/riemann-c-client.git
     $ cd riemann-c-client
     $ autoreconf -i

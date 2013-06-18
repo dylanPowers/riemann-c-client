@@ -2,26 +2,53 @@ Riemann C client library
 ========================
 
 This is a C client library for the [Riemann][riemann] monitoring
-system. While there is already an [existing library][gkos-riemann],
-this one has different goals, and was built from the ground up to suit
-a particular need the existing library could not fulfil: an
-LGPL-compatible library, with a test suite and a convenient and
-straightforward API, and strong compatibility guarantees.
+system, providing a convenient and simple API, high test coverage and
+a copyleft license, along with API and ABI stability.
 
  [riemann]: http://riemann.io/
- [gkos-riemann]: https://github.com/gkos/riemann-c-client
 
-There's still a good mile to go, but progress is being made, and the
-library is already usable for some purposes (see the
-[demo programs][demos]). Once the library reaches stability, it will
-be using [Semantic Versioning][semver], and API and ABI compatibility
-will be guaranteed accordingly.
+The library uses [semantic versioning][semver], and is expected to
+reach 1.0.0 in a couple of days.
 
- [demos]: https://github.com/algernon/riemann-c-client/tree/master/src
  [semver]: http://semver.org/
 
-Until then, a trivial program to send a single event to
-[Riemann][riemann]:
+Features
+--------
+
+ * Sending events over TCP and UDP
+ * Launching queries (TCP only)
+ * Support for tags and attributes on events
+ * Ability to send multiple events in a single message
+ * Convenient and straightforward API (see the [demo](#demo) below!)
+ * A comprehensive test suite
+ * API and ABI stability (including symbol versioning on platforms
+   where it is available).
+
+Installation
+------------
+
+The library follows the usual autotools way of installation (one will
+need libtool 2.2+ to build from git, along with the other
+dependency, the [protobuf-c compiler][protoc]):
+
+    $ git clone git://github.com/algernon/riemann-c-client.git
+    $ cd riemann-c-client
+    $ autoreconf -i
+    $ ./configure && make && make check && make install
+
+From this point onward, the library is installed and fully functional,
+and one can use `pkg-config` to compile programs against it:
+
+    ${CC} $(pkg-config --cflags --libs riemann-client) demo.c -o demo -Wall
+
+Demo
+----
+
+A simple program that sends a static event to [Riemann][riemann] is
+included below. A few more useful programs are included in the
+[src][src] directory of the source code.
+
+ [src]: https://github.com/algernon/riemann-c-client/tree/master/src
 
 ```c
 #include <riemann/client.h>
@@ -71,7 +98,26 @@ main (void)
 }
 ```
 
-Compile and run it like:
+Why?
+----
 
-    ${CC} $(pkg-config --cflags --libs riemann-client) demo.c -o demo -Wall
-    ./demo
+There already is an [existing library][gkos-riemann], and before
+sitting down to write an independent one, I evaluated that one first.
+Unfortunately, it failed on a few key points, like licensing, lack of
+tests and promise of stability, sometimes awkward API, and so on and
+so forth.
+
+ [gkos-riemann]: https://github.com/gkos/riemann-c-client
+
+I could have sent patches correcting these, but it was much easier to
+just write a library that is designed from the ground up for an API I
+find convenient and useful.
+
+License
+-------
+
+Copyright (C) 2013 Gergely Nagy <algernon@madhouse-project.org>,
+released under the terms of the
+[GNU Lesser General Public License][lgpl], version 3+.
+
+ [lgpl]: http://www.gnu.org/licenses/lgpl.html

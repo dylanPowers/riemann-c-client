@@ -24,25 +24,13 @@
 #include <string.h>
 
 riemann_event_t *
-riemann_event_init (riemann_event_t *event)
-{
-  if (!event)
-    {
-      errno = EINVAL;
-      return NULL;
-    }
-
-  event__init((Event *) event);
-  return event;
-}
-
-riemann_event_t *
 riemann_event_new (void)
 {
   riemann_event_t *event;
 
   event = (riemann_event_t *)malloc (sizeof (riemann_event_t));
-  return riemann_event_init (event);
+  event__init (event);
+  return event;
 }
 
 void

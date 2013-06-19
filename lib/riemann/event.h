@@ -21,7 +21,6 @@
 #include <riemann/proto/riemann.pb-c.h>
 
 typedef Event riemann_event_t;
-#define RIEMANN_EVENT_INIT EVENT__INIT
 
 typedef enum
   {
@@ -40,15 +39,13 @@ typedef enum
     RIEMANN_EVENT_FIELD_METRIC_F
   } riemann_event_field_t;
 
-riemann_event_t *riemann_event_init (riemann_event_t *event);
 riemann_event_t *riemann_event_new (void);
+riemann_event_t *riemann_event_create (riemann_event_field_t field, ...);
 void riemann_event_free (riemann_event_t *event);
 
 int riemann_event_set (riemann_event_t *event, ...);
 #define riemann_event_set_one(event, field, ...)                        \
   riemann_event_set (event, RIEMANN_EVENT_FIELD_##field, __VA_ARGS__,   \
                      RIEMANN_EVENT_FIELD_NONE)
-
-riemann_event_t *riemann_event_create (riemann_event_field_t field, ...);
 
 #endif

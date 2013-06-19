@@ -21,7 +21,6 @@
 #include <riemann/proto/riemann.pb-c.h>
 
 typedef Attribute riemann_attribute_t;
-#define RIEMANN_ATTRIBUTE_INIT ATTRIBUTE__INIT
 
 riemann_attribute_t *riemann_attribute_new (void);
 void riemann_attribute_free (riemann_attribute_t *attrib);

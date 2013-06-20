@@ -86,4 +86,5 @@ EXTRA_DIST			= README.md GPL LGPL \
 				  lib/libriemann.ver \
 				  lib/riemann-client.pc \
 				  tests/tests.h \
-				  ${check_libriemann_srcs}
+				  ${check_libriemann_srcs} \
+				  docs/API.md

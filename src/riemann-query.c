@@ -94,7 +94,7 @@ dump_event (size_t n, const riemann_event_t *event)
 int
 main (int argc, char *argv[])
 {
-  riemann_message_t *message, *response;
+  riemann_message_t *response;
   riemann_client_t *client;
   char *host = "localhost", *query_string = NULL;
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
@@ -152,8 +152,6 @@ main (int argc, char *argv[])
       exit (EXIT_FAILURE);
     }
 
-  message = riemann_message_create_with_query (riemann_query_new (query_string));
-
   client = riemann_client_create (RIEMANN_CLIENT_TCP, host, port);
   if (!client)
     {
@@ -162,7 +160,9 @@ main (int argc, char *argv[])
       goto end;
     }
 
-  if ((e = riemann_client_send_message (client, message)) != 0)
+  e = riemann_client_send_message_oneshot
+    (client, riemann_message_create_with_query (riemann_query_new (query_string)));
+  if (e != 0)
     {
       fprintf (stderr, "Error sending message: %s\n", (char *)strerror (-e));
       exit_status = EXIT_FAILURE;
@@ -191,7 +191,6 @@ main (int argc, char *argv[])
 
  end:
   riemann_client_free (client);
-  riemann_message_free (message);
 
   return exit_status;
 }

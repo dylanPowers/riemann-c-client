@@ -58,7 +58,7 @@ int
 main (int argc, char *argv[])
 {
   riemann_event_t *event;
-  riemann_message_t *message, *response;
+  riemann_message_t *response;
   riemann_client_t *client;
   riemann_client_type_t client_type = RIEMANN_CLIENT_TCP;
   char *host = "localhost";
@@ -143,8 +143,6 @@ main (int argc, char *argv[])
                          riemann_attribute_create ("x-client", "riemann-c-client"),
                          NULL);
 
-  message = riemann_message_create_with_events (event, NULL);
-
   if (optind < argc)
     {
       host = argv[optind];
@@ -168,7 +166,9 @@ main (int argc, char *argv[])
       goto end;
     }
 
-  if ((e = riemann_client_send_message (client, message)) != 0)
+  e = riemann_client_send_message_oneshot
+    (client, riemann_message_create_with_events (event, NULL));
+  if (e != 0)
     {
       fprintf (stderr, "Error sending message: %s\n", (char *)strerror (-e));
       exit_status = EXIT_FAILURE;
@@ -197,7 +197,6 @@ main (int argc, char *argv[])
 
  end:
   riemann_client_free (client);
-  riemann_message_free (message);
 
   return exit_status;
 }

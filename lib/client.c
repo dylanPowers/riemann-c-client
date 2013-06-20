@@ -233,6 +233,18 @@ riemann_client_send_message (riemann_client_t *client,
   return 0;
 }
 
+int
+riemann_client_send_message_oneshot (riemann_client_t *client,
+                                     riemann_message_t *message)
+{
+  int ret = 0;
+
+  ret = riemann_client_send_message (client, message);
+  riemann_message_free (message);
+
+  return ret;
+}
+
 static riemann_message_t *
 _riemann_client_recv_message_tcp (riemann_client_t *client)
 {

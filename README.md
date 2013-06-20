@@ -21,10 +21,13 @@ Features
  * Launching queries (TCP only)
  * Support for tags and attributes on events
  * Ability to send multiple events in a single message
- * Convenient and straightforward API (see the [demo](#demo) below!)
+ * Convenient and straightforward API (see the [API docs][api-docs]
+   and the [demo](#demo) below!)
  * A comprehensive test suite
  * API and ABI stability (including symbol versioning on platforms
    where it is available).
+
+ [api-docs]: https://github.com/algernon/riemann-c-client/blob/master/docs/API.md
 
 Installation
 ------------

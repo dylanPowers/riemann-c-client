@@ -60,6 +60,8 @@ pkgconfig_DATA			= lib/riemann-client.pc
 UNIT_TESTS			= tests/check_libriemann
 TESTS				= ${UNIT_TESTS}
 
+TESTS_ENVIRONMENT		= CK_FORK=no
+
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
 tests/check_%: LDADD += ${CHECK_LIBS}
 

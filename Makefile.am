@@ -72,7 +72,7 @@ check_libriemann_srcs		= \
 	tests/check_events.c	  \
 	tests/check_messages.c	  \
 	tests/check_client.c	  \
-	tests/check_attribute.c	  \
+	tests/check_attributes.c  \
 	tests/check_queries.c
 
 # -- Binaries --

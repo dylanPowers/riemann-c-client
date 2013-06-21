@@ -15,10 +15,7 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <riemann/attribute.h>
-#include <riemann/client.h>
-#include <riemann/event.h>
-#include <riemann/message.h>
+#include <riemann/riemann-client.h>
 
 #include <errno.h>
 #include <unistd.h>

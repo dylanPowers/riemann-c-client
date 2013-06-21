@@ -58,10 +58,7 @@ included below. A few more useful programs are included in the
  [src]: https://github.com/algernon/riemann-c-client/tree/master/src
 
 ```c
-#include <riemann/client.h>
-#include <riemann/event.h>
-#include <riemann/message.h>
-#include <riemann/attribute.h>
+#include <riemann/riemann-client.h>
 
 #include <errno.h>
 #include <stdio.h>

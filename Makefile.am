@@ -31,7 +31,8 @@ lib_libriemann_client_la_HEADERS= \
 	lib/riemann/event.h	  \
 	lib/riemann/message.h	  \
 	lib/riemann/attribute.h	  \
-	lib/riemann/query.h
+	lib/riemann/query.h	  \
+	lib/riemann/riemann-client.h
 lib_libriemann_client_la_SOURCES= \
 	lib/client.c		  \
 	lib/event.c		  \

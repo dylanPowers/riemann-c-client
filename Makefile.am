@@ -82,7 +82,7 @@ bin_PROGRAMS			= \
 	src/riemann-query
 
 # -- Extra files to distribute --
-EXTRA_DIST			= README.md GPL LGPL \
+EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  lib/proto/riemann.proto \
 				  lib/libriemann.ver \
 				  lib/riemann-client.pc \

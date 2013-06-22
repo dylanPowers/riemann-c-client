@@ -24,6 +24,15 @@
 /src/riemann-send-events
 /src/riemann-query
 /tests/check_libriemann
+/debian/autoreconf.*
+/debian/build-tree/
+/debian/files
+/debian/libriemann-client0/
+/debian/libriemann-client-dev/
+/debian/tmp/
+/debian/*.log
+/debian/*.debhelper
+/debian/*.substvars
 *~
 *.o
 *.lo

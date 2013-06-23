@@ -1,4 +1,4 @@
-RIEMANN_C_0 {
+RIEMANN_C_1.0 {
 global:
         riemann_client_version;
         riemann_client_version_string;

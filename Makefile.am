@@ -78,8 +78,7 @@ check_libriemann_srcs		= \
 
 # -- Binaries --
 bin_PROGRAMS			= \
-	src/riemann-send-events	  \
-	src/riemann-query
+	src/riemann-client
 
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md NEWS GPL LGPL \

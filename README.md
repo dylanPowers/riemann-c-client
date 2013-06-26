@@ -2,6 +2,7 @@ Riemann C client library
 ========================
 
 [![Build Status](https://travis-ci.org/algernon/riemann-c-client.png?branch=master)](https://travis-ci.org/algernon/riemann-c-client)
+[![Build Status](https://drone.io/github.com/algernon/riemann-c-client/status.png)](https://drone.io/github.com/algernon/riemann-c-client/latest)
 
 This is a C client library for the [Riemann][riemann] monitoring
 system, providing a convenient and simple API, high test coverage and

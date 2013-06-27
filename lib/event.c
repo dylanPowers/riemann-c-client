@@ -184,6 +184,36 @@ riemann_event_set (riemann_event_t *event, ...)
   return r;
 }
 
+int
+riemann_event_tag_add (riemann_event_t *event, const char *tag)
+{
+  if (!event || !tag)
+    return -EINVAL;
+
+  event->tags =
+    realloc (event->tags, sizeof (char *) * (event->n_tags + 1));
+  event->tags[event->n_tags] = strdup (tag);
+  event->n_tags++;
+
+  return 0;
+}
+
+int
+riemann_event_attribute_add (riemann_event_t *event,
+                             riemann_attribute_t *attrib)
+{
+  if (!event || !attrib)
+    return -EINVAL;
+
+  event->attributes =
+    realloc (event->attributes,
+             sizeof (riemann_attribute_t *) * (event->n_attributes + 1));
+  event->attributes[event->n_attributes] = attrib;
+  event->n_attributes++;
+
+  return 0;
+}
+
 riemann_event_t *
 riemann_event_create (riemann_event_field_t field, ...)
 {

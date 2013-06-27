@@ -52,6 +52,8 @@ help_send (void)
           "  -S, --service=SERVICE             Set the service sending the event.\n"
           "  -h, --host=HOST                   Set the origin host of the event.\n"
           "  -D, --description=DESCRIPTION     Set the description of the event.\n"
+          "  -a, --attribute=KEY=VALUE         Add a new attribute to the event.\n"
+          "  -t, --tag=TAG                     Add a tag to the event.\n"
           "  -i, --metric-sint64=METRIC        Set the 64bit integer metric of the event.\n"
           "  -d, --metric-d=METRIC             Set the double metric of the event.\n"
           "  -f, --metric-f=METRIC             Set the float metric of the event.\n"
@@ -73,6 +75,12 @@ client_send (int argc, char *argv[])
 
   event = riemann_event_new ();
 
+  riemann_event_set_one (event, TAGS, "riemann-c-client", "example:send-events",
+                         NULL);
+  riemann_event_set_one (event, ATTRIBUTES,
+                         riemann_attribute_create ("x-client", "riemann-c-client"),
+                         NULL);
+
   while (1)
     {
       int option_index = 0;
@@ -81,6 +89,8 @@ client_send (int argc, char *argv[])
         {"service", required_argument, NULL, 'S'},
         {"host", required_argument, NULL, 'h'},
         {"description", required_argument, NULL, 'D'},
+        {"tag", required_argument, NULL, 't'},
+        {"attribute", required_argument, NULL, 'a'},
         {"metric-sint64", required_argument, NULL, 'i'},
         {"metric-d", required_argument, NULL, 'd'},
         {"metric-f", required_argument, NULL, 'f'},
@@ -90,7 +100,7 @@ client_send (int argc, char *argv[])
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "s:S:h:D:i:d:f:?UT",
+      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?UT",
                        long_options, &option_index);
 
       if (c == -1)
@@ -112,6 +122,29 @@ client_send (int argc, char *argv[])
 
         case 'D':
           riemann_event_set_one (event, DESCRIPTION, optarg);
+          break;
+
+        case 'a':
+          {
+            char *key = optarg, *value;
+
+            value = strchr (optarg, '=');
+            if (!value)
+              {
+                fprintf (stderr, "Invalid attribute specification: %s\n", optarg);
+                return EXIT_FAILURE;
+              }
+            value[0] = '\0';
+            value++;
+
+            riemann_event_attribute_add
+              (event, riemann_attribute_create (key, value));
+
+            break;
+          }
+
+        case 't':
+          riemann_event_tag_add (event, optarg);
           break;
 
         case 'i':
@@ -144,12 +177,6 @@ client_send (int argc, char *argv[])
           return EXIT_FAILURE;
         }
     }
-
-  riemann_event_set_one (event, TAGS, "riemann-c-client", "example:send-events",
-                         NULL);
-  riemann_event_set_one (event, ATTRIBUTES,
-                         riemann_attribute_create ("x-client", "riemann-c-client"),
-                         NULL);
 
   optind++;
 

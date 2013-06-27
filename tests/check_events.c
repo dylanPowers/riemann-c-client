@@ -133,6 +133,43 @@ START_TEST (test_riemann_event_create)
 }
 END_TEST
 
+START_TEST (test_riemann_event_tag_add)
+{
+  riemann_event_t *event;
+
+  event = riemann_event_new ();
+
+  ck_assert_errno (riemann_event_tag_add (NULL, NULL), EINVAL);
+  ck_assert_errno (riemann_event_tag_add (event, NULL), EINVAL);
+
+  ck_assert_errno (riemann_event_tag_add (event, "test-tag"), 0);
+
+  ck_assert_int_eq (event->n_tags, 1);
+  ck_assert_str_eq (event->tags[0], "test-tag");
+
+  riemann_event_free (event);
+}
+END_TEST
+
+START_TEST (test_riemann_event_attribute_add)
+{
+  riemann_event_t *event;
+
+  event = riemann_event_new ();
+
+  ck_assert_errno (riemann_event_attribute_add (NULL, NULL), EINVAL);
+  ck_assert_errno (riemann_event_attribute_add (event, NULL), EINVAL);
+
+  ck_assert_errno (riemann_event_attribute_add
+                   (event, riemann_attribute_create ("test-key", "value")), 0);
+
+  ck_assert_int_eq (event->n_attributes, 1);
+  ck_assert_str_eq (event->attributes[0]->key, "test-key");
+
+  riemann_event_free (event);
+}
+END_TEST
+
 static TCase *
 test_riemann_events (void)
 {
@@ -142,6 +179,8 @@ test_riemann_events (void)
   tcase_add_test (test_events, test_riemann_event_new);
   tcase_add_test (test_events, test_riemann_event_set);
   tcase_add_test (test_events, test_riemann_event_set_one);
+  tcase_add_test (test_events, test_riemann_event_tag_add);
+  tcase_add_test (test_events, test_riemann_event_attribute_add);
   tcase_add_test (test_events, test_riemann_event_create);
 
   return test_events;

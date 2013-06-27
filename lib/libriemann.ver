@@ -19,6 +19,8 @@ global:
         riemann_event_create;
         riemann_event_free;
         riemann_event_set;
+        riemann_event_tag_add;
+        riemann_event_attribute_add;
 
         riemann_message_new;
         riemann_message_create_with_events;

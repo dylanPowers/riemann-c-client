@@ -19,6 +19,7 @@
 #define __MADHOUSE_RIEMANN_EVENT_H__ 1
 
 #include <riemann/proto/riemann.pb-c.h>
+#include <riemann/attribute.h>
 
 typedef Event riemann_event_t;
 
@@ -47,5 +48,8 @@ int riemann_event_set (riemann_event_t *event, ...);
 #define riemann_event_set_one(event, field, ...)                        \
   riemann_event_set (event, RIEMANN_EVENT_FIELD_##field, __VA_ARGS__,   \
                      RIEMANN_EVENT_FIELD_NONE)
+int riemann_event_tag_add (riemann_event_t *event, const char *tag);
+int riemann_event_attribute_add (riemann_event_t *event,
+                                 riemann_attribute_t *attrib);
 
 #endif

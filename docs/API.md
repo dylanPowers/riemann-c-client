@@ -244,6 +244,18 @@ convenience:
 int riemann_event_set_one (event, field, ...);
 ```
 
+Adding tags and attributes is also supported via the
+`riemann_event_tag_add` and `riemann_event_attribute_add` functions:
+
+```c
+int riemann_event_tag_add (riemann_event_t *event, const char *tag);
+int riemann_event_attribute_add (riemann_event_t *event,
+                                 riemann_attribute_t *attrib);
+```
+
+Both of them take an event first, followed by either a tag or an
+[attribute object](#api-attributes).
+
 Events must be freed with `riemann_event_free()`, to avoid memory
 leaks. Freeing an event will also free all associated data: tags and
 attributes included.

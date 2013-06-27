@@ -96,11 +96,12 @@ client_send (int argc, char *argv[])
         {"metric-f", required_argument, NULL, 'f'},
         {"tcp", no_argument, NULL, 'T'},
         {"udp", no_argument, NULL, 'U'},
+        {"ttl", required_argument, NULL, 'L'},
         {"help", no_argument, NULL, '?'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?UT",
+      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?UTL:",
                        long_options, &option_index);
 
       if (c == -1)
@@ -165,6 +166,10 @@ client_send (int argc, char *argv[])
 
         case 'U':
           client_type = RIEMANN_CLIENT_UDP;
+          break;
+
+        case 'L':
+          riemann_event_set_one (event, TTL, (float) atof (optarg));
           break;
 
         case '?':

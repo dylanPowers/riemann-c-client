@@ -8,6 +8,8 @@ LDADD				= lib/libriemann-client.la
 includedir			= ${prefix}/include/riemann
 protodir			= ${includedir}/proto
 
+VERSION				= @VERSION@${SNAPSHOT_VERSION}
+
 # -- Libraries --
 LRC_CURRENT			= 0
 LRC_REVISION			= 0

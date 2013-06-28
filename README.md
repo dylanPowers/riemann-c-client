@@ -10,8 +10,7 @@ a copyleft license, along with API and ABI stability.
 
  [riemann]: http://riemann.io/
 
-The library uses [semantic versioning][semver], and is expected to
-reach 1.0.0 in a couple of days.
+The library uses [semantic versioning][semver].
 
  [semver]: http://semver.org/
 

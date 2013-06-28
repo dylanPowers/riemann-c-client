@@ -1,0 +1,50 @@
+Source: riemann-c-client
+Priority: extra
+Maintainer: Gergely Nagy <algernon@madhouse-project.org>
+Build-Depends: debhelper (>= 9~),
+               dh-autoreconf, automake (>= 1.11~), autoconf, libtool,
+               protobuf-c-compiler, libprotobuf-c0-dev
+Standards-Version: 3.9.4
+Section: libs
+Homepage: https://github.com/algernon/riemann-c-client
+Vcs-Git: git://git.madhouse-project.org/projects/riemann-c-client.git
+Vcs-Browser: http://git.madhouse-project.org/projects/riemann-c-client/
+
+Package: libriemann-client0
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: C language client library for the Riemann event stream processor
+ Riemann is a network event stream processor, intended for analyitics,
+ metrics and alerting; and to glue various monitoring systems together.
+ .
+ This library provides a C language client, with a simple but
+ convenient API, to connect to Riemann, send events and run queries
+ against it.
+
+Package: libriemann-client-dev
+Section: libdevel
+Architecture: any
+Depends: libriemann-client0 (= ${binary:Version}), libprotobuf-c0-dev, ${misc:Depends}
+Description: Development files for the Riemann C client library
+ The riemann-c-client library provides a C language client, with a
+ simple but convenient API, to connect to Riemann, send events and run
+ queries against it
+ .
+ This package is needed to compile programs linked against
+ librliemann-client0, as only this includes the header files and
+ static libraries needed for compiling.
+
+Package: riemann-c-client
+Section: net
+Architecture: any
+Multi-Arch: foreign
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Client utility for the Riemann event stream processor
+ Riemann is a network event stream processor, intended for analyitics,
+ metrics and alerting; and to glue various monitoring systems together.
+ .
+ This package provides a simple utility to send events to, or query a
+ Riemann server.

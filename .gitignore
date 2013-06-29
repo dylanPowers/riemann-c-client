@@ -28,6 +28,7 @@
 /debian/files
 /debian/libriemann-client0/
 /debian/libriemann-client-dev/
+/debian/riemann-c-client/
 /debian/tmp/
 /debian/*.log
 /debian/*.debhelper

@@ -166,6 +166,7 @@ _riemann_event_set_va (riemann_event_t *event,
         field = va_arg (ap, riemann_event_field_t);
     }
   while (field != RIEMANN_EVENT_FIELD_NONE);
+  va_end (ap);
 
   return 0;
 }

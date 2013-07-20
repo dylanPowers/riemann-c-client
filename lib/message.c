@@ -77,7 +77,7 @@ _riemann_message_combine_events (riemann_event_t **events,
                                  riemann_event_t *event, size_t *n_events,
                                  va_list aq)
 {
-  size_t alloced = *n_events;
+  size_t alloced;
   va_list ap;
 
   if (!events || !event || !n_events)
@@ -85,6 +85,7 @@ _riemann_message_combine_events (riemann_event_t **events,
       errno = EINVAL;
       return NULL;
     }
+  alloced = *n_events;
 
   va_copy (ap, aq);
 

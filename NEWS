@@ -1,5 +1,11 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.0.1 - UNRELEASED
+
+This release is a minor enhancement over the initial 1.0.0 release,
+containing only a few improvements to error handling, including a fix
+for a resource leak on event creation and connection failure.
+
 * 1.0.0 - <2013-06-28 Fri>
 
 Initial public release.

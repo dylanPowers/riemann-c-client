@@ -28,6 +28,14 @@ START_TEST (test_riemann_client_new)
 }
 END_TEST
 
+START_TEST (test_riemann_client_free)
+{
+  errno = 0;
+  riemann_client_free (NULL);
+  ck_assert_errno (-errno, EINVAL);
+}
+END_TEST
+
 START_TEST (test_riemann_client_connect)
 {
   riemann_client_t *client;
@@ -184,6 +192,7 @@ test_riemann_client (void)
 
   test_client = tcase_create ("Client");
   tcase_add_test (test_client, test_riemann_client_new);
+  tcase_add_test (test_client, test_riemann_client_free);
   tcase_add_test (test_client, test_riemann_client_connect);
 
   if (network_tests_enabled ())

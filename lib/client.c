@@ -82,7 +82,10 @@ void
 riemann_client_free (riemann_client_t *client)
 {
   if (!client)
-    return;
+    {
+      errno = EINVAL;
+      return;
+    }
 
   errno = -riemann_client_disconnect (client);
 

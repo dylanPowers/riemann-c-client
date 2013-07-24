@@ -38,7 +38,10 @@ void
 riemann_message_free (riemann_message_t *message)
 {
   if (!message)
-    return;
+    {
+      errno = EINVAL;
+      return;
+    }
 
   msg__free_unpacked ((Msg *)message, NULL);
 }

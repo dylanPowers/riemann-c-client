@@ -15,6 +15,14 @@ START_TEST (test_riemann_query_new)
 }
 END_TEST
 
+START_TEST (test_riemann_query_free)
+{
+  errno = 0;
+  riemann_query_free (NULL);
+  ck_assert_errno (-errno, EINVAL);
+}
+END_TEST
+
 START_TEST (test_riemann_query_set_string)
 {
   riemann_query_t *query;
@@ -38,6 +46,7 @@ test_riemann_queries (void)
 
   tests = tcase_create ("Queries");
   tcase_add_test (tests, test_riemann_query_new);
+  tcase_add_test (tests, test_riemann_query_free);
   tcase_add_test (tests, test_riemann_query_set_string);
 
   return tests;

@@ -37,7 +37,10 @@ void
 riemann_event_free (riemann_event_t *event)
 {
   if (!event)
-    return;
+    {
+      errno = EINVAL;
+      return;
+    }
 
   event__free_unpacked (event, NULL);
 }

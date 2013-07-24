@@ -12,6 +12,14 @@ START_TEST (test_riemann_message_new)
 }
 END_TEST
 
+START_TEST (test_riemann_message_free)
+{
+  errno = 0;
+  riemann_message_free (NULL);
+  ck_assert_errno (-errno, EINVAL);
+}
+END_TEST
+
 START_TEST (test_riemann_message_set_events_n)
 {
   riemann_message_t *message;
@@ -228,6 +236,7 @@ test_riemann_messages (void)
 
   test_messages = tcase_create ("Messages");
   tcase_add_test (test_messages, test_riemann_message_new);
+  tcase_add_test (test_messages, test_riemann_message_free);
   tcase_add_test (test_messages, test_riemann_message_set_events_n);
   tcase_add_test (test_messages, test_riemann_message_to_buffer);
   tcase_add_test (test_messages, test_riemann_message_from_buffer);

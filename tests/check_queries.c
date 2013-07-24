@@ -20,6 +20,11 @@ START_TEST (test_riemann_query_set_string)
   riemann_query_t *query;
 
   query = riemann_query_new (NULL);
+  ck_assert_errno (riemann_query_set_string (NULL, NULL), EINVAL);
+  ck_assert_errno (riemann_query_set_string (query, NULL), EINVAL);
+  ck_assert_errno (riemann_query_set_string (NULL, "status = \"fail\""), EINVAL);
+
+  ck_assert_errno (riemann_query_set_string (query, "status = \"fail\""), 0);
   ck_assert_errno (riemann_query_set_string (query, "status = \"ok\""), 0);
   ck_assert_str_eq (query->string, "status = \"ok\"");
   riemann_query_free (query);

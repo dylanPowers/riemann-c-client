@@ -110,6 +110,10 @@ START_TEST (test_riemann_client_recv_message)
   riemann_client_t *client, *client_fresh;
   riemann_message_t *message, *response = NULL;
 
+  errno = 0;
+  ck_assert (riemann_client_recv_message (NULL) == NULL);
+  ck_assert_errno (-errno, ENOTCONN);
+
   client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
   message = riemann_message_create_with_events
     (riemann_event_create (RIEMANN_EVENT_FIELD_SERVICE, "test",

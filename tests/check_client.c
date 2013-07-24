@@ -68,6 +68,12 @@ START_TEST (test_riemann_client_connect)
 }
 END_TEST
 
+START_TEST (test_riemann_client_disconnect)
+{
+  ck_assert_errno (riemann_client_disconnect (NULL), ENOTCONN);
+}
+END_TEST
+
 START_TEST (test_riemann_client_create)
 {
   riemann_client_t *client;
@@ -194,6 +200,7 @@ test_riemann_client (void)
   tcase_add_test (test_client, test_riemann_client_new);
   tcase_add_test (test_client, test_riemann_client_free);
   tcase_add_test (test_client, test_riemann_client_connect);
+  tcase_add_test (test_client, test_riemann_client_disconnect);
 
   if (network_tests_enabled ())
     {

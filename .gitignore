@@ -11,6 +11,8 @@
 /config.sub
 /configure
 /configure.scan
+/coverage.info
+/coverage.info.html
 /depcomp
 /install-sh
 /libtool
@@ -40,3 +42,5 @@
 .libs/
 .dirstamp
 *.tar.*
+*.gcno
+*.gcda

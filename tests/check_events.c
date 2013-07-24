@@ -68,6 +68,15 @@ START_TEST (test_riemann_event_set)
   ck_assert_str_eq (event->attributes[0]->key, "key-1");
   ck_assert_str_eq (event->attributes[1]->value, "value-2");
 
+  ck_assert_errno
+    (riemann_event_set (event, RIEMANN_EVENT_FIELD_ATTRIBUTES,
+                        riemann_attribute_create ("key-3", "value-3"),
+                        NULL,
+                        RIEMANN_EVENT_FIELD_NONE), 0);
+  ck_assert_int_eq (event->n_attributes, 1);
+  ck_assert_str_eq (event->attributes[0]->key, "key-3");
+  ck_assert_str_eq (event->attributes[0]->value, "value-3");
+
   ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_METRIC_S64,
                                 (int64_t) 12345,
                                 RIEMANN_EVENT_FIELD_NONE) == 0);
@@ -110,6 +119,13 @@ START_TEST (test_riemann_event_set_one)
   ck_assert (riemann_event_set_one (event, TAGS, "tag-1", "tag-2", NULL) == 0);
   ck_assert_str_eq (event->tags[0], "tag-1");
   ck_assert_str_eq (event->tags[1], "tag-2");
+
+  ck_assert (riemann_event_set_one (event, HOST, "localhost2") == 0);
+  ck_assert_str_eq (event->host, "localhost2");
+
+  ck_assert (riemann_event_set_one (event, TAGS, "tag-3", NULL) == 0);
+  ck_assert_int_eq (event->n_tags, 1);
+  ck_assert_str_eq (event->tags[0], "tag-3");
 
   riemann_event_free (event);
 }

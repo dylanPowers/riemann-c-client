@@ -48,6 +48,10 @@ START_TEST (test_riemann_client_connect)
       ck_assert (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
                                          "localhost", 5555) == 0);
       ck_assert_errno (riemann_client_disconnect (client), 0);
+
+      ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
+                                               "non-existent.example.com", 5555),
+                       EADDRNOTAVAIL);
     }
 
   ck_assert (client != NULL);

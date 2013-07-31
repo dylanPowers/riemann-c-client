@@ -272,7 +272,10 @@ riemann_message_t *
 riemann_message_from_buffer (uint8_t *buffer, size_t len)
 {
   if (!buffer || len == 0)
-    return NULL;
+    {
+      errno = EINVAL;
+      return NULL;
+    }
 
   return msg__unpack (NULL, len, buffer);
 }

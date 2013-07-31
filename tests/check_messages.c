@@ -134,6 +134,15 @@ START_TEST (test_riemann_message_from_buffer)
   ck_assert_str_eq (response->events[0]->service, "test");
   ck_assert_str_eq (response->events[0]->state, "ok");
 
+  errno = 0;
+
+  ck_assert (riemann_message_from_buffer
+             (buffer + sizeof (uint32_t), 0) == NULL);
+  ck_assert_errno (-errno, EINVAL);
+
+  ck_assert (riemann_message_from_buffer (NULL, 1) == NULL);
+  ck_assert_errno (-errno, EINVAL);
+
   riemann_message_free (message);
   riemann_message_free (response);
   free (buffer);

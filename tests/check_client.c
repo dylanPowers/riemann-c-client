@@ -1,20 +1,46 @@
 #include <riemann/client.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 static int
 network_tests_enabled (void)
 {
-  char *env;
+  struct addrinfo hints;
+  struct addrinfo *res, *rp;
+  int fd = -1, s;
 
-  env = getenv ("RIEMANN_TESTS_NETWORK");
-  if (!env)
+  memset (&hints, 0, sizeof (struct addrinfo));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+
+  s = getaddrinfo ("localhost", "5555", &hints, &res);
+  if (s != 0)
     return 0;
 
-  if (env[0] == 'y' || env[0] == 'Y' || env[0] == '1' ||
-      (env[0] == 'o' && env[1] == 'n'))
-    return 1;
+  for (rp = res; rp != NULL; rp = rp->ai_next)
+    {
+      fd = socket (rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+      if (fd == -1)
+        continue;
 
-  return 0;
+      if (connect (fd, rp->ai_addr, rp->ai_addrlen) != -1)
+        break;
+
+      close (fd);
+    }
+  freeaddrinfo (res);
+
+  if (rp == NULL)
+    return 0;
+
+  if (fd != -1)
+    close (fd);
+
+  return 1;
 }
 
 START_TEST (test_riemann_client_new)

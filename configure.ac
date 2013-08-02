@@ -25,7 +25,7 @@ PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES(CHECK, check,,)
 
 AC_CHECK_HEADERS([arpa/inet.h netdb.h stdlib.h sys/socket.h])
-AC_CHECK_FUNCS([memset socket strdup strerror])
+AC_CHECK_FUNCS([memset socket strcasecmp strchr strdup strerror])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 

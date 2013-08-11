@@ -1,6 +1,6 @@
 #+STARTUP: indent showall                       -*- org -*-
 
-* 1.0.1 - UNRELEASED
+* 1.0.1 - <2013-08-11 Sun>
 
 This release is a minor enhancement over the initial 1.0.0 release,
 containing only a few improvements to error handling, including a fix

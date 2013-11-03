@@ -1,7 +1,7 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: riemann-c-client
 Upstream-Contact: Gergely Nagy <algernon@madhouse-project.org>
-Source: git://git.madhouse-project.org/projects/riemann-c-client.git
+Source: https://github.com/algernon/riemann-c-client.git
 Copyright: Copyright (C) 2013 Gergely Nagy <algernon@madhouse-project.org>
 License: LGPL-3+
 

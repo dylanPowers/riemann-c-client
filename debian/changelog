@@ -1,5 +1,5 @@
-riemann-c-client (1.0.0-1) unstable; urgency=low
+riemann-c-client (1.0.1-1) unstable; urgency=low
 
-  * Initial release
+  * Initial release. (Closes: #728591)
 
- -- Gergely Nagy <algernon@madhouse-project.org>  Fri, 28 Jun 2013 10:35:34 +0200
+ -- Gergely Nagy <algernon@madhouse-project.org>  Sun, 03 Nov 2013 13:52:25 +0100

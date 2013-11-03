@@ -38,7 +38,10 @@ void
 riemann_message_free (riemann_message_t *message)
 {
   if (!message)
-    return;
+    {
+      errno = EINVAL;
+      return;
+    }
 
   msg__free_unpacked ((Msg *)message, NULL);
 }
@@ -77,7 +80,7 @@ _riemann_message_combine_events (riemann_event_t **events,
                                  riemann_event_t *event, size_t *n_events,
                                  va_list aq)
 {
-  size_t alloced = *n_events;
+  size_t alloced;
   va_list ap;
 
   if (!events || !event || !n_events)
@@ -85,6 +88,7 @@ _riemann_message_combine_events (riemann_event_t **events,
       errno = EINVAL;
       return NULL;
     }
+  alloced = *n_events;
 
   va_copy (ap, aq);
 
@@ -268,7 +272,10 @@ riemann_message_t *
 riemann_message_from_buffer (uint8_t *buffer, size_t len)
 {
   if (!buffer || len == 0)
-    return NULL;
+    {
+      errno = EINVAL;
+      return NULL;
+    }
 
   return msg__unpack (NULL, len, buffer);
 }

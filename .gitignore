@@ -11,6 +11,8 @@
 /config.sub
 /configure
 /configure.scan
+/coverage.info
+/coverage.info.html
 /depcomp
 /install-sh
 /libtool
@@ -28,6 +30,7 @@
 /debian/files
 /debian/libriemann-client0/
 /debian/libriemann-client-dev/
+/debian/riemann-c-client/
 /debian/tmp/
 /debian/*.log
 /debian/*.debhelper
@@ -39,3 +42,5 @@
 .libs/
 .dirstamp
 *.tar.*
+*.gcno
+*.gcda

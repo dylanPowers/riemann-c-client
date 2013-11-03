@@ -87,13 +87,25 @@ riemann_attribute_t *
 riemann_attribute_create (const char *key, const char *value)
 {
   riemann_attribute_t *attrib;
+  int e;
 
   attrib = riemann_attribute_new ();
   if (!attrib)
     return NULL;
 
-  riemann_attribute_set_key (attrib, key);
-  riemann_attribute_set_value (attrib, value);
+  if (key && ((e = riemann_attribute_set_key (attrib, key)) != 0))
+    {
+      riemann_attribute_free (attrib);
+      errno = -e;
+      return NULL;
+    }
+
+  if (value && ((e = riemann_attribute_set_value (attrib, value)) != 0))
+    {
+      riemann_attribute_free (attrib);
+      errno = -e;
+      return NULL;
+    }
 
   return attrib;
 }

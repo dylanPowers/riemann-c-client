@@ -45,7 +45,10 @@ void
 riemann_query_free (riemann_query_t *query)
 {
   if (!query)
-    return;
+    {
+      errno = EINVAL;
+      return;
+    }
 
   query__free_unpacked (query, NULL);
 }

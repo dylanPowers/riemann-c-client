@@ -1,6 +1,6 @@
 # -*- Autoconf -*-
 
-AC_INIT([riemann-c-client], [1.0.0], [algernon@madhouse-project.org])
+AC_INIT([riemann-c-client], [1.0.1], [algernon@madhouse-project.org])
 AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
@@ -12,8 +12,6 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_PROG_CC
 AC_PROG_CC_C_O
 AC_PROG_CXX
-AC_PROG_RANLIB
-AC_PROG_LIBTOOL
 
 LT_INIT([shared])
 
@@ -27,7 +25,7 @@ PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES(CHECK, check,,)
 
 AC_CHECK_HEADERS([arpa/inet.h netdb.h stdlib.h sys/socket.h])
-AC_CHECK_FUNCS([memset socket strdup strerror])
+AC_CHECK_FUNCS([memset socket strcasecmp strchr strdup strerror])
 AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 

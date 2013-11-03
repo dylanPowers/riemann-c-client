@@ -37,7 +37,10 @@ void
 riemann_event_free (riemann_event_t *event)
 {
   if (!event)
-    return;
+    {
+      errno = EINVAL;
+      return;
+    }
 
   event__free_unpacked (event, NULL);
 }
@@ -166,6 +169,7 @@ _riemann_event_set_va (riemann_event_t *event,
         field = va_arg (ap, riemann_event_field_t);
     }
   while (field != RIEMANN_EVENT_FIELD_NONE);
+  va_end (ap);
 
   return 0;
 }

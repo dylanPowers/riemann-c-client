@@ -1,5 +1,17 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.0.1 - <2013-08-11 Sun>
+
+This release is a minor enhancement over the initial 1.0.0 release,
+containing only a few improvements to error handling, including a fix
+for a resource leak on event creation and connection failure.
+
+All of _free() functions should now behave similarly, and set errno
+to EINVAL when passed a NULL pointer.
+
+The source also comes with a way to easily extract code coverage
+information too, simply by typing `make coverage`.
+
 * 1.0.0 - <2013-06-28 Fri>
 
 Initial public release.

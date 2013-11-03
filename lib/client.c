@@ -82,7 +82,10 @@ void
 riemann_client_free (riemann_client_t *client)
 {
   if (!client)
-    return;
+    {
+      errno = EINVAL;
+      return;
+    }
 
   errno = -riemann_client_disconnect (client);
 
@@ -117,12 +120,24 @@ riemann_client_connect (riemann_client_t *client,
 
   sock = socket (res->ai_family, res->ai_socktype, 0);
   if (sock == -1)
-    return -errno;
+    {
+      int e = errno;
+
+      freeaddrinfo (res);
+      return -e;
+    }
 
   ((struct sockaddr_in *)res->ai_addr)->sin_port = htons (port);
 
   if (connect (sock, res->ai_addr, res->ai_addrlen) != 0)
-    return -errno;
+    {
+      int e = errno;
+
+      freeaddrinfo (res);
+      close (sock);
+
+      return -e;
+    }
 
   riemann_client_disconnect (client);
 

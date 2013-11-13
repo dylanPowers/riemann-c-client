@@ -3,6 +3,7 @@
 /aclocal.m4
 /autom4te.cache
 /autoscan.log
+/compile
 /config.guess
 /config.h
 /config.h.in
@@ -25,6 +26,7 @@
 /lib/riemann-client.pc
 /src/riemann-client
 /tests/check_libriemann
+/test-driver
 /debian/autoreconf.*
 /debian/build-tree/
 /debian/files

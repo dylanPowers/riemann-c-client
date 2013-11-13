@@ -67,6 +67,7 @@ TESTS_ENVIRONMENT		= CK_FORK=no
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
 tests/check_%: LDADD += ${CHECK_LIBS}
+tests/check_%: LDFLAGS += -no-install
 
 check_PROGRAMS			= ${TESTS}
 

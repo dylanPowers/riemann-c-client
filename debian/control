@@ -3,6 +3,7 @@ Priority: extra
 Maintainer: Gergely Nagy <algernon@madhouse-project.org>
 Build-Depends: debhelper (>= 9~),
                dh-autoreconf, automake (>= 1.11~), autoconf, libtool,
+               pkg-config,
                protobuf-c-compiler, libprotobuf-c0-dev,
                ruby-ronn,
                check

@@ -103,12 +103,12 @@ man1_MANS			 = \
 
 src/riemann-client.1: DATE=$(shell grep '^\*' ${top_srcdir}/NEWS | \
 				   head -n 1 | sed -e "s,^.*<\([^ ]*\).*,\1,")
-src/riemann-client.1: src/riemann-client.ronn
+src/riemann-client.1: src/riemann-client.ronn NEWS
 	$(AM_V_GEN)ronn --manual "riemann-c-client" \
 			--organization "The MadHouse Project" \
 			--roff \
 			--pipe \
-			--date "${DATE}" $^ >$@
+			--date "${DATE}" $< >$@
 
 all: ${man1_MANS}
 endif

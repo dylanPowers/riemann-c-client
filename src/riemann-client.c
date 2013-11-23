@@ -424,6 +424,12 @@ main (int argc, char *argv[])
 {
   const char *command = NULL;
 
+  if (argc == 1)
+    {
+      help_display (argv[0], help_generic);
+      exit (EXIT_SUCCESS);
+    }
+
   if (argc < 2)
     {
       fprintf (stderr, "Not enough arguments!\n");

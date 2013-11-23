@@ -4,7 +4,8 @@ riemann-client(1) -- Riemann communication tool
 ## SYNOPSIS
 
 `riemann-client` `query` <QUERY> [<HOST>] [<PORT>]<br>
-`riemann-client` `send` [<OPTIONS>...] [<HOST>] [<PORT>]
+`riemann-client` `send` [<OPTIONS>...] [<HOST>] [<PORT>]<br>
+`riemann-client` `--help`|`-?`<br>
 
 ## DESCRIPTION
 

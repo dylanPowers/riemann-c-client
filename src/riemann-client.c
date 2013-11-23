@@ -443,6 +443,12 @@ main (int argc, char *argv[])
     return client_send (argc, argv);
   else if (strcasecmp (command, "query") == 0)
     return client_query (argc, argv);
+  else if (strcmp (command, "-?") == 0 ||
+           strcmp (command, "--help") == 0)
+    {
+      help_display (argv[0], help_generic);
+      exit (EXIT_SUCCESS);
+    }
   else
     {
       fprintf (stderr, "Unknown command: '%s'\n", command);

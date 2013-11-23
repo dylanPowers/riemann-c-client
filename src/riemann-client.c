@@ -57,6 +57,7 @@ help_send (void)
           "  -i, --metric-sint64=METRIC        Set the 64bit integer metric of the event.\n"
           "  -d, --metric-d=METRIC             Set the double metric of the event.\n"
           "  -f, --metric-f=METRIC             Set the float metric of the event.\n"
+          "  -L, --ttl=TTL                     Set the TTL of the event.\n"
           "\n"
           "  -T, --tcp                         Send the message over TCP (default).\n"
           "  -U, --udp                         Send the message over UDP.\n"

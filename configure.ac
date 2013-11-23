@@ -1,6 +1,6 @@
 # -*- Autoconf -*-
 
-AC_INIT([riemann-c-client], [1.0.1], [algernon@madhouse-project.org])
+AC_INIT([riemann-c-client], [1.0.2], [algernon@madhouse-project.org])
 AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
@@ -66,6 +66,9 @@ AC_CACHE_CHECK(whether $LD supports symbol version scripts,
         ])
 LDFLAGS=$ac_save_LDFLAGS
 AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
+
+AC_CHECK_PROG([HAVE_RONN], [ronn], [yes])
+AM_CONDITIONAL([HAVE_RONN], [test x$HAVE_RONN = xyes])
 
 AC_CONFIG_FILES([Makefile lib/riemann-client.pc])
 AC_OUTPUT

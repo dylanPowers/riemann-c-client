@@ -1,5 +1,10 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.0.2 - <2013-11-23 Sat>
+
+The library has not been touched at all with this release, but the
+riemann-client tool received some updates and a manual page.
+
 * 1.0.1 - <2013-08-11 Sun>
 
 This release is a minor enhancement over the initial 1.0.0 release,

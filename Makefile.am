@@ -67,6 +67,7 @@ TESTS_ENVIRONMENT		= CK_FORK=no
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
 tests/check_%: LDADD += ${CHECK_LIBS}
+tests/check_%: LDFLAGS += -no-install
 
 check_PROGRAMS			= ${TESTS}
 
@@ -90,7 +91,27 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  tests/tests.h \
 				  ${check_libriemann_srcs} \
 				  m4/.placeholder \
+				  src/riemann-client.ronn \
 				  docs/API.md
+
+# -- Manual pages --
+if HAVE_RONN
+CLEANFILES			+= src/riemann-client.1
+
+man1_MANS			 = \
+	src/riemann-client.1
+
+src/riemann-client.1: DATE=$(shell grep '^\*' ${top_srcdir}/NEWS | \
+				   head -n 1 | sed -e "s,^.*<\([^ ]*\).*,\1,")
+src/riemann-client.1: src/riemann-client.ronn NEWS
+	$(AM_V_GEN)ronn --manual "riemann-c-client" \
+			--organization "The MadHouse Project" \
+			--roff \
+			--pipe \
+			--date "${DATE}" $< >$@
+
+all: ${man1_MANS}
+endif
 
 # -- Custom targets --
 coverage: coverage.info.html

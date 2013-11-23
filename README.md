@@ -48,6 +48,10 @@ and one can use `pkg-config` to compile programs against it:
 
     ${CC} $(pkg-config --cflags --libs riemann-client) demo.c -o demo -Wall
 
+To build the manual page for the `riemann-client` command-line tool,
+one will also need [Ronn](https://github.com/rtomayko/ronn) installed,
+but this is optional.
+
 Demo
 ----
 

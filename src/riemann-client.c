@@ -57,6 +57,7 @@ help_send (void)
           "  -i, --metric-sint64=METRIC        Set the 64bit integer metric of the event.\n"
           "  -d, --metric-d=METRIC             Set the double metric of the event.\n"
           "  -f, --metric-f=METRIC             Set the float metric of the event.\n"
+          "  -L, --ttl=TTL                     Set the TTL of the event.\n"
           "\n"
           "  -T, --tcp                         Send the message over TCP (default).\n"
           "  -U, --udp                         Send the message over UDP.\n"
@@ -424,6 +425,12 @@ main (int argc, char *argv[])
 {
   const char *command = NULL;
 
+  if (argc == 1)
+    {
+      help_display (argv[0], help_generic);
+      exit (EXIT_SUCCESS);
+    }
+
   if (argc < 2)
     {
       fprintf (stderr, "Not enough arguments!\n");
@@ -437,6 +444,12 @@ main (int argc, char *argv[])
     return client_send (argc, argv);
   else if (strcasecmp (command, "query") == 0)
     return client_query (argc, argv);
+  else if (strcmp (command, "-?") == 0 ||
+           strcmp (command, "--help") == 0)
+    {
+      help_display (argv[0], help_generic);
+      exit (EXIT_SUCCESS);
+    }
   else
     {
       fprintf (stderr, "Unknown command: '%s'\n", command);

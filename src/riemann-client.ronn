@@ -1,0 +1,97 @@
+riemann-client(1) -- Riemann communication tool
+===============================================
+
+## SYNOPSIS
+
+`riemann-client` `query` <QUERY> [<HOST>] [<PORT>]<br>
+`riemann-client` `send` [<OPTIONS>...] [<HOST>] [<PORT>]
+
+## DESCRIPTION
+
+`riemann-client` is a very simple tool to faciliate communication with
+a Riemann event stream processing server. It can be used both for
+sending events to one, and to query it too.
+
+## OPTIONS
+
+In both `query` and `send` mode, <HOST> and <PORT> default to
+<localhost> and <5555>, respectively.
+
+### Query mode
+
+In query mode, `riemann-client` takes one mandatory argument: the
+query itself. It must be a single argument, which will be sent to
+Riemann as-is, and the response dumped to the standard output, or, in
+case of an error, the error message will be written to the standard
+error.
+
+See the [Riemann documentation][riemann-docs] for more information
+about the query syntax.
+
+ [riemann-docs]: http://riemann.io/concepts.html
+
+### Submit mode
+
+In submit mode, `riemann-client` accepts the following options:
+
+  * `-s`, `--state` <STATE>:
+    The state the event should describe, free-form text, optional.
+
+  * `-S`, `--service` <SERVICE>:
+    The service the event is coming from.
+
+  * `-h`, `--host` <HOST>:
+    The host the event originates from. Not to be confused with the
+    optional <HOST> parameter of `riemann-client` itself, which sets
+    where to send the events to.
+
+  * `-D`, `--description` <DESCRIPTION>:
+    The description of the event, optional.
+
+  * `-t`, `--tag` <TAG>:
+    This option can be used multiple times to add tags to the event.
+
+  * `-a`, `--attribute` <NAME>=<VALUE>:
+    This option can be used multiple times to add custom attributes to
+    the event.
+
+  * `-i`, `--metric-sint64` <METRIC>:
+    Sets the metric for the event, using integer precision.
+
+  * `-d`, `--metric-d` <METRIC>:
+    Sets the metric of the event, using double precision.
+
+  * `-f`, `--metric-f` <METRIC>:
+    Sets the metric of the event, using floating point precision.
+
+  * `-L`, `--ttl` <TTL>:
+    An optional time-to-live of the event, in seconds (floating point
+    number).
+
+  * `-T`, `--tcp`:
+    Send the event via TCP (the default).
+
+  * `-U`, `--udp`:
+    Send the event via UDP.
+
+## EXAMPLES
+
+### Sending an event
+
+    $ riemann-client send --state ok \
+                          --service "client-test" \
+                          --host "my-host" \
+                          --description "A message from the Manual" \
+                          --tag tag-1 --tag tag-2 \
+                          --attribute x-manual=best-friend \
+                          --metric-sint64 1 \
+                          --ttl 300.5 \
+                          --tcp
+
+### Querying Riemann
+
+    $ riemann-client query 'host = "my-host"'
+
+## AUTHOR
+
+Gergely Nagy <algernon@madhouse-project.org>

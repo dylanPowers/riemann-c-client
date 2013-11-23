@@ -67,5 +67,8 @@ AC_CACHE_CHECK(whether $LD supports symbol version scripts,
 LDFLAGS=$ac_save_LDFLAGS
 AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
 
+AC_CHECK_PROG([HAVE_RONN], [ronn], [yes])
+AM_CONDITIONAL([HAVE_RONN], [test x$HAVE_RONN = xyes])
+
 AC_CONFIG_FILES([Makefile lib/riemann-client.pc])
 AC_OUTPUT

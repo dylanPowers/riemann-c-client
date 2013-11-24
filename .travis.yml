@@ -1,7 +1,8 @@
 language: c
 install:
   - sudo apt-get update -qq
-  - sudo apt-get install -qq check protobuf-c-compiler libprotobuf-c0-dev ruby-ronn
+  - sudo apt-get install -qq check protobuf-c-compiler libprotobuf-c0-dev
+  - gem install ronn
 before_script:
   - autoreconf -i
 script:

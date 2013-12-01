@@ -83,7 +83,7 @@ check_libriemann_srcs		= \
 bin_PROGRAMS			= \
 	src/riemann-client
 
-src_riemann_client_CFLAGS	= $(JSON_C_CFLAGS)
+src_riemann_client_CFLAGS	= $(AM_CFLAGS) $(JSON_C_CFLAGS)
 src_riemann_client_LDADD	= $(JSON_C_LIBS) $(LDADD)
 
 # -- Extra files to distribute --

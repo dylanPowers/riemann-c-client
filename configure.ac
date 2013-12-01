@@ -20,10 +20,6 @@ if test x$HAS_PROTOC_C != x"yes"; then
    AC_MSG_ERROR([You need protoc-c installed and on your path to proceed. You can find it at http://code.google.com/p/protobuf-c/])
 fi
 
-PKG_PROG_PKG_CONFIG
-
-PKG_CHECK_MODULES(CHECK, check,,)
-
 AC_CHECK_HEADERS([arpa/inet.h netdb.h stdlib.h sys/socket.h])
 AC_CHECK_FUNCS([memset socket strcasecmp strchr strdup strerror])
 AC_FUNC_MALLOC
@@ -53,6 +49,11 @@ AC_CHECK_LIB(protobuf-c, protobuf_c_message_pack, [], [
     AC_MSG_ERROR([Can't link against protobuf-c lib, use --with-protobuf-c-dir= for non-standard directories])])
 LDFLAGS=$ac_save_LDFLAGS
 CFLAGS=$ac_save_CFLAGS
+
+# Check for pkg-config-enabled libraries
+PKG_PROG_PKG_CONFIG
+
+PKG_CHECK_MODULES(CHECK, check,,)
 
 # Check for linker version script support.
 ac_save_LDFLAGS=$LDFLAGS

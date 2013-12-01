@@ -34,9 +34,10 @@ Installation
 
 The library follows the usual autotools way of installation (one will
 need libtool 2.2+ to build from git, along with the other
-dependency, the [protobuf-c compiler][protoc]):
+dependencies: the [protobuf-c compiler][protoc] and [json-c][json-c]):
 
  [protoc]: http://protobuf-c.googlecode.com
+ [json-c]: https://github.com/json-c/json-c/wiki
 
     $ git clone git://github.com/algernon/riemann-c-client.git
     $ cd riemann-c-client

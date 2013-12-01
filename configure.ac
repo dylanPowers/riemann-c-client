@@ -54,6 +54,7 @@ CFLAGS=$ac_save_CFLAGS
 PKG_PROG_PKG_CONFIG
 
 PKG_CHECK_MODULES(CHECK, check,,)
+PKG_CHECK_MODULES(JSON_C, json-c >= 0.11)
 
 # Check for linker version script support.
 ac_save_LDFLAGS=$LDFLAGS

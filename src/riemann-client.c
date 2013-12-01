@@ -251,13 +251,13 @@ query_dump_event (size_t n, const riemann_event_t *event)
   time_t t = event->time;
 
   printf ("Event #%zu:\n"
-          "  time  = " PRId64 " - %s"
+          "  time  = %" PRId64 " - %s"
           "  state = %s\n"
           "  service = %s\n"
           "  host = %s\n"
           "  description = %s\n"
           "  ttl = %f\n"
-          "  metric_sint64 = " PRId64 "\n"
+          "  metric_sint64 = %" PRId64 "\n"
           "  metric_d = %f\n"
           "  metric_f = %f\n",
           n,

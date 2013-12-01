@@ -34,10 +34,9 @@ Installation
 
 The library follows the usual autotools way of installation (one will
 need libtool 2.2+ to build from git, along with the other
-dependencies: the [protobuf-c compiler][protoc] and [json-c][json-c]):
+dependency: the [protobuf-c compiler][protoc]):
 
  [protoc]: http://protobuf-c.googlecode.com
- [json-c]: https://github.com/json-c/json-c/wiki
 
     $ git clone git://github.com/algernon/riemann-c-client.git
     $ cd riemann-c-client
@@ -52,6 +51,11 @@ and one can use `pkg-config` to compile programs against it:
 To build the manual page for the `riemann-client` command-line tool,
 one will also need [Ronn](https://github.com/rtomayko/ronn) installed,
 but this is optional.
+
+To enable the JSON output support in `riemann-client`, one also needs
+the [json-c][json-c] library installed, but this feature is optional.
+
+ [json-c]: https://github.com/json-c/json-c/wiki
 
 Demo
 ----

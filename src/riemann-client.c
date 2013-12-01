@@ -16,7 +16,6 @@
  */
 
 #include <riemann/riemann-client.h>
-#include <json.h>
 
 #include <errno.h>
 #include <unistd.h>
@@ -27,6 +26,10 @@
 #include <time.h>
 
 #include "config.h"
+
+#if HAVE_JSON_C
+#include <json.h>
+#endif
 
 static void
 help_display (const char *app_name, void (*contents)(void))
@@ -300,6 +303,7 @@ query_dump_events (size_t n, const riemann_event_t **events)
     query_dump_event (i, events[i]);
 }
 
+#if HAVE_JSON_C
 static json_object *
 query_dump_event_json (size_t n, const riemann_event_t *event)
 {
@@ -366,6 +370,14 @@ query_dump_events_json (size_t n, const riemann_event_t **events)
 
   json_object_put (o);
 }
+#else
+static void
+query_dump_events_json (size_t n, const riemann_event_t **events)
+{
+  fprintf (stderr, "JSON support not available in this build!\n");
+  exit (EXIT_FAILURE);
+}
+#endif
 
 static void
 help_query (void)

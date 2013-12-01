@@ -291,6 +291,15 @@ query_dump_event (size_t n, const riemann_event_t *event)
   printf ("\n");
 }
 
+static void
+query_dump_events (size_t n, const riemann_event_t **events)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    query_dump_event (i, events[i]);
+}
+
 static json_object *
 query_dump_event_json (size_t n, const riemann_event_t *event)
 {
@@ -343,6 +352,22 @@ query_dump_event_json (size_t n, const riemann_event_t *event)
 }
 
 static void
+query_dump_events_json (size_t n, const riemann_event_t **events)
+{
+  int i;
+  json_object *o;
+
+  o = json_object_new_array ();
+
+  for (i = 0; i < n; i++)
+    json_object_array_add (o, query_dump_event_json (i, events[i]));
+
+  printf ("%s\n", json_object_to_json_string_ext (o, JSON_C_TO_STRING_PLAIN));
+
+  json_object_put (o);
+}
+
+static void
 help_query (void)
 {
   printf ("Querying events (query command):\n"
@@ -357,6 +382,8 @@ help_query (void)
           "  -?, --help                        This help screen.\n");
 }
 
+typedef void (*query_func_t) (size_t, const riemann_event_t **);
+
 static int
 client_query (int argc, char *argv[])
 {
@@ -365,7 +392,7 @@ client_query (int argc, char *argv[])
   char *host = "localhost", *query_string = NULL;
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
   size_t i;
-  int json_output = 0;
+  query_func_t dump = query_dump_events;
 
   while (1)
     {
@@ -385,7 +412,7 @@ client_query (int argc, char *argv[])
       switch (c)
         {
         case 'j':
-          json_output = 1;
+          dump = query_dump_events_json;
           break;
 
         case '?':
@@ -458,24 +485,7 @@ client_query (int argc, char *argv[])
       exit_status = EXIT_FAILURE;
     }
 
-  if (json_output)
-    {
-      json_object *o;
-
-      o = json_object_new_array ();
-
-      for (i = 0; i < response->n_events; i++)
-        json_object_array_add (o, query_dump_event_json (i, response->events[i]));
-
-      printf ("%s\n", json_object_to_json_string_ext (o, JSON_C_TO_STRING_PLAIN));
-
-      json_object_put (o);
-    }
-  else
-    {
-      for (i = 0; i < response->n_events; i++)
-        query_dump_event (i, response->events[i]);
-    }
+  dump (response->n_events, (const riemann_event_t **)response->events);
 
   riemann_message_free (response);
 

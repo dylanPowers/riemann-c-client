@@ -3,7 +3,7 @@ riemann-client(1) -- Riemann communication tool
 
 ## SYNOPSIS
 
-`riemann-client` `query` <QUERY> [<HOST>] [<PORT>]<br>
+`riemann-client` `query` [<OPTIONS>...] <QUERY> [<HOST>] [<PORT>]<br>
 `riemann-client` `send` [<OPTIONS>...] [<HOST>] [<PORT>]<br>
 `riemann-client` `--help`|`-?`<br>
 
@@ -30,6 +30,13 @@ See the [Riemann documentation][riemann-docs] for more information
 about the query syntax.
 
  [riemann-docs]: http://riemann.io/concepts.html
+
+Apart from the mandatory argument, the `riemann-client` accepts the
+following options in query mode:
+
+  * `-j`,  `--json`:
+    Print the result in JSON format, instead of the default,
+    human-readable one.
 
 ### Submit mode
 

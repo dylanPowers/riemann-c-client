@@ -16,6 +16,7 @@
  */
 
 #include <riemann/riemann-client.h>
+#include <json.h>
 
 #include <errno.h>
 #include <unistd.h>
@@ -291,6 +292,82 @@ query_dump_event (size_t n, const riemann_event_t *event)
 }
 
 static void
+query_dump_events (size_t n, const riemann_event_t **events)
+{
+  int i;
+
+  for (i = 0; i < n; i++)
+    query_dump_event (i, events[i]);
+}
+
+static json_object *
+query_dump_event_json (size_t n, const riemann_event_t *event)
+{
+  json_object *o;
+  int i;
+
+  o = json_object_new_object ();
+
+  json_object_object_add (o, "time", json_object_new_int64 (event->time));
+  json_object_object_add (o, "state", json_object_new_string (event->state));
+  json_object_object_add (o, "service",
+                          json_object_new_string (event->service));
+  json_object_object_add (o, "host", json_object_new_string (event->host));
+  json_object_object_add (o, "description",
+                          json_object_new_string (event->description));
+  json_object_object_add (o, "ttl", json_object_new_double (event->ttl));
+  json_object_object_add (o, "metric_sint64",
+                          json_object_new_int64 (event->metric_sint64));
+  json_object_object_add (o, "metric_d",
+                          json_object_new_double (event->metric_d));
+  json_object_object_add (o, "metric_f",
+                          json_object_new_double (event->metric_f));
+
+  if (event->tags)
+    {
+      json_object *tags;
+
+      tags = json_object_new_array ();
+
+      for (i = 0; i < event->n_tags; i++)
+        json_object_array_add (tags, json_object_new_string (event->tags[i]));
+
+      json_object_object_add (o, "tags", tags);
+    }
+
+  if (event->attributes)
+    {
+      json_object *attrs;
+
+      attrs = json_object_new_object ();
+
+      for (i = 0; i < event->n_attributes; i++)
+        json_object_object_add (attrs, event->attributes[i]->key,
+                                json_object_new_string (event->attributes[i]->value));
+
+      json_object_object_add (o, "attributes", attrs);
+    }
+
+  return o;
+}
+
+static void
+query_dump_events_json (size_t n, const riemann_event_t **events)
+{
+  int i;
+  json_object *o;
+
+  o = json_object_new_array ();
+
+  for (i = 0; i < n; i++)
+    json_object_array_add (o, query_dump_event_json (i, events[i]));
+
+  printf ("%s\n", json_object_to_json_string_ext (o, JSON_C_TO_STRING_PLAIN));
+
+  json_object_put (o);
+}
+
+static void
 help_query (void)
 {
   printf ("Querying events (query command):\n"
@@ -301,8 +378,11 @@ help_query (void)
           " riemann-client query QUERY [HOST] [PORT]\n"
           "\n"
           " Options:\n"
+          "  -j, --json                        Output the results as a JSON array.\n"
           "  -?, --help                        This help screen.\n");
 }
+
+typedef void (*query_func_t) (size_t, const riemann_event_t **);
 
 static int
 client_query (int argc, char *argv[])
@@ -312,16 +392,18 @@ client_query (int argc, char *argv[])
   char *host = "localhost", *query_string = NULL;
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
   size_t i;
+  query_func_t dump = query_dump_events;
 
   while (1)
     {
       int option_index = 0;
       static struct option long_options[] = {
         {"help", no_argument, NULL, '?'},
+        {"json", no_argument, NULL, 'j'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "?",
+      c = getopt_long (argc, argv, "?j",
                        long_options, &option_index);
 
       if (c == -1)
@@ -329,6 +411,10 @@ client_query (int argc, char *argv[])
 
       switch (c)
         {
+        case 'j':
+          dump = query_dump_events_json;
+          break;
+
         case '?':
           help_display (argv[0], help_query);
           return EXIT_SUCCESS;
@@ -399,8 +485,7 @@ client_query (int argc, char *argv[])
       exit_status = EXIT_FAILURE;
     }
 
-  for (i = 0; i < response->n_events; i++)
-    query_dump_event (i, response->events[i]);
+  dump (response->n_events, (const riemann_event_t **)response->events);
 
   riemann_message_free (response);
 

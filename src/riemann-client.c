@@ -297,7 +297,7 @@ query_dump_event (size_t n, const riemann_event_t *event)
 static void
 query_dump_events (size_t n, const riemann_event_t **events)
 {
-  int i;
+  size_t i;
 
   for (i = 0; i < n; i++)
     query_dump_event (i, events[i]);
@@ -308,7 +308,7 @@ static json_object *
 query_dump_event_json (size_t n, const riemann_event_t *event)
 {
   json_object *o;
-  int i;
+  size_t i;
 
   o = json_object_new_object ();
 
@@ -367,7 +367,7 @@ query_dump_event_json (size_t n, const riemann_event_t *event)
 static void
 query_dump_events_json (size_t n, const riemann_event_t **events)
 {
-  int i;
+  size_t i;
   json_object *o;
 
   o = json_object_new_array ();

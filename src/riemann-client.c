@@ -305,7 +305,7 @@ query_dump_events (size_t n, const riemann_event_t **events)
 
 #if HAVE_JSON_C
 static json_object *
-query_dump_event_json (size_t n, const riemann_event_t *event)
+query_dump_event_json (size_t __attribute__((unused)) n, const riemann_event_t *event)
 {
   json_object *o;
   size_t i;
@@ -412,7 +412,6 @@ client_query (int argc, char *argv[])
   riemann_client_t *client;
   char *host = "localhost", *query_string = NULL;
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
-  size_t i;
   query_func_t dump = query_dump_events;
 
   while (1)

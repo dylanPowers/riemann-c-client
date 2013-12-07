@@ -312,20 +312,29 @@ query_dump_event_json (size_t n, const riemann_event_t *event)
 
   o = json_object_new_object ();
 
-  json_object_object_add (o, "time", json_object_new_int64 (event->time));
-  json_object_object_add (o, "state", json_object_new_string (event->state));
-  json_object_object_add (o, "service",
-                          json_object_new_string (event->service));
-  json_object_object_add (o, "host", json_object_new_string (event->host));
-  json_object_object_add (o, "description",
-                          json_object_new_string (event->description));
-  json_object_object_add (o, "ttl", json_object_new_double (event->ttl));
-  json_object_object_add (o, "metric_sint64",
-                          json_object_new_int64 (event->metric_sint64));
-  json_object_object_add (o, "metric_d",
-                          json_object_new_double (event->metric_d));
-  json_object_object_add (o, "metric_f",
-                          json_object_new_double (event->metric_f));
+  if (event->has_time)
+    json_object_object_add (o, "time", json_object_new_int64 (event->time));
+  if (event->state)
+    json_object_object_add (o, "state", json_object_new_string (event->state));
+  if (event->service)
+    json_object_object_add (o, "service",
+                            json_object_new_string (event->service));
+  if (event->host)
+    json_object_object_add (o, "host", json_object_new_string (event->host));
+  if (event->description)
+    json_object_object_add (o, "description",
+                            json_object_new_string (event->description));
+  if (event->has_ttl)
+    json_object_object_add (o, "ttl", json_object_new_double (event->ttl));
+  if (event->has_metric_sint64)
+    json_object_object_add (o, "metric_sint64",
+                            json_object_new_int64 (event->metric_sint64));
+  if (event->has_metric_d)
+    json_object_object_add (o, "metric_d",
+                            json_object_new_double (event->metric_d));
+  if (event->has_metric_f)
+    json_object_object_add (o, "metric_f",
+                            json_object_new_double (event->metric_f));
 
   if (event->tags)
     {

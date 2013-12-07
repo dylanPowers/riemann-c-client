@@ -1,3 +1,5 @@
+<!-- -*- markdown -*- -->
+
 riemann-client(1) -- Riemann communication tool
 ===============================================
 

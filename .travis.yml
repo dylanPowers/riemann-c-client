@@ -6,7 +6,7 @@ install:
 before_script:
   - autoreconf -i
 script:
-  - ./configure --enable-silent-rules
+  - ./configure --enable-silent-rules CFLAGS="-Wall -Wextra -O3"
   - make
   - make check
 compiler:

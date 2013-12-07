@@ -381,7 +381,8 @@ query_dump_events_json (size_t n, const riemann_event_t **events)
 }
 #else
 static void
-query_dump_events_json (size_t n, const riemann_event_t **events)
+query_dump_events_json (size_t __attribute__((unused)) n,
+                        const riemann_event_t __attribute__((unused)) **events)
 {
   fprintf (stderr, "JSON support not available in this build!\n");
   exit (EXIT_FAILURE);

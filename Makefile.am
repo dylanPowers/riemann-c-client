@@ -36,28 +36,28 @@ lib_libriemann_client_la_HEADERS= \
 	lib/riemann/query.h	  \
 	lib/riemann/riemann-client.h
 lib_libriemann_client_la_SOURCES= \
-	lib/client.c		  \
-	lib/event.c		  \
-	lib/message.c		  \
-	lib/attribute.c		  \
-	lib/query.c		  \
+	lib/riemann/client.c	  \
+	lib/riemann/event.c	  \
+	lib/riemann/message.c	  \
+	lib/riemann/attribute.c	  \
+	lib/riemann/query.c	  \
 	${proto_files}
 
 BUILT_SOURCES			= ${proto_files}
 CLEANFILES			= ${proto_files}
 
-${BUILT_SOURCES}: ${top_srcdir}/lib/proto/riemann.proto
+${BUILT_SOURCES}: ${top_srcdir}/lib/riemann/proto/riemann.proto
 	${AM_V_at} ${mkinstalldirs} ${top_builddir}/lib/riemann/proto
-	${AM_V_GEN} protoc-c $^ -I${top_srcdir}/lib/proto --c_out=${top_builddir}/lib/riemann/proto
+	${AM_V_GEN} protoc-c $^ -I${top_srcdir}/lib/riemann/proto --c_out=${top_builddir}/lib/riemann/proto
 
 if HAVE_VERSIONING
 lib_libriemann_client_la_LDFLAGS += \
-	-Wl,--version-script,$(top_srcdir)/lib/libriemann.ver
-lib_libriemann_client_la_DEPENDENCIES	= ${top_srcdir}/lib/libriemann.ver
+	-Wl,--version-script,$(top_srcdir)/lib/riemann/libriemann.ver
+lib_libriemann_client_la_DEPENDENCIES	= ${top_srcdir}/lib/riemann/libriemann.ver
 endif
 
 pkgconfigdir			= $(libdir)/pkgconfig
-pkgconfig_DATA			= lib/riemann-client.pc
+pkgconfig_DATA			= lib/riemann/riemann-client.pc
 
 # -- Testcases --
 UNIT_TESTS			= tests/check_libriemann
@@ -88,9 +88,9 @@ src_riemann_client_LDADD	= $(JSON_C_LIBS) $(LDADD)
 
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md NEWS GPL LGPL \
-				  lib/proto/riemann.proto \
-				  lib/libriemann.ver \
-				  lib/riemann-client.pc \
+				  lib/riemann/proto/riemann.proto \
+				  lib/riemann/libriemann.ver \
+				  lib/riemann/riemann-client.pc \
 				  tests/tests.h \
 				  ${check_libriemann_srcs} \
 				  m4/.placeholder \

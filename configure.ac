@@ -5,7 +5,7 @@ AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz no-dist-gzip])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
 
-AC_CONFIG_SRCDIR([lib/client.c])
+AC_CONFIG_SRCDIR([lib/riemann/client.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -76,5 +76,5 @@ AM_CONDITIONAL([HAVE_JSON_C], [test x$HAVE_JSON_C != xno])
 
 AC_DEFINE_UNQUOTED([HAVE_JSON_C], $HAVE_JSON_C, [Define when json-c is available])
 
-AC_CONFIG_FILES([Makefile lib/riemann-client.pc])
+AC_CONFIG_FILES([Makefile lib/riemann/riemann-client.pc])
 AC_OUTPUT

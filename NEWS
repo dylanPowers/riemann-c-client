@@ -1,5 +1,14 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.0.3 - <2013-12-08 Sun>
+
+Minor internal changes were made to the library, in the spirit of
+future extensibility. There were no functional changes made, however.
+
+The riemann-client tool did receive a lot more updates again, though,
+and now has support for returning query results in JSON (if the
+json-c library is installed when compiling the package).
+
 * 1.0.2 - <2013-11-23 Sat>
 
 The library has not been touched at all with this release, but the

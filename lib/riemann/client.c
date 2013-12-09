@@ -283,7 +283,7 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
   ssize_t received;
   riemann_message_t *message;
 
-  received = recv (client->sock, &header, sizeof (header), 0);
+  received = recv (client->sock, &header, sizeof (header), MSG_WAITALL);
   if (received != sizeof (header))
     return NULL;
   len = ntohl (header);
@@ -292,7 +292,7 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
   if (!buffer)
     return NULL;
 
-  received = recv (client->sock, buffer, len, 0);
+  received = recv (client->sock, buffer, len, MSG_WAITALL);
   if (received != len)
     {
       int e = errno;

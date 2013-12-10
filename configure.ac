@@ -55,8 +55,8 @@ PKG_PROG_PKG_CONFIG
 
 HAVE_CHECK=yes
 PKG_CHECK_MODULES(CHECK, check,,[HAVE_CHECK="no"])
-HAVE_JSON_C=1
-PKG_CHECK_MODULES(JSON_C, json-c >= 0.11,,[HAVE_JSON_C="0"])
+HAVE_JSON_C=yes
+PKG_CHECK_MODULES(JSON_C, json-c >= 0.11,,[HAVE_JSON_C="no"])
 
 # Check for linker version script support.
 ac_save_LDFLAGS=$LDFLAGS

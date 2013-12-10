@@ -53,7 +53,8 @@ CFLAGS=$ac_save_CFLAGS
 # Check for pkg-config-enabled libraries
 PKG_PROG_PKG_CONFIG
 
-PKG_CHECK_MODULES(CHECK, check,,)
+HAVE_CHECK=yes
+PKG_CHECK_MODULES(CHECK, check,,[HAVE_CHECK="no"])
 HAVE_JSON_C=1
 PKG_CHECK_MODULES(JSON_C, json-c >= 0.11,,[HAVE_JSON_C="0"])
 
@@ -73,6 +74,7 @@ AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
 AC_CHECK_PROG([HAVE_RONN], [ronn], [yes])
 AM_CONDITIONAL([HAVE_RONN], [test x$HAVE_RONN = xyes])
 AM_CONDITIONAL([HAVE_JSON_C], [test x$HAVE_JSON_C != xno])
+AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])
 
 AC_DEFINE_UNQUOTED([HAVE_JSON_C], $HAVE_JSON_C, [Define when json-c is available])
 

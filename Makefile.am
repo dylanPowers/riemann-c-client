@@ -60,6 +60,7 @@ pkgconfigdir			= $(libdir)/pkgconfig
 pkgconfig_DATA			= lib/riemann/riemann-client.pc
 
 # -- Testcases --
+if HAVE_CHECK
 UNIT_TESTS			= tests/check_libriemann
 TESTS				= ${UNIT_TESTS}
 
@@ -70,6 +71,7 @@ tests/check_%: LDADD += ${CHECK_LIBS}
 tests/check_%: LDFLAGS += -no-install
 
 check_PROGRAMS			= ${TESTS}
+endif
 
 check_libriemann_srcs		= \
 	tests/check_library.c	  \
@@ -77,7 +79,8 @@ check_libriemann_srcs		= \
 	tests/check_messages.c	  \
 	tests/check_client.c	  \
 	tests/check_attributes.c  \
-	tests/check_queries.c
+	tests/check_queries.c	  \
+	tests/check_libriemann.c
 
 # -- Binaries --
 bin_PROGRAMS			= \

@@ -61,7 +61,6 @@ riemann_message_t *
 riemann_query (riemann_client_t *client, const char *query)
 {
   int e;
-  riemann_message_t *response;
 
   e = riemann_client_send_message_oneshot
     (client, riemann_message_create_with_query (riemann_query_new (query)));

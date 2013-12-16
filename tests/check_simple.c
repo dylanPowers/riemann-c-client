@@ -25,7 +25,6 @@ START_TEST (test_riemann_simple_query)
   riemann_client_t *client;
   riemann_message_t *response;
 
-
   ck_assert (riemann_query (NULL, "service = \"test-simple\"") == NULL);
   ck_assert_errno (errno, ENOTCONN);
 

@@ -66,7 +66,7 @@ riemann_query (riemann_client_t *client, const char *query)
     (client, riemann_message_create_with_query (riemann_query_new (query)));
   if (e != 0)
     {
-      errno = e;
+      errno = -e;
       return NULL;
     }
 

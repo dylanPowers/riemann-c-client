@@ -94,6 +94,7 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  lib/riemann/proto/riemann.proto \
 				  lib/riemann/libriemann.ver \
 				  lib/riemann/riemann-client.pc \
+				  lib/riemann/_private.h \
 				  tests/tests.h \
 				  ${check_libriemann_srcs} \
 				  m4/.placeholder \

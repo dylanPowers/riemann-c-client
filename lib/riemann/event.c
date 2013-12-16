@@ -53,9 +53,9 @@ _riemann_event_set_string (char **str, char *value)
   *str = strdup (value);
 }
 
-static int
-_riemann_event_set_va (riemann_event_t *event,
-                       riemann_event_field_t first_field, va_list aq)
+int
+riemann_event_set_va (riemann_event_t *event,
+                      riemann_event_field_t first_field, va_list aq)
 {
   va_list ap;
   riemann_event_field_t field;
@@ -183,7 +183,7 @@ riemann_event_set (riemann_event_t *event, ...)
 
   va_start (ap, event);
   first_field = va_arg (ap, riemann_event_field_t);
-  r = _riemann_event_set_va (event, first_field, ap);
+  r = riemann_event_set_va (event, first_field, ap);
   va_end (ap);
   return r;
 }
@@ -229,7 +229,7 @@ riemann_event_create (riemann_event_field_t field, ...)
     return NULL;
 
   va_start (ap, field);
-  if (_riemann_event_set_va (event, field, ap) != 0)
+  if (riemann_event_set_va (event, field, ap) != 0)
     {
       int e = errno;
 

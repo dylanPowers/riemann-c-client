@@ -12,6 +12,7 @@
 #include "check_events.c"
 #include "check_messages.c"
 #include "check_client.c"
+#include "check_simple.c"
 
 int
 main (void)
@@ -29,6 +30,7 @@ main (void)
   suite_add_tcase (suite, test_riemann_events ());
   suite_add_tcase (suite, test_riemann_messages ());
   suite_add_tcase (suite, test_riemann_client ());
+  suite_add_tcase (suite, test_riemann_simple ());
 
   runner = srunner_create (suite);
 

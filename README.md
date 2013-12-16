@@ -68,6 +68,7 @@ included below. A few more useful programs are included in the
 
 ```c
 #include <riemann/riemann-client.h>
+#include <riemann/simple.h>
 
 #include <errno.h>
 #include <stdio.h>
@@ -79,32 +80,27 @@ int
 main (void)
 {
   riemann_client_t *client;
-  riemann_message_t *message;
   int e;
-
-  message = riemann_message_create_with_events
-   (riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
-                          RIEMANN_EVENT_FIELD_SERVICE, "demo-client",
-                          RIEMANN_EVENT_FIELD_STATE, "ok",
-                          RIEMANN_EVENT_FIELD_TAGS, "demo-client", "riemann-c-client", NULL,
-                          RIEMANN_EVENT_FIELD_NONE),
-    NULL);
 
   client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
   if (!client)
     {
-      fprintf (stderr,  "Error while connecting to Riemann: %s\n",
+      fprintf (stderr, "Error while connecting to Riemann: %s\n",
                strerror (errno));
       exit (EXIT_FAILURE);
     }
 
-  if ((e = riemann_client_send_message (client, message)) != 0)
+  if ((e = riemann_send (client,
+                         RIEMANN_EVENT_FIELD_HOST, "localhost",
+                         RIEMANN_EVENT_FIELD_SERVICE, "demo-client",
+                         RIEMANN_EVENT_FIELD_STATE, "ok",
+                         RIEMANN_EVENT_FIELD_TAGS, "demo-client", "riemann-c-client", NULL,
+                         RIEMANN_EVENT_FIELD_NONE)) != 0)
     {
-      fprintf (stderr,  "Error while sending message: %s\n", strerror (-e));
+      fprintf (stderr, "Error while sending message: %s\n", strerror (-e));
       exit (EXIT_FAILURE);
     }
 
-  riemann_message_free (message);
   riemann_client_free (client);
 
   return EXIT_SUCCESS;

@@ -34,6 +34,7 @@ lib_libriemann_client_la_HEADERS= \
 	lib/riemann/message.h	  \
 	lib/riemann/attribute.h	  \
 	lib/riemann/query.h	  \
+	lib/riemann/simple.h	  \
 	lib/riemann/riemann-client.h
 lib_libriemann_client_la_SOURCES= \
 	lib/riemann/client.c	  \
@@ -41,6 +42,7 @@ lib_libriemann_client_la_SOURCES= \
 	lib/riemann/message.c	  \
 	lib/riemann/attribute.c	  \
 	lib/riemann/query.c	  \
+	lib/riemann/simple.c	  \
 	${proto_files}
 
 BUILT_SOURCES			= ${proto_files}
@@ -80,6 +82,7 @@ check_libriemann_srcs		= \
 	tests/check_client.c	  \
 	tests/check_attributes.c  \
 	tests/check_queries.c	  \
+	tests/check_simple.c	  \
 	tests/check_libriemann.c
 
 # -- Binaries --

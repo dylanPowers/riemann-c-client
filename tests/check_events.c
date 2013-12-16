@@ -154,6 +154,10 @@ START_TEST (test_riemann_event_create)
   ck_assert_str_eq (event->host, "localhost");
   ck_assert_str_eq (event->service, "test");
   riemann_event_free (event);
+
+  event = riemann_event_create (255);
+  ck_assert (event == NULL);
+  ck_assert_errno (-errno, EINVAL);
 }
 END_TEST
 

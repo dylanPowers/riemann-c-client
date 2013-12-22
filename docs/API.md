@@ -302,7 +302,7 @@ object is not needed, these APIs simplify the task considerably.
 So, without much further ado:
 
 ```c
-#include <riemann-client/simple.h>
+#include <riemann/simple.h>
 
 int riemann_send (riemann_client_t *client, riemann_event_field_t field, ...);
 riemann_message_t *riemann_query (riemann_client_t *client, const char *query);

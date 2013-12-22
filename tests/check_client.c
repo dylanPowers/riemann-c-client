@@ -79,6 +79,9 @@ START_TEST (test_riemann_client_connect)
 
   if (network_tests_enabled ())
     {
+      ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
+                                               "localhost", 5557), ECONNREFUSED);
+
       ck_assert (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
                                          "localhost", 5555) == 0);
       ck_assert_errno (riemann_client_disconnect (client), 0);

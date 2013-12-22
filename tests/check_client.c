@@ -64,6 +64,10 @@ START_TEST (test_riemann_client_create)
 {
   riemann_client_t *client;
 
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5557);
+  ck_assert (client == NULL);
+  ck_assert_errno (-errno, ECONNREFUSED);
+
   client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
   ck_assert (client != NULL);
   ck_assert_errno (riemann_client_disconnect (client), 0);

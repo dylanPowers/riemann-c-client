@@ -2,10 +2,11 @@ language: c
 install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq check protobuf-c-compiler libprotobuf-c0-dev
+  - gem install ronn
 before_script:
   - autoreconf -i
 script:
-  - ./configure --enable-silent-rules
+  - ./configure --enable-silent-rules CFLAGS="-Wall -Wextra -O3"
   - make
   - make check
 compiler:

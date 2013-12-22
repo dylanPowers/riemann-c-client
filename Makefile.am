@@ -11,9 +11,9 @@ protodir			= ${includedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 0
+LRC_CURRENT			= 1
 LRC_REVISION			= 0
-LRC_AGE				= 0
+LRC_AGE				= 1
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 
@@ -34,32 +34,35 @@ lib_libriemann_client_la_HEADERS= \
 	lib/riemann/message.h	  \
 	lib/riemann/attribute.h	  \
 	lib/riemann/query.h	  \
+	lib/riemann/simple.h	  \
 	lib/riemann/riemann-client.h
 lib_libriemann_client_la_SOURCES= \
-	lib/client.c		  \
-	lib/event.c		  \
-	lib/message.c		  \
-	lib/attribute.c		  \
-	lib/query.c		  \
+	lib/riemann/client.c	  \
+	lib/riemann/event.c	  \
+	lib/riemann/message.c	  \
+	lib/riemann/attribute.c	  \
+	lib/riemann/query.c	  \
+	lib/riemann/simple.c	  \
 	${proto_files}
 
 BUILT_SOURCES			= ${proto_files}
 CLEANFILES			= ${proto_files}
 
-${BUILT_SOURCES}: ${top_srcdir}/lib/proto/riemann.proto
+${BUILT_SOURCES}: ${top_srcdir}/lib/riemann/proto/riemann.proto
 	${AM_V_at} ${mkinstalldirs} ${top_builddir}/lib/riemann/proto
-	${AM_V_GEN} protoc-c $^ -I${top_srcdir}/lib/proto --c_out=${top_builddir}/lib/riemann/proto
+	${AM_V_GEN} protoc-c $^ -I${top_srcdir}/lib/riemann/proto --c_out=${top_builddir}/lib/riemann/proto
 
 if HAVE_VERSIONING
 lib_libriemann_client_la_LDFLAGS += \
-	-Wl,--version-script,$(top_srcdir)/lib/libriemann.ver
-lib_libriemann_client_la_DEPENDENCIES	= ${top_srcdir}/lib/libriemann.ver
+	-Wl,--version-script,$(top_srcdir)/lib/riemann/libriemann.ver
+lib_libriemann_client_la_DEPENDENCIES	= ${top_srcdir}/lib/riemann/libriemann.ver
 endif
 
 pkgconfigdir			= $(libdir)/pkgconfig
-pkgconfig_DATA			= lib/riemann-client.pc
+pkgconfig_DATA			= lib/riemann/riemann-client.pc
 
 # -- Testcases --
+if HAVE_CHECK
 UNIT_TESTS			= tests/check_libriemann
 TESTS				= ${UNIT_TESTS}
 
@@ -70,6 +73,7 @@ tests/check_%: LDADD += ${CHECK_LIBS}
 tests/check_%: LDFLAGS += -no-install
 
 check_PROGRAMS			= ${TESTS}
+endif
 
 check_libriemann_srcs		= \
 	tests/check_library.c	  \
@@ -77,17 +81,23 @@ check_libriemann_srcs		= \
 	tests/check_messages.c	  \
 	tests/check_client.c	  \
 	tests/check_attributes.c  \
-	tests/check_queries.c
+	tests/check_queries.c	  \
+	tests/check_simple.c	  \
+	tests/check_libriemann.c
 
 # -- Binaries --
 bin_PROGRAMS			= \
 	src/riemann-client
 
+src_riemann_client_CFLAGS	= $(AM_CFLAGS) $(JSON_C_CFLAGS)
+src_riemann_client_LDADD	= $(JSON_C_LIBS) $(LDADD)
+
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md NEWS GPL LGPL \
-				  lib/proto/riemann.proto \
-				  lib/libriemann.ver \
-				  lib/riemann-client.pc \
+				  lib/riemann/proto/riemann.proto \
+				  lib/riemann/libriemann.ver \
+				  lib/riemann/riemann-client.pc \
+				  lib/riemann/_private.h \
 				  tests/tests.h \
 				  ${check_libriemann_srcs} \
 				  m4/.placeholder \
@@ -104,6 +114,7 @@ man1_MANS			 = \
 src/riemann-client.1: DATE=$(shell grep '^\*' ${top_srcdir}/NEWS | \
 				   head -n 1 | sed -e "s,^.*<\([^ ]*\).*,\1,")
 src/riemann-client.1: src/riemann-client.ronn NEWS
+	${AM_V_at} ${mkinstalldirs} ${top_builddir}/src
 	$(AM_V_GEN)ronn --manual "riemann-c-client" \
 			--organization "The MadHouse Project" \
 			--roff \

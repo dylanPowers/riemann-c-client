@@ -1,11 +1,11 @@
 # -*- Autoconf -*-
 
-AC_INIT([riemann-c-client], [1.0.2], [algernon@madhouse-project.org])
-AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz])
+AC_INIT([riemann-c-client], [1.1.0], [algernon@madhouse-project.org])
+AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz no-dist-gzip])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
 
-AC_CONFIG_SRCDIR([lib/client.c])
+AC_CONFIG_SRCDIR([lib/riemann/client.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -19,10 +19,6 @@ AC_CHECK_PROG([HAS_PROTOC_C], [protoc-c], [yes])
 if test x$HAS_PROTOC_C != x"yes"; then
    AC_MSG_ERROR([You need protoc-c installed and on your path to proceed. You can find it at http://code.google.com/p/protobuf-c/])
 fi
-
-PKG_PROG_PKG_CONFIG
-
-PKG_CHECK_MODULES(CHECK, check,,)
 
 AC_CHECK_HEADERS([arpa/inet.h netdb.h stdlib.h sys/socket.h])
 AC_CHECK_FUNCS([memset socket strcasecmp strchr strdup strerror])
@@ -54,6 +50,14 @@ AC_CHECK_LIB(protobuf-c, protobuf_c_message_pack, [], [
 LDFLAGS=$ac_save_LDFLAGS
 CFLAGS=$ac_save_CFLAGS
 
+# Check for pkg-config-enabled libraries
+PKG_PROG_PKG_CONFIG
+
+HAVE_CHECK=yes
+PKG_CHECK_MODULES(CHECK, check,,[HAVE_CHECK="no"])
+HAVE_JSON_C=yes
+PKG_CHECK_MODULES(JSON_C, json-c >= 0.11,,[HAVE_JSON_C="no"])
+
 # Check for linker version script support.
 ac_save_LDFLAGS=$LDFLAGS
 AC_CACHE_CHECK(whether $LD supports symbol version scripts,
@@ -69,6 +73,10 @@ AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
 
 AC_CHECK_PROG([HAVE_RONN], [ronn], [yes])
 AM_CONDITIONAL([HAVE_RONN], [test x$HAVE_RONN = xyes])
+AM_CONDITIONAL([HAVE_JSON_C], [test x$HAVE_JSON_C != xno])
+AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])
 
-AC_CONFIG_FILES([Makefile lib/riemann-client.pc])
+AC_DEFINE_UNQUOTED([HAVE_JSON_C], $HAVE_JSON_C, [Define when json-c is available])
+
+AC_CONFIG_FILES([Makefile lib/riemann/riemann-client.pc])
 AC_OUTPUT

@@ -1,48 +1,5 @@
 #include <riemann/client.h>
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-static int
-network_tests_enabled (void)
-{
-  struct addrinfo hints;
-  struct addrinfo *res, *rp;
-  int fd = -1, s;
-
-  memset (&hints, 0, sizeof (struct addrinfo));
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-
-  s = getaddrinfo ("localhost", "5555", &hints, &res);
-  if (s != 0)
-    return 0;
-
-  for (rp = res; rp != NULL; rp = rp->ai_next)
-    {
-      fd = socket (rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-      if (fd == -1)
-        continue;
-
-      if (connect (fd, rp->ai_addr, rp->ai_addrlen) != -1)
-        break;
-
-      close (fd);
-    }
-  freeaddrinfo (res);
-
-  if (rp == NULL)
-    return 0;
-
-  if (fd != -1)
-    close (fd);
-
-  return 1;
-}
-
 START_TEST (test_riemann_client_new)
 {
   riemann_client_t *client;
@@ -79,6 +36,9 @@ START_TEST (test_riemann_client_connect)
 
   if (network_tests_enabled ())
     {
+      ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
+                                               "localhost", 5557), ECONNREFUSED);
+
       ck_assert (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
                                          "localhost", 5555) == 0);
       ck_assert_errno (riemann_client_disconnect (client), 0);
@@ -103,6 +63,10 @@ END_TEST
 START_TEST (test_riemann_client_create)
 {
   riemann_client_t *client;
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5557);
+  ck_assert (client == NULL);
+  ck_assert_errno (-errno, ECONNREFUSED);
 
   client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
   ck_assert (client != NULL);

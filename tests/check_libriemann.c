@@ -1,10 +1,51 @@
 #include <check.h>
 #include <errno.h>
+#include <netdb.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 #include "config.h"
 #include "tests.h"
+
+static int
+network_tests_enabled (void)
+{
+  struct addrinfo hints;
+  struct addrinfo *res, *rp;
+  int fd = -1, s;
+
+  memset (&hints, 0, sizeof (struct addrinfo));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+
+  s = getaddrinfo ("localhost", "5555", &hints, &res);
+  if (s != 0)
+    return 0;
+
+  for (rp = res; rp != NULL; rp = rp->ai_next)
+    {
+      fd = socket (rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+      if (fd == -1)
+        continue;
+
+      if (connect (fd, rp->ai_addr, rp->ai_addrlen) != -1)
+        break;
+
+      close (fd);
+    }
+  freeaddrinfo (res);
+
+  if (rp == NULL)
+    return 0;
+
+  if (fd != -1)
+    close (fd);
+
+  return 1;
+}
 
 #include "check_library.c"
 #include "check_attributes.c"
@@ -12,6 +53,7 @@
 #include "check_events.c"
 #include "check_messages.c"
 #include "check_client.c"
+#include "check_simple.c"
 
 int
 main (void)
@@ -29,6 +71,7 @@ main (void)
   suite_add_tcase (suite, test_riemann_events ());
   suite_add_tcase (suite, test_riemann_messages ());
   suite_add_tcase (suite, test_riemann_client ());
+  suite_add_tcase (suite, test_riemann_simple ());
 
   runner = srunner_create (suite);
 

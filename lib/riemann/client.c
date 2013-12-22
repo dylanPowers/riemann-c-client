@@ -39,13 +39,25 @@ riemann_client_version_string (void)
   return PACKAGE_STRING;
 }
 
+typedef int (*riemann_client_send_message_t) (riemann_client_t *client,
+                                              riemann_message_t *message);
+typedef riemann_message_t *(*riemann_client_recv_message_t) (riemann_client_t *client);
+
 struct _riemann_client_t
 {
-  riemann_client_type_t type;
   int sock;
-
   struct addrinfo *srv_addr;
+
+  riemann_client_send_message_t send;
+  riemann_client_recv_message_t recv;
 };
+
+static int _riemann_client_send_message_tcp (riemann_client_t *client,
+                                             riemann_message_t *message);
+static int _riemann_client_send_message_udp (riemann_client_t *client,
+                                             riemann_message_t *message);
+static riemann_message_t *_riemann_client_recv_message_tcp (riemann_client_t *client);
+static riemann_message_t *_riemann_client_recv_message_udp (riemann_client_t *client);
 
 riemann_client_t *
 riemann_client_new (void)
@@ -54,9 +66,10 @@ riemann_client_new (void)
 
   client = malloc (sizeof (riemann_client_t));
 
-  client->type = RIEMANN_CLIENT_NONE;
   client->sock = -1;
   client->srv_addr = NULL;
+  client->send = NULL;
+  client->recv = NULL;
 
   return client;
 }
@@ -109,9 +122,19 @@ riemann_client_connect (riemann_client_t *client,
   hints.ai_family = AF_UNSPEC;
 
   if (type == RIEMANN_CLIENT_TCP)
-    hints.ai_socktype = SOCK_STREAM;
+    {
+      client->send = _riemann_client_send_message_tcp;
+      client->recv = _riemann_client_recv_message_tcp;
+
+      hints.ai_socktype = SOCK_STREAM;
+    }
   else if (type == RIEMANN_CLIENT_UDP)
-    hints.ai_socktype = SOCK_DGRAM;
+    {
+      client->send = _riemann_client_send_message_udp;
+      client->recv = _riemann_client_recv_message_udp;
+
+      hints.ai_socktype = SOCK_DGRAM;
+    }
   else
     return -EINVAL;
 
@@ -141,7 +164,6 @@ riemann_client_connect (riemann_client_t *client,
 
   riemann_client_disconnect (client);
 
-  client->type = type;
   client->sock = sock;
   client->srv_addr = res;
 
@@ -235,17 +257,10 @@ riemann_client_send_message (riemann_client_t *client,
   if (!message)
     return -EINVAL;
 
-  switch (client->type)
-    {
-    case RIEMANN_CLIENT_TCP:
-      return _riemann_client_send_message_tcp (client, message);
-    case RIEMANN_CLIENT_UDP:
-      return _riemann_client_send_message_udp (client, message);
-    default:
-      return -ENOTCONN;
-    }
+  if (!client->send)
+    return -ENOTCONN;
 
-  return 0;
+  return client->send (client, message);
 }
 
 int
@@ -268,7 +283,7 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
   ssize_t received;
   riemann_message_t *message;
 
-  received = recv (client->sock, &header, sizeof (header), 0);
+  received = recv (client->sock, &header, sizeof (header), MSG_WAITALL);
   if (received != sizeof (header))
     return NULL;
   len = ntohl (header);
@@ -277,7 +292,7 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
   if (!buffer)
     return NULL;
 
-  received = recv (client->sock, buffer, len, 0);
+  received = recv (client->sock, buffer, len, MSG_WAITALL);
   if (received != len)
     {
       int e = errno;
@@ -301,26 +316,21 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
   return message;
 }
 
+static riemann_message_t *
+_riemann_client_recv_message_udp (riemann_client_t __attribute__((unused)) *client)
+{
+  errno = ENOTSUP;
+  return NULL;
+}
+
 riemann_message_t *
 riemann_client_recv_message (riemann_client_t *client)
 {
-  if (!client)
+  if (!client || !client->recv)
     {
       errno = ENOTCONN;
       return NULL;
     }
 
-  switch (client->type)
-    {
-    case RIEMANN_CLIENT_TCP:
-      return _riemann_client_recv_message_tcp (client);
-    case RIEMANN_CLIENT_UDP:
-      errno = ENOTSUP;
-      return NULL;
-    default:
-      errno = ENOTCONN;
-      return NULL;
-    }
-
-  return 0;
+  return client->recv (client);
 }

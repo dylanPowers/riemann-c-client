@@ -44,3 +44,9 @@ global:
 local:
         *;
 };
+
+RIEMANN_C_1.1 {
+global:
+        riemann_send;
+        riemann_query;
+} RIEMANN_C_1.0;

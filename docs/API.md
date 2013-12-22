@@ -13,7 +13,9 @@ things we can send [Riemann][riemann]: [events](#api-event) and
 using the [client](#api-client) structure. The events can have
 [tags](#api-tags) and [attributes](#api-attributes), along with a few
 other settings, and both events and queries are encapsulated in
-[messages](#api-message).
+[messages](#api-message). There's also a [simplified API](#api-simple)
+for when the whole event or query can be constructed in a single step,
+but more about that later.
 
  [riemann]: http://riemann.io/
 
@@ -287,6 +289,41 @@ a string. And for convenience, there is also
 `riemann_attribute_set()`, which can set both key and value at the
 same time. All three of these free the former values of the attribute,
 before setting the new one.
+
+###### <a name="api-simple">Simplified API</a>
+
+With all the groundwork laid out, there's one more thing of note: the
+simplified API. With these functions, one can send an event or a query
+in one single step, but it has some limitations: one has much less
+control over the event, and can't build it up programmatically. But if
+the event can be constructed in a single step, and reusing the event
+object is not needed, these APIs simplify the task considerably.
+
+So, without much further ado:
+
+```c
+#include <riemann/simple.h>
+
+int riemann_send (riemann_client_t *client, riemann_event_field_t field, ...);
+riemann_message_t *riemann_query (riemann_client_t *client, const char *query);
+```
+
+One needs to include the `riemann/simple.h` header for these
+functions, they're not available when only `riemann/riemann-client.h`
+is included.
+
+The first function takes a `riemann_client_t`, and a list of field -
+value pairs, much like [`riemann_event_set()`](#api-event-set). What
+it does, is it constructs the event and the message internally, fires
+it off, and frees them up. It returns zero on success, a negative
+errno value otherwise.
+
+The second function is similar, but instead of sending an event to the
+specified `riemann_client_t` client, it sends a [query](#api-query),
+and returns the resulting `riemann_message_t` object. If there is a
+failure, it either returns NULL (if the query couldn't be constructed
+or sent at all), or a response with it's `ok` field set to zero if the
+query failed on the Riemann side.
 
 ##### Concluding thoughts
 

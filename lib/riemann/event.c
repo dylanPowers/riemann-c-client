@@ -225,8 +225,6 @@ riemann_event_create (riemann_event_field_t field, ...)
   va_list ap;
 
   event = riemann_event_new ();
-  if (!event)
-    return NULL;
 
   va_start (ap, field);
   if (riemann_event_set_va (event, field, ap) != 0)

@@ -1,8 +1,9 @@
 riemann-c-client (1.1.0-1) unstable; urgency=medium
 
   * New upstream release.
+  * Symbol file updated with new symbols.
 
- -- Gergely Nagy <algernon@madhouse-project.org>  Sun, 22 Dec 2013 11:38:52 +0100
+ -- Gergely Nagy <algernon@madhouse-project.org>  Sun, 22 Dec 2013 11:50:26 +0100
 
 riemann-c-client (1.0.2-1) unstable; urgency=low
 

@@ -11,9 +11,9 @@ protodir			= ${includedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 0
-LRC_REVISION			= 1
-LRC_AGE				= 0
+LRC_CURRENT			= 1
+LRC_REVISION			= 0
+LRC_AGE				= 1
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 

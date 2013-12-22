@@ -1,5 +1,16 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.1.0 - <2013-12-22 Sun>
+
+The major feature of this release is the simplified API available in
+the <riemann/simple.h> header. The new API is for use when the whole
+message can be constructed in a single step, and losing some of the
+flexibility the library provides is not a problem.
+
+Apart from that, a few bugs were also fixed in this release, such as
+receiving events will now always wait for the full event. The test
+suite was also made completely optional.
+
 * 1.0.3 - <2013-12-08 Sun>
 
 Minor internal changes were made to the library, in the spirit of

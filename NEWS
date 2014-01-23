@@ -1,5 +1,11 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.1.1 - <2014-01-23 Thu>
+
+While the riemann-client tool had the code to return query results in
+JSON format since 1.0.3, it was not correctly wired into the build
+system, and was always disabled. This release corrects that issue.
+
 * 1.1.0 - <2013-12-22 Sun>
 
 The major feature of this release is the simplified API available in

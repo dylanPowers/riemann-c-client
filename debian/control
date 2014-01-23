@@ -5,6 +5,7 @@ Build-Depends: debhelper (>= 9~),
                dh-autoreconf, automake (>= 1.11~), autoconf, libtool,
                pkg-config,
                protobuf-c-compiler, libprotobuf-c0-dev,
+               libjson-c-dev,
                ruby-ronn,
                check
 Standards-Version: 3.9.5

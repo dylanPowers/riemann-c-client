@@ -1,3 +1,10 @@
+riemann-c-client (1.1.0-2) unstable; urgency=medium
+
+  * Added libjson-c-dev to Build-Depends, so that the riemann-c-client
+    package builds with JSON support.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Thu, 23 Jan 2014 16:51:01 +0100
+
 riemann-c-client (1.1.0-1) unstable; urgency=medium
 
   * New upstream release.

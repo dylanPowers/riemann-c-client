@@ -260,15 +260,18 @@ query_dump_event (size_t n, const riemann_event_t *event)
           "  service = %s\n"
           "  host = %s\n"
           "  description = %s\n"
-          "  ttl = %f\n"
-          "  metric_sint64 = %" PRId64 "\n"
-          "  metric_d = %f\n"
-          "  metric_f = %f\n",
+          "  ttl = %f\n",
           n,
           event->time, ctime (&t),
           event->state, event->service, event->host,
-          event->description, event->ttl,
-          event->metric_sint64, event->metric_d, event->metric_f);
+          event->description, event->ttl);
+
+  if (event->has_metric_sint64)
+    printf ("  metric_sint64 = %" PRId64 "\n", event->metric_sint64);
+  if (event->has_metric_d)
+    printf ("  metric_d = %f\n", event->metric_d);
+  if (event->has_metric_f)
+    printf ("  metric_f = %f\n", event->metric_f);
 
   if (event->tags)
     {

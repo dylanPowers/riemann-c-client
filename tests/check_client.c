@@ -54,6 +54,21 @@ START_TEST (test_riemann_client_connect)
 }
 END_TEST
 
+START_TEST (test_riemann_client_get_fd)
+{
+  ck_assert_errno (riemann_client_get_fd (NULL), EINVAL);
+
+  if (network_tests_enabled ())
+    {
+      riemann_client_t *client;
+
+      client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
+      ck_assert_int_gt (riemann_client_get_fd (client), 0);
+      riemann_client_free (client);
+    }
+}
+END_TEST
+
 START_TEST (test_riemann_client_disconnect)
 {
   ck_assert_errno (riemann_client_disconnect (NULL), ENOTCONN);
@@ -191,6 +206,7 @@ test_riemann_client (void)
   tcase_add_test (test_client, test_riemann_client_free);
   tcase_add_test (test_client, test_riemann_client_connect);
   tcase_add_test (test_client, test_riemann_client_disconnect);
+  tcase_add_test (test_client, test_riemann_client_get_fd);
 
   if (network_tests_enabled ())
     {

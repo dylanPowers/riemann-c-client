@@ -1,5 +1,5 @@
 /* riemann/client.c -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -103,6 +103,15 @@ riemann_client_free (riemann_client_t *client)
   errno = -riemann_client_disconnect (client);
 
   free (client);
+}
+
+int
+riemann_client_get_fd (riemann_client_t *client)
+{
+  if (!client)
+    return -EINVAL;
+
+  return client->sock;
 }
 
 int

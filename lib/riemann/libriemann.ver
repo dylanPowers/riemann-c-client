@@ -50,3 +50,8 @@ global:
         riemann_send;
         riemann_query;
 } RIEMANN_C_1.0;
+
+RIEMANN_C_1.2 {
+global:
+        riemann_client_get_fd;
+} RIEMANN_C_1.1;

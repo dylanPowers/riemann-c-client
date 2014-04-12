@@ -12,5 +12,8 @@ override_dh_installdocs:
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
 
+override_dh_auto_test:
+	dh_auto_test -- VERBOSE=1
+
 %:
 	dh $@ --parallel --with autoreconf

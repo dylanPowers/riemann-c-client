@@ -8,6 +8,7 @@ riemann-client(1) -- Riemann communication tool
 `riemann-client` `query` [<OPTIONS>...] <QUERY> [<HOST>] [<PORT>]<br>
 `riemann-client` `send` [<OPTIONS>...] [<HOST>] [<PORT>]<br>
 `riemann-client` `--help`|`-?`<br>
+`riemann-client` `--version`<br>
 
 ## DESCRIPTION
 

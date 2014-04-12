@@ -32,11 +32,17 @@
 #endif
 
 static void
+version_display (void)
+{
+  printf ("%s\n", riemann_client_version_string ());
+}
+
+static void
 help_display (const char *app_name, void (*contents)(void))
 {
-  printf ("%s\n"
-          "Usage: %s COMMAND [options...] [HOST] [PORT]\n"
-          "\n", riemann_client_version_string (), app_name);
+  version_display ();
+  printf ("Usage: %s COMMAND [options...] [HOST] [PORT]\n"
+          "\n", app_name);
   contents();
   printf ("\n"
           "The HOST and PORT arguments are optional, and they default to\n"
@@ -557,6 +563,11 @@ main (int argc, char *argv[])
            strcmp (command, "--help") == 0)
     {
       help_display (argv[0], help_generic);
+      exit (EXIT_SUCCESS);
+    }
+  else if (strcmp (command, "--version") == 0)
+    {
+      version_display ();
       exit (EXIT_SUCCESS);
     }
   else

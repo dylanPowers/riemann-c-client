@@ -78,6 +78,11 @@ In case we'd want to disconnect from the server, we can use
 client object. Personally, I find it unlikely that one would ever want
 to do this, but hey!
 
+For cases where one may want to change or set socket options on the
+connection the library uses, there is `riemann_client_get_fd()`, which
+has a single argument: the client object; and returns the underlying
+file descriptor (or a negative errno value if an error occurs).
+
 There are three other functions of note that need a client:
 
 <a name="api-client-send-msg"></a>

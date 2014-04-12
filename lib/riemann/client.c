@@ -25,7 +25,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include "config.h"
+#include "riemann/platform.h"
 
 const char *
 riemann_client_version (void)

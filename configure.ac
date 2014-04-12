@@ -6,7 +6,7 @@ AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz no-dist-gzip])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
 
 AC_CONFIG_SRCDIR([lib/riemann/client.c])
-AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_HEADERS([lib/riemann/platform.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC

@@ -1,5 +1,5 @@
 /* riemann/riemann-client.c -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -25,7 +25,7 @@
 #include <getopt.h>
 #include <time.h>
 
-#include "config.h"
+#include "riemann/platform.h"
 
 #if HAVE_JSON_C
 #include <json.h>

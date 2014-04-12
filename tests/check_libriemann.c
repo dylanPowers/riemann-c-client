@@ -7,7 +7,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "config.h"
+#include "riemann/platform.h"
 #include "tests.h"
 
 static int

@@ -109,10 +109,11 @@ client_send (int argc, char *argv[])
         {"udp", no_argument, NULL, 'U'},
         {"ttl", required_argument, NULL, 'L'},
         {"help", no_argument, NULL, '?'},
+        {"version", no_argument, NULL, 'V'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?UTL:",
+      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?VUTL:",
                        long_options, &option_index);
 
       if (c == -1)
@@ -185,6 +186,10 @@ client_send (int argc, char *argv[])
 
         case '?':
           help_display (argv[0], help_send);
+          return EXIT_SUCCESS;
+
+        case 'V':
+          version_display ();
           return EXIT_SUCCESS;
 
         default:
@@ -429,11 +434,12 @@ client_query (int argc, char *argv[])
       int option_index = 0;
       static struct option long_options[] = {
         {"help", no_argument, NULL, '?'},
+        {"version", no_argument, NULL, 'V'},
         {"json", no_argument, NULL, 'j'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "?j",
+      c = getopt_long (argc, argv, "?Vj",
                        long_options, &option_index);
 
       if (c == -1)
@@ -447,6 +453,10 @@ client_query (int argc, char *argv[])
 
         case '?':
           help_display (argv[0], help_query);
+          return EXIT_SUCCESS;
+
+        case 'V':
+          version_display ();
           return EXIT_SUCCESS;
 
         default:
@@ -565,7 +575,8 @@ main (int argc, char *argv[])
       help_display (argv[0], help_generic);
       exit (EXIT_SUCCESS);
     }
-  else if (strcmp (command, "--version") == 0)
+  else if (strcmp (command, "-V") == 0 ||
+           strcmp (command, "--version") == 0)
     {
       version_display ();
       exit (EXIT_SUCCESS);

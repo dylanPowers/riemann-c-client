@@ -212,7 +212,7 @@ client_query (int argc, char *argv[])
           return EXIT_SUCCESS;
 
         case 'V':
-          version_display ();
+          version_display (0, NULL);
           return EXIT_SUCCESS;
 
         default:

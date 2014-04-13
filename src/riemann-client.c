@@ -31,16 +31,17 @@
 #include <json.h>
 #endif
 
-static void
-version_display (void)
+static int
+version_display (int __attribute__((unused)) argc, char __attribute__((unused)) *argv[])
 {
   printf ("%s\n", riemann_client_version_string ());
+  return EXIT_SUCCESS;
 }
 
 static void
 help_display (const char *app_name, void (*contents)(void))
 {
-  version_display ();
+  version_display (0, NULL);
   printf ("Usage: %s COMMAND [options...] [HOST] [PORT]\n"
           "\n", app_name);
   contents();
@@ -64,40 +65,54 @@ help_generic (void)
   help_query ();
 }
 
+static int
+display_help_generic (int __attribute__((unused)) argc,
+                      char *argv[])
+{
+  help_display (argv[0], help_generic);
+  return EXIT_SUCCESS;
+}
+
+typedef int (*cmd_t) (int argc, char *argv[]);
+
+static struct
+{
+  char *command;
+  cmd_t handler;
+  int (*cmp) (const char *s1, const char *s2);
+} command_map[] = {
+  { "send", client_send, strcasecmp },
+  { "query", client_query, strcasecmp },
+  { "--version", version_display, strcasecmp },
+  { "-V", version_display, strcmp },
+  { "--help", display_help_generic, strcasecmp },
+  { "-?", display_help_generic, strcmp },
+  { NULL, NULL, NULL },
+};
+
 int
 main (int argc, char *argv[])
 {
   const char *command = NULL;
+  int i = 0;
 
   if (argc < 2)
     {
       fprintf (stderr, "Not enough arguments!\n");
-      help_display (argv[0], help_generic);
+      display_help_generic (argc, argv);
       exit (EXIT_FAILURE);
     }
 
   command = argv[1];
 
-  if (strcasecmp (command, "send") == 0)
-    return client_send (argc, argv);
-  else if (strcasecmp (command, "query") == 0)
-    return client_query (argc, argv);
-  else if (strcmp (command, "-?") == 0 ||
-           strcmp (command, "--help") == 0)
+  while (command_map[i].command != NULL)
     {
-      help_display (argv[0], help_generic);
-      exit (EXIT_SUCCESS);
+      if (command_map[i].cmp (command, command_map[i].command) == 0)
+        return command_map[i].handler (argc, argv);
+      i++;
     }
-  else if (strcmp (command, "-V") == 0 ||
-           strcmp (command, "--version") == 0)
-    {
-      version_display ();
-      exit (EXIT_SUCCESS);
-    }
-  else
-    {
-      fprintf (stderr, "Unknown command: '%s'\n", command);
-      help_display (argv[0], help_generic);
-      exit (EXIT_FAILURE);
-    }
+
+  fprintf (stderr, "Unknown command: '%s'\n", command);
+  help_display (argv[0], help_generic);
+  return EXIT_FAILURE;
 }

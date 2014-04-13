@@ -137,12 +137,6 @@ riemann_message_set_events (riemann_message_t *message, ...)
   nevents = _riemann_message_combine_events (events, events[0], &n_events, ap);
   va_end (ap);
 
-  if (n_events == 0)
-    {
-      free (events);
-      return -EINVAL;
-    }
-
   result = riemann_message_set_events_n (message, n_events, nevents);
 
   if (result != 0)

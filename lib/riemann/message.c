@@ -1,5 +1,5 @@
 /* riemann/message.c -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -191,7 +191,6 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
 
   return message;
 }
-
 
 int
 riemann_message_set_query (riemann_message_t *message,

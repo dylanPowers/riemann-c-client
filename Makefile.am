@@ -91,6 +91,9 @@ bin_PROGRAMS			= \
 
 src_riemann_client_CFLAGS	= $(AM_CFLAGS) $(JSON_C_CFLAGS)
 src_riemann_client_LDADD	= $(JSON_C_LIBS) $(LDADD)
+src_riemann_client_EXTRA_DIST	= \
+	src/cmd-send.c		  \
+	src/cmd-query.c
 
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md NEWS GPL LGPL \
@@ -102,6 +105,7 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  ${check_libriemann_srcs} \
 				  m4/.placeholder \
 				  src/riemann-client.ronn \
+				  ${src_riemann_client_EXTRA_DIST} \
 				  docs/API.md
 
 # -- Manual pages --

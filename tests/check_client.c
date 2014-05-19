@@ -63,7 +63,7 @@ START_TEST (test_riemann_client_get_fd)
       riemann_client_t *client;
 
       client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
-      ck_assert_int_gt (riemann_client_get_fd (client), 0);
+      ck_assert (riemann_client_get_fd (client) != 0);
       riemann_client_free (client);
     }
 }

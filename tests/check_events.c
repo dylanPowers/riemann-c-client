@@ -157,7 +157,7 @@ START_TEST (test_riemann_event_create)
 
   event = riemann_event_create (255);
   ck_assert (event == NULL);
-  ck_assert_errno (-errno, EINVAL);
+  ck_assert_errno (-errno, EPROTO);
 }
 END_TEST
 

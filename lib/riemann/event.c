@@ -223,17 +223,16 @@ riemann_event_create (riemann_event_field_t field, ...)
 {
   riemann_event_t *event;
   va_list ap;
+  int e;
 
   event = riemann_event_new ();
 
   va_start (ap, field);
-  if (riemann_event_set_va (event, field, ap) != 0)
+  if ((e = riemann_event_set_va (event, field, ap)) != 0)
     {
-      int e = errno;
-
       va_end (ap);
       riemann_event_free (event);
-      errno = e;
+      errno = -e;
       return NULL;
     }
   va_end (ap);

@@ -21,7 +21,7 @@ network_tests_enabled (void)
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
 
-  s = getaddrinfo ("localhost", "5555", &hints, &res);
+  s = getaddrinfo ("127.0.0.1", "5555", &hints, &res);
   if (s != 0)
     return 0;
 

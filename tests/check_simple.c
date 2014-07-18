@@ -4,7 +4,7 @@ START_TEST (test_riemann_simple_send)
 {
   riemann_client_t *client;
 
-  client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
 
   ck_assert_errno (riemann_send (NULL, RIEMANN_EVENT_FIELD_NONE), ENOTCONN);
 
@@ -28,7 +28,7 @@ START_TEST (test_riemann_simple_query)
   ck_assert (riemann_query (NULL, "service = \"test-simple\"") == NULL);
   ck_assert_errno (-errno, ENOTCONN);
 
-  client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
 
   riemann_send (client,
                 RIEMANN_EVENT_FIELD_SERVICE, "test-simple",

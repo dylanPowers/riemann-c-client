@@ -1,5 +1,5 @@
 /* riemann/simple.c -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -32,8 +32,6 @@ riemann_send (riemann_client_t *client,
     return -ENOTCONN;
 
   event = riemann_event_new ();
-  if (!event)
-    return -errno;
 
   va_start (ap, field);
   if ((e = riemann_event_set_va (event, field, ap)) != 0)
@@ -45,14 +43,10 @@ riemann_send (riemann_client_t *client,
     }
   va_end (ap);
 
+  /* No need to check errors here, because event is guaranteed to be
+  non-NULL here, and the only way this can fail, is an OOM, in which
+  case we will crash anyway. */
   message = riemann_message_create_with_events (event, NULL);
-  if (!message)
-    {
-      e = errno;
-
-      riemann_event_free (event);
-      return -e;
-    }
 
   return riemann_client_send_message_oneshot (client, message);
 }

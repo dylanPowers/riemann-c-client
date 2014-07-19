@@ -21,15 +21,13 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 
-typedef int (*stub_t) ();
-
 #define make_mock(name, retval, ...)                \
-  static stub_t mock_##name;                        \
-  static stub_t real_##name;                        \
+  static retval (*mock_##name) ();                  \
+  static retval (*real_##name) ();                  \
   retval name (__VA_ARGS__)
 
-#define mock(name, func) mock_##name = (stub_t) func
-#define restore(name) mock_##name = (stub_t) real_##name
+#define mock(name, func) mock_##name = func
+#define restore(name) mock_##name = real_##name
 
 #define STUB(name, ...)                         \
   if (!real_##name)                             \
@@ -63,5 +61,6 @@ make_mock (recv, ssize_t, int sockfd, void *buf, size_t len, int flags)
 }
 
 int mock_enosys_int_always_fail ();
+ssize_t mock_enosys_ssize_t_always_fail ();
 
 #endif

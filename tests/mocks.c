@@ -26,3 +26,10 @@ mock_enosys_int_always_fail ()
   errno = ENOSYS;
   return -1;
 }
+
+ssize_t
+mock_enosys_ssize_t_always_fail ()
+{
+  errno = ENOSYS;
+  return -1;
+}

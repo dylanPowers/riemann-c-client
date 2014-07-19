@@ -27,5 +27,8 @@
 
 make_mock (socket, int, int, int, int);
 make_mock (send, ssize_t, int, const void *, size_t, int);
+make_mock (sendto, ssize_t, int, const void *, size_t, int,
+           const struct sockaddr *, socklen_t);
+make_mock (recv, ssize_t, int, void *, size_t, int);
 
 #endif

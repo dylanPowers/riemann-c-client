@@ -16,6 +16,20 @@ _mock_send_always_fail ()
   return -1;
 }
 
+static int
+_mock_sendto_always_fail ()
+{
+  errno = ENOSYS;
+  return -1;
+}
+
+static int
+_mock_recv_always_fail ()
+{
+  errno = ENOSYS;
+  return -1;
+}
+
 START_TEST (test_riemann_client_new)
 {
   riemann_client_t *client;
@@ -156,6 +170,10 @@ START_TEST (test_riemann_client_send_message)
   client = riemann_client_create (RIEMANN_CLIENT_UDP, "127.0.0.1", 5555);
   ck_assert_errno (riemann_client_send_message (client, message), 0);
 
+  mock_sendto_with (_mock_sendto_always_fail);
+  ck_assert_errno (riemann_client_send_message (client, message), ENOSYS);
+  restore_sendto ();
+
   riemann_client_free (client);
 
   riemann_message_free (message);
@@ -187,6 +205,11 @@ START_TEST (test_riemann_client_recv_message)
   ck_assert ((response = riemann_client_recv_message (client)) != NULL);
   ck_assert_int_eq (response->ok, 1);
   riemann_message_free (response);
+
+  mock_recv_with (_mock_recv_always_fail);
+  ck_assert (riemann_client_recv_message (client) == NULL);
+  ck_assert_errno (-errno, ENOSYS);
+  restore_recv ();
 
   riemann_client_free (client);
 

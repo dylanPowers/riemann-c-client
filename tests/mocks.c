@@ -40,3 +40,16 @@ send (int sockfd, const void *buf, size_t len, int flags)
 {
   MOCK (send, sockfd, buf, len, flags);
 }
+
+ssize_t
+sendto (int sockfd, const void *buf, size_t len, int flags,
+        const struct sockaddr *dest_addr, socklen_t addrlen)
+{
+  MOCK (sendto, sockfd, buf, len, flags, dest_addr, addrlen);
+}
+
+ssize_t
+recv (int sockfd, void *buf, size_t len, int flags)
+{
+  MOCK (recv, sockfd, buf, len, flags);
+}

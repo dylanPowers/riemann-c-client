@@ -1,5 +1,5 @@
 /* riemann/attribute.c -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -87,25 +87,19 @@ riemann_attribute_t *
 riemann_attribute_create (const char *key, const char *value)
 {
   riemann_attribute_t *attrib;
-  int e;
+
+  /* All of these calls can only fail if run out of memory, in which
+     case, the library will crash anyway. We only set the key or the
+     value when they were supplied to this function, so that branch is
+     guarded against, too. */
 
   attrib = riemann_attribute_new ();
-  if (!attrib)
-    return NULL;
 
-  if (key && ((e = riemann_attribute_set_key (attrib, key)) != 0))
-    {
-      riemann_attribute_free (attrib);
-      errno = -e;
-      return NULL;
-    }
+  if (key)
+    riemann_attribute_set_key (attrib, key);
 
-  if (value && ((e = riemann_attribute_set_value (attrib, value)) != 0))
-    {
-      riemann_attribute_free (attrib);
-      errno = -e;
-      return NULL;
-    }
+  if (value)
+    riemann_attribute_set_value (attrib, value);
 
   return attrib;
 }

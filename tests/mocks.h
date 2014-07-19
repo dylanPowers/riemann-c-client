@@ -31,4 +31,6 @@ make_mock (sendto, ssize_t, int, const void *, size_t, int,
            const struct sockaddr *, socklen_t);
 make_mock (recv, ssize_t, int, void *, size_t, int);
 
+int mock_enosys_int_always_fail ();
+
 #endif

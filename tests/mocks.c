@@ -16,10 +16,18 @@
  */
 
 #include <dlfcn.h>
+#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 
 #include "mocks.h"
+
+int
+mock_enosys_int_always_fail ()
+{
+  errno = ENOSYS;
+  return -1;
+}
 
 #define MOCK(name, ...)                         \
   if (!real_##name)                             \

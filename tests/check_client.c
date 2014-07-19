@@ -191,6 +191,21 @@ _mock_recv_message_part (int sockfd, void *buf, size_t len, int flags)
   return real_recv (sockfd, buf, len, flags);
 }
 
+static ssize_t
+_mock_recv_message_garbage (int sockfd, void *buf, size_t len, int flags)
+{
+  static int counter;
+  ssize_t res;
+
+  counter++;
+  res = real_recv (sockfd, buf, len, flags);
+
+  if (counter % 2 == 0)
+    memset (buf, 128, len);
+
+  return res;
+}
+
 START_TEST (test_riemann_client_recv_message)
 {
   riemann_client_t *client, *client_fresh;
@@ -231,6 +246,14 @@ START_TEST (test_riemann_client_recv_message)
   mock (recv, _mock_recv_message_part);
   ck_assert (riemann_client_recv_message (client) == NULL);
   ck_assert_errno (-errno, ENOSYS);
+  restore (recv);
+  riemann_client_free (client);
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+  riemann_client_send_message (client, message);
+  mock (recv, _mock_recv_message_garbage);
+  ck_assert (riemann_client_recv_message (client) == NULL);
+  ck_assert_errno (-errno, EPROTO);
   restore (recv);
   riemann_client_free (client);
 

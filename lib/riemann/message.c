@@ -243,5 +243,6 @@ riemann_message_from_buffer (uint8_t *buffer, size_t len)
       return NULL;
     }
 
+  errno = EPROTO;
   return msg__unpack (NULL, len, buffer);
 }

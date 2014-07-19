@@ -1,5 +1,6 @@
 #include <riemann/client.h>
 #include "riemann/_private.h"
+#include "mocks.h"
 
 START_TEST (test_riemann_client_new)
 {
@@ -47,6 +48,12 @@ START_TEST (test_riemann_client_connect)
       ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
                                                "non-existent.example.com", 5555),
                        EADDRNOTAVAIL);
+
+      mock (socket, mock_enosys_int_always_fail);
+      ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
+                                               "127.0.0.1", 5555),
+                       ENOSYS);
+      restore (socket);
     }
 
   ck_assert (client != NULL);
@@ -105,6 +112,19 @@ START_TEST (test_riemann_client_create)
 }
 END_TEST
 
+make_mock (riemann_message_to_buffer, uint8_t *,
+           riemann_message_t *message, size_t *len)
+{
+  STUB (riemann_message_to_buffer, message, len);
+}
+
+static uint8_t *
+_mock_message_to_buffer ()
+{
+  errno = EPROTO;
+  return NULL;
+}
+
 START_TEST (test_riemann_client_send_message)
 {
   riemann_client_t *client, *client_fresh;
@@ -124,18 +144,67 @@ START_TEST (test_riemann_client_send_message)
   ck_assert_errno (riemann_client_send_message (client_fresh, message), ENOTCONN);
   riemann_client_free (client_fresh);
 
+  mock (riemann_message_to_buffer, _mock_message_to_buffer);
+  ck_assert_errno (riemann_client_send_message (client, message),
+                   EPROTO);
+  restore (riemann_message_to_buffer);
+
   ck_assert_errno (riemann_client_send_message (client, message), 0);
+
+  mock (send, mock_enosys_ssize_t_always_fail);
+  ck_assert_errno (riemann_client_send_message (client, message), ENOSYS);
+  restore (send);
 
   riemann_client_free (client);
 
   client = riemann_client_create (RIEMANN_CLIENT_UDP, "127.0.0.1", 5555);
+
+  mock (riemann_message_to_buffer, _mock_message_to_buffer);
+  ck_assert_errno (riemann_client_send_message (client, message),
+                   EPROTO);
+  restore (riemann_message_to_buffer);
+
   ck_assert_errno (riemann_client_send_message (client, message), 0);
+
+  mock (sendto, mock_enosys_ssize_t_always_fail);
+  ck_assert_errno (riemann_client_send_message (client, message), ENOSYS);
+  restore (sendto);
 
   riemann_client_free (client);
 
   riemann_message_free (message);
 }
 END_TEST
+
+static ssize_t
+_mock_recv_message_part (int sockfd, void *buf, size_t len, int flags)
+{
+  static int counter;
+
+  counter++;
+  if (counter % 2 == 0)
+    {
+      errno = ENOSYS;
+      return -1;
+    }
+
+  return real_recv (sockfd, buf, len, flags);
+}
+
+static ssize_t
+_mock_recv_message_garbage (int sockfd, void *buf, size_t len, int flags)
+{
+  static int counter;
+  ssize_t res;
+
+  counter++;
+  res = real_recv (sockfd, buf, len, flags);
+
+  if (counter % 2 == 0)
+    memset (buf, 128, len);
+
+  return res;
+}
 
 START_TEST (test_riemann_client_recv_message)
 {
@@ -162,7 +231,30 @@ START_TEST (test_riemann_client_recv_message)
   ck_assert ((response = riemann_client_recv_message (client)) != NULL);
   ck_assert_int_eq (response->ok, 1);
   riemann_message_free (response);
+  riemann_client_free (client);
 
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+  riemann_client_send_message (client, message);
+  mock (recv, mock_enosys_ssize_t_always_fail);
+  ck_assert (riemann_client_recv_message (client) == NULL);
+  ck_assert_errno (-errno, ENOSYS);
+  restore (recv);
+  riemann_client_free (client);
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+  riemann_client_send_message (client, message);
+  mock (recv, _mock_recv_message_part);
+  ck_assert (riemann_client_recv_message (client) == NULL);
+  ck_assert_errno (-errno, ENOSYS);
+  restore (recv);
+  riemann_client_free (client);
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+  riemann_client_send_message (client, message);
+  mock (recv, _mock_recv_message_garbage);
+  ck_assert (riemann_client_recv_message (client) == NULL);
+  ck_assert_errno (-errno, EPROTO);
+  restore (recv);
   riemann_client_free (client);
 
   client = riemann_client_create (RIEMANN_CLIENT_UDP, "127.0.0.1", 5555);

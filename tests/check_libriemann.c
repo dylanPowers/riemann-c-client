@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <check.h>
 #include <errno.h>
 #include <netdb.h>
@@ -46,6 +48,8 @@ network_tests_enabled (void)
 
   return 1;
 }
+
+#include "mocks.c"
 
 #include "check_library.c"
 #include "check_attributes.c"

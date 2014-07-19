@@ -69,13 +69,16 @@ TESTS				= ${UNIT_TESTS}
 TESTS_ENVIRONMENT		= CK_FORK=no
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
-tests/check_%: LDADD += ${CHECK_LIBS}
+tests/check_%: LDADD += ${CHECK_LIBS} -ldl
 tests/check_%: LDFLAGS += -no-install
 
 check_PROGRAMS			= ${TESTS}
 endif
 
 check_libriemann_srcs		= \
+	tests/mocks.h		  \
+	tests/mocks.c		  \
+	tests/tests.h		  \
 	tests/check_library.c	  \
 	tests/check_events.c	  \
 	tests/check_messages.c	  \
@@ -101,7 +104,6 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  lib/riemann/libriemann.ver \
 				  lib/riemann/riemann-client.pc \
 				  lib/riemann/_private.h \
-				  tests/tests.h \
 				  ${check_libriemann_srcs} \
 				  m4/.placeholder \
 				  src/riemann-client.ronn \

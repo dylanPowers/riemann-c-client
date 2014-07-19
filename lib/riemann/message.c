@@ -118,7 +118,6 @@ riemann_message_set_events (riemann_message_t *message, ...)
   size_t n_events = 1;
   riemann_event_t **events, **nevents, *event;
   va_list ap;
-  int result;
 
   if (!message)
     return -EINVAL;
@@ -137,14 +136,10 @@ riemann_message_set_events (riemann_message_t *message, ...)
   nevents = _riemann_message_combine_events (events, events[0], &n_events, ap);
   va_end (ap);
 
-  result = riemann_message_set_events_n (message, n_events, nevents);
-
-  if (result != 0)
-    {
-      free (events);
-    }
-
-  return result;
+  /* This cannot fail, because all arguments are guaranteed to be
+     valid by this point, and there is no other error path in the
+     called function. */
+  return riemann_message_set_events_n (message, n_events, nevents);
 }
 
 riemann_message_t *
@@ -154,7 +149,6 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
   riemann_event_t **events;
   va_list ap;
   size_t n_events = 1;
-  int result;
 
   if (!event)
     {
@@ -163,8 +157,6 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
     }
 
   message = riemann_message_new ();
-  if (!message)
-    return NULL;
 
   events = malloc (sizeof (riemann_event_t *));
   events[0] = event;
@@ -173,21 +165,10 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
   events = _riemann_message_combine_events (events, event, &n_events, ap);
   va_end (ap);
 
-  if (n_events == 0)
-    {
-      riemann_message_free (message);
-      errno = EINVAL;
-      return NULL;
-    }
-
-  result = riemann_message_set_events_n (message, n_events, events);
-
-  if (result != 0)
-    {
-      riemann_message_free (message);
-      errno = EINVAL;
-      return NULL;
-    }
+  /* This cannot fail, because all arguments are guaranteed to be
+     valid by this point, and there is no other error path in the
+     called function. */
+  riemann_message_set_events_n (message, n_events, events);
 
   return message;
 }
@@ -210,7 +191,6 @@ riemann_message_t *
 riemann_message_create_with_query (riemann_query_t *query)
 {
   riemann_message_t *message;
-  int result;
 
   if (!query)
     {
@@ -219,16 +199,10 @@ riemann_message_create_with_query (riemann_query_t *query)
     }
 
   message = riemann_message_new ();
-  if (!message)
-    return NULL;
 
-  result = riemann_message_set_query (message, query);
-  if (result != 0)
-    {
-      riemann_message_free (message);
-      errno = -result;
-      return NULL;
-    }
+  /* Setting the query cannot fail here, because neither message, nor
+     query can be NULL at this point. */
+  riemann_message_set_query (message, query);
 
   return message;
 }

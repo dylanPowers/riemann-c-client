@@ -83,11 +83,10 @@ _riemann_message_combine_events (riemann_event_t **events,
   size_t alloced;
   va_list ap;
 
-  if (!events || !event || !n_events)
-    {
-      errno = EINVAL;
-      return NULL;
-    }
+  /* We do not do any sanity checking of arguments here, because
+     everywhere this function is called from, the arguments are
+     guaranteed to be valid. */
+
   alloced = *n_events;
 
   va_copy (ap, aq);

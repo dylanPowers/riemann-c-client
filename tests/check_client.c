@@ -1,5 +1,20 @@
 #include <riemann/client.h>
 #include "riemann/_private.h"
+#include "mocks.h"
+
+static int
+_mock_socket_always_fail ()
+{
+  errno = ENOSYS;
+  return -1;
+}
+
+static int
+_mock_send_always_fail ()
+{
+  errno = ENOSYS;
+  return -1;
+}
 
 START_TEST (test_riemann_client_new)
 {
@@ -47,6 +62,12 @@ START_TEST (test_riemann_client_connect)
       ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
                                                "non-existent.example.com", 5555),
                        EADDRNOTAVAIL);
+
+      mock_socket_with (_mock_socket_always_fail);
+      ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
+                                               "127.0.0.1", 5555),
+                       ENOSYS);
+      restore_socket ();
     }
 
   ck_assert (client != NULL);
@@ -125,6 +146,10 @@ START_TEST (test_riemann_client_send_message)
   riemann_client_free (client_fresh);
 
   ck_assert_errno (riemann_client_send_message (client, message), 0);
+
+  mock_send_with (_mock_send_always_fail);
+  ck_assert_errno (riemann_client_send_message (client, message), ENOSYS);
+  restore_send ();
 
   riemann_client_free (client);
 

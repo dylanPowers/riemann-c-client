@@ -175,8 +175,6 @@ riemann_client_create (riemann_client_type_t type,
   int e;
 
   client = riemann_client_new ();
-  if (!client)
-    return NULL;
 
   e = riemann_client_connect (client, type, hostname, port);
   if (e != 0)
@@ -286,8 +284,6 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
   len = ntohl (header);
 
   buffer = malloc (len);
-  if (!buffer)
-    return NULL;
 
   received = recv (client->sock, buffer, len, MSG_WAITALL);
   if (received != len)

@@ -1,5 +1,5 @@
 /* riemann/_private.h -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -23,5 +23,18 @@
 
 int riemann_event_set_va (riemann_event_t *event,
                           riemann_event_field_t first_field, va_list aq);
+
+typedef int (*riemann_client_send_message_t) (riemann_client_t *client,
+                                              riemann_message_t *message);
+typedef riemann_message_t *(*riemann_client_recv_message_t) (riemann_client_t *client);
+
+struct _riemann_client_t
+{
+  int sock;
+  struct addrinfo *srv_addr;
+
+  riemann_client_send_message_t send;
+  riemann_client_recv_message_t recv;
+};
 
 #endif

@@ -1,4 +1,5 @@
 #include <riemann/client.h>
+#include "riemann/_private.h"
 
 START_TEST (test_riemann_client_new)
 {
@@ -72,6 +73,18 @@ END_TEST
 START_TEST (test_riemann_client_disconnect)
 {
   ck_assert_errno (riemann_client_disconnect (NULL), ENOTCONN);
+
+  if (network_tests_enabled ())
+    {
+      riemann_client_t *client;
+
+      client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+      client->sock++;
+
+      ck_assert_errno (riemann_client_disconnect (client), EBADF);
+      client->sock--;
+      riemann_client_disconnect (client);
+    }
 }
 END_TEST
 

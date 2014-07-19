@@ -25,6 +25,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
+#include "riemann/_private.h"
 #include "riemann/platform.h"
 
 const char *
@@ -38,19 +39,6 @@ riemann_client_version_string (void)
 {
   return PACKAGE_STRING;
 }
-
-typedef int (*riemann_client_send_message_t) (riemann_client_t *client,
-                                              riemann_message_t *message);
-typedef riemann_message_t *(*riemann_client_recv_message_t) (riemann_client_t *client);
-
-struct _riemann_client_t
-{
-  int sock;
-  struct addrinfo *srv_addr;
-
-  riemann_client_send_message_t send;
-  riemann_client_recv_message_t recv;
-};
 
 static int _riemann_client_send_message_tcp (riemann_client_t *client,
                                              riemann_message_t *message);

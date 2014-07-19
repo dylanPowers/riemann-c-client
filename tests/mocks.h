@@ -18,18 +18,49 @@
 #ifndef __MADHOUSE_RIEMANN_TESTS_MOCKS_H__
 #define __MADHOUSE_RIEMANN_TESTS_MOCKS_H__ 1
 
-#define make_mock(name, rval, ...)                                      \
-  static rval (*mock_##name) (__VA_ARGS__);                             \
-  static rval (*real_##name) (__VA_ARGS__);                             \
-                                                                        \
-  static inline void mock_##name##_with (void *x) { mock_##name = x; }  \
-  static inline void restore_##name () { mock_##name = real_##name; }
+#include <sys/types.h>
+#include <sys/socket.h>
 
-make_mock (socket, int, int, int, int);
-make_mock (send, ssize_t, int, const void *, size_t, int);
-make_mock (sendto, ssize_t, int, const void *, size_t, int,
-           const struct sockaddr *, socklen_t);
-make_mock (recv, ssize_t, int, void *, size_t, int);
+typedef int (*stub_t) ();
+
+#define make_mock(name, retval, ...)                \
+  static stub_t mock_##name;                        \
+  static stub_t real_##name;                        \
+  retval name (__VA_ARGS__)
+
+#define mock(name, func) mock_##name = (stub_t) func
+#define restore(name) mock_##name = (stub_t) real_##name
+
+#define STUB(name, ...)                         \
+  if (!real_##name)                             \
+    real_##name = dlsym (RTLD_NEXT, #name);     \
+  if (!mock_##name)                             \
+    mock_##name = real_##name;                  \
+                                                \
+  return mock_##name (__VA_ARGS__)
+
+make_mock (socket, int, int domain, int type, int protocol)
+{
+  STUB (socket, domain, type, protocol);
+}
+
+make_mock (send, ssize_t, int sockfd, const void *buf, size_t len,
+           int flags)
+{
+  STUB (send, sockfd, buf, len, flags);
+}
+
+make_mock (sendto, ssize_t, int sockfd, const void *buf, size_t len,
+           int flags, const struct sockaddr *dest_addr,
+           socklen_t addrlen)
+{
+  STUB (sendto, sockfd, buf, len, flags, dest_addr, addrlen);
+}
+
+make_mock (recv, ssize_t, int sockfd, void *buf, size_t len, int flags)
+{
+  STUB (recv, sockfd, buf, len, flags);
+}
 
 int mock_enosys_int_always_fail ();
 

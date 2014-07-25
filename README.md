@@ -3,6 +3,7 @@ Riemann C client library
 
 [![Build Status](https://travis-ci.org/algernon/riemann-c-client.png?branch=master)](https://travis-ci.org/algernon/riemann-c-client)
 [![Build Status](https://drone.io/github.com/algernon/riemann-c-client/status.png)](https://drone.io/github.com/algernon/riemann-c-client/latest)
+[![Coverage Status](https://coveralls.io/repos/algernon/riemann-c-client/badge.png)](https://coveralls.io/r/algernon/riemann-c-client)
 
 This is a C client library for the [Riemann][riemann] monitoring
 system, providing a convenient and simple API, high test coverage and
@@ -125,7 +126,7 @@ find convenient and useful.
 License
 -------
 
-Copyright (C) 2013 Gergely Nagy <algernon@madhouse-project.org>,
+Copyright (C) 2013, 2014 Gergely Nagy <algernon@madhouse-project.org>,
 released under the terms of the
 [GNU Lesser General Public License][lgpl], version 3+.
 

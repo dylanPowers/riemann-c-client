@@ -1,5 +1,5 @@
 /* riemann/query.c -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -32,11 +32,9 @@ riemann_query_new (const char *string)
   if (!string)
     return query;
 
-  if (riemann_query_set_string (query, string) != 0)
-    {
-      riemann_query_free (query);
-      return NULL;
-    }
+  /* This cannot fail, because if malloc failed, we crashed already,
+     and the previous check makes sure we bail out if string is empty. */
+  riemann_query_set_string (query, string);
 
   return query;
 }

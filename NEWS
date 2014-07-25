@@ -1,5 +1,40 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.2.0 - <2014-07-21 Mon>
+
+** Feature: riemann_client_get_fd
+
+This new function can be used to gain access to the socket file
+descriptor used by the library. The intended use is for applications
+to be set various TCP or socket options, such as TCP_CORK, from within
+the application itself.
+
+** Bugfix: The sample client hides empty metrics
+
+The example riemann-client tool will not display empty metrics
+anymore, and instead, will behave like the JSON output.
+
+** Bugfix: riemann_event_create error handling
+
+In riemann_event_create(), cache the result of riemann_event_set_va(),
+and use that for the errno value in the error branch, instead of
+trying to save errno, which the called function does not set.
+
+** Bugfix: riemann_message_from_buffer error handling
+
+In case serialisation fails, the function will now correctly set
+errno, making the error discoverable.
+
+** Bugfix: Use 127.0.0.1 during tests
+
+Instead of using localhost (which could resolve to IPv6), use
+127.0.0.1, the same IP address Riemann will listen on by default.
+
+** Miscellaneous: Test coverage
+
+The code underwent changes to simplify it, and the tests were extended
+too, reaching 100% code coverage.
+
 * 1.1.1 - <2014-01-23 Thu>
 
 While the riemann-client tool had the code to return query results in

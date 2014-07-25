@@ -1,5 +1,5 @@
 /* riemann/client.c -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -25,7 +25,8 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include "config.h"
+#include "riemann/_private.h"
+#include "riemann/platform.h"
 
 const char *
 riemann_client_version (void)
@@ -38,19 +39,6 @@ riemann_client_version_string (void)
 {
   return PACKAGE_STRING;
 }
-
-typedef int (*riemann_client_send_message_t) (riemann_client_t *client,
-                                              riemann_message_t *message);
-typedef riemann_message_t *(*riemann_client_recv_message_t) (riemann_client_t *client);
-
-struct _riemann_client_t
-{
-  int sock;
-  struct addrinfo *srv_addr;
-
-  riemann_client_send_message_t send;
-  riemann_client_recv_message_t recv;
-};
 
 static int _riemann_client_send_message_tcp (riemann_client_t *client,
                                              riemann_message_t *message);
@@ -103,6 +91,15 @@ riemann_client_free (riemann_client_t *client)
   errno = -riemann_client_disconnect (client);
 
   free (client);
+}
+
+int
+riemann_client_get_fd (riemann_client_t *client)
+{
+  if (!client)
+    return -EINVAL;
+
+  return client->sock;
 }
 
 int
@@ -178,8 +175,6 @@ riemann_client_create (riemann_client_type_t type,
   int e;
 
   client = riemann_client_new ();
-  if (!client)
-    return NULL;
 
   e = riemann_client_connect (client, type, hostname, port);
   if (e != 0)
@@ -289,8 +284,6 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
   len = ntohl (header);
 
   buffer = malloc (len);
-  if (!buffer)
-    return NULL;
 
   received = recv (client->sock, buffer, len, MSG_WAITALL);
   if (received != len)

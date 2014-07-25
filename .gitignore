@@ -5,8 +5,6 @@
 /autoscan.log
 /compile
 /config.guess
-/config.h
-/config.h.in
 /config.log
 /config.status
 /config.sub
@@ -23,6 +21,8 @@
 /stamp-h1
 /lib/libriemann-client.la
 /lib/riemann/proto/
+/lib/riemann/platform.h.in
+/lib/riemann/platform.h
 /lib/riemann-client.pc
 /src/riemann-client
 /src/riemann-client.1*

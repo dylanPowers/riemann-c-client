@@ -1,5 +1,5 @@
 /* riemann/event.c -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -223,17 +223,16 @@ riemann_event_create (riemann_event_field_t field, ...)
 {
   riemann_event_t *event;
   va_list ap;
+  int e;
 
   event = riemann_event_new ();
 
   va_start (ap, field);
-  if (riemann_event_set_va (event, field, ap) != 0)
+  if ((e = riemann_event_set_va (event, field, ap)) != 0)
     {
-      int e = errno;
-
       va_end (ap);
       riemann_event_free (event);
-      errno = e;
+      errno = -e;
       return NULL;
     }
   va_end (ap);

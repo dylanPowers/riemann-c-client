@@ -1,5 +1,5 @@
 /* riemann/client.h -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -35,6 +35,7 @@ const char * riemann_client_version_string (void);
 riemann_client_t *riemann_client_new (void);
 riemann_client_t *riemann_client_create (riemann_client_type_t type,
                                          const char *hostname, int port);
+int riemann_client_get_fd (riemann_client_t *client);
 void riemann_client_free (riemann_client_t *client);
 
 int riemann_client_connect (riemann_client_t *client, riemann_client_type_t type,

@@ -11,9 +11,9 @@ protodir			= ${includedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 1
+LRC_CURRENT			= 2
 LRC_REVISION			= 0
-LRC_AGE				= 1
+LRC_AGE				= 2
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 
@@ -69,13 +69,16 @@ TESTS				= ${UNIT_TESTS}
 TESTS_ENVIRONMENT		= CK_FORK=no
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
-tests/check_%: LDADD += ${CHECK_LIBS}
+tests/check_%: LDADD += ${CHECK_LIBS} -ldl
 tests/check_%: LDFLAGS += -no-install
 
 check_PROGRAMS			= ${TESTS}
 endif
 
 check_libriemann_srcs		= \
+	tests/mocks.h		  \
+	tests/mocks.c		  \
+	tests/tests.h		  \
 	tests/check_library.c	  \
 	tests/check_events.c	  \
 	tests/check_messages.c	  \
@@ -91,6 +94,9 @@ bin_PROGRAMS			= \
 
 src_riemann_client_CFLAGS	= $(AM_CFLAGS) $(JSON_C_CFLAGS)
 src_riemann_client_LDADD	= $(JSON_C_LIBS) $(LDADD)
+src_riemann_client_EXTRA_DIST	= \
+	src/cmd-send.c		  \
+	src/cmd-query.c
 
 # -- Extra files to distribute --
 EXTRA_DIST			= README.md NEWS GPL LGPL \
@@ -98,10 +104,10 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  lib/riemann/libriemann.ver \
 				  lib/riemann/riemann-client.pc \
 				  lib/riemann/_private.h \
-				  tests/tests.h \
 				  ${check_libriemann_srcs} \
 				  m4/.placeholder \
 				  src/riemann-client.ronn \
+				  ${src_riemann_client_EXTRA_DIST} \
 				  docs/API.md
 
 # -- Manual pages --

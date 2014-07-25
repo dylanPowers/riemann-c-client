@@ -1,8 +1,11 @@
 riemann-c-client (1.2.0-1) unstable; urgency=medium
 
   * New upstream release.
+  * Build-Depend on libprotobuf-c-dev libprotobuf-c0-dev, for the
+    protobuf-c transition and wheezy backportability.
+  * Update the copyright years in debian/copyright.
 
- -- Gergely Nagy <algernon@madhouse-project.org>  Fri, 25 Jul 2014 15:58:17 +0200
+ -- Gergely Nagy <algernon@madhouse-project.org>  Fri, 25 Jul 2014 16:02:27 +0200
 
 riemann-c-client (1.1.1-1) unstable; urgency=medium
 

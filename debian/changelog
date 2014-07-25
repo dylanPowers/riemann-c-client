@@ -1,3 +1,9 @@
+riemann-c-client (1.2.0-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Fri, 25 Jul 2014 15:58:17 +0200
+
 riemann-c-client (1.1.1-1) unstable; urgency=medium
 
   * New upstream release.

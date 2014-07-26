@@ -1,3 +1,10 @@
+riemann-c-client (1.2.0-2) unstable; urgency=medium
+
+  * Instead of libriemann-client-dev depending on libprotobuf-c0-dev,
+    depend on the appropriate version, determined at build time.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Sat, 26 Jul 2014 23:35:10 +0200
+
 riemann-c-client (1.2.0-1) unstable; urgency=medium
 
   * New upstream release.

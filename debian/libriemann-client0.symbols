@@ -1,3 +1,4 @@
 libriemann-client.so.0 #PACKAGE# #MINVER#
  (symver)RIEMANN_C_1.0 1.0.0
  (symver)RIEMANN_C_1.1 1.1.0
+ (symver)RIEMANN_C_1.2 1.2.0

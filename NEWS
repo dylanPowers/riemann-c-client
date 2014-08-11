@@ -1,5 +1,18 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.2.1 - <2014-08-11 Mon>
+
+** Bugfix: Fix compilation on at least Fedora rawhide
+
+Instead of relying on implicitly pulling in <inttypes.h>, include the
+header explicitly.
+
+** Bugfix: Do not include generated proto files in the tarball
+
+To avoid any conflicts between the protobuf-c used to generate sources
+when making the tarball, and the version used to build it, do not
+include these files at all, and just generate them at build time.
+
 * 1.2.0 - <2014-07-21 Mon>
 
 ** Feature: riemann_client_get_fd

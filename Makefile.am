@@ -12,7 +12,7 @@ VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
 LRC_CURRENT			= 2
-LRC_REVISION			= 0
+LRC_REVISION			= 1
 LRC_AGE				= 2
 
 lib_LTLIBRARIES			= lib/libriemann-client.la

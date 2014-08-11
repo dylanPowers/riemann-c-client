@@ -25,7 +25,7 @@ lib_libriemann_client_la_LIBADD	= -lprotobuf-c
 proto_files			= \
 	lib/riemann/proto/riemann.pb-c.c  \
 	lib/riemann/proto/riemann.pb-c.h
-proto_HEADERS			= \
+nodist_proto_HEADERS		= \
 	lib/riemann/proto/riemann.pb-c.h
 lib_libriemann_client_ladir	= ${includedir}
 lib_libriemann_client_la_HEADERS= \
@@ -42,13 +42,15 @@ lib_libriemann_client_la_SOURCES= \
 	lib/riemann/message.c	  \
 	lib/riemann/attribute.c	  \
 	lib/riemann/query.c	  \
-	lib/riemann/simple.c	  \
+	lib/riemann/simple.c
+$(am_lib_libriemann_client_la_OBJECTS): ${proto_files}
+
+nodist_lib_libriemann_client_la_SOURCES	= \
 	${proto_files}
 
-BUILT_SOURCES			= ${proto_files}
 CLEANFILES			= ${proto_files}
 
-${BUILT_SOURCES}: ${top_srcdir}/lib/riemann/proto/riemann.proto
+${proto_files}: ${top_srcdir}/lib/riemann/proto/riemann.proto
 	${AM_V_at} ${mkinstalldirs} ${top_builddir}/lib/riemann/proto
 	${AM_V_GEN} protoc-c $^ -I${top_srcdir}/lib/riemann/proto --c_out=${top_builddir}/lib/riemann/proto
 

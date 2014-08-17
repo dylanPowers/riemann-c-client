@@ -22,6 +22,10 @@
 
 typedef Attribute riemann_attribute_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 riemann_attribute_t *riemann_attribute_new (void);
 void riemann_attribute_free (riemann_attribute_t *attrib);
 
@@ -32,5 +36,9 @@ int riemann_attribute_set (riemann_attribute_t *attrib,
 
 riemann_attribute_t *riemann_attribute_create (const char *key,
                                                const char *value);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif

@@ -24,6 +24,10 @@
 
 typedef Msg riemann_message_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 riemann_message_t *riemann_message_new (void);
 riemann_message_t *riemann_message_create_with_events (riemann_event_t *event, ...);
 riemann_message_t *riemann_message_create_with_query (riemann_query_t *query);
@@ -39,5 +43,9 @@ int riemann_message_set_query (riemann_message_t *message,
 
 uint8_t *riemann_message_to_buffer (riemann_message_t *message, size_t *len);
 riemann_message_t *riemann_message_from_buffer (uint8_t *buffer, size_t len);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif

@@ -5,8 +5,8 @@ ACLOCAL_AMFLAGS			= -Im4
 
 LDADD				= lib/libriemann-client.la
 
-includedir			= ${prefix}/include/riemann
-protodir			= ${includedir}/proto
+pkgincludedir			= ${includedir}/riemann
+protodir			= ${pkgincludedir}/proto
 
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
@@ -27,8 +27,7 @@ proto_files			= \
 	lib/riemann/proto/riemann.pb-c.h
 nodist_proto_HEADERS		= \
 	lib/riemann/proto/riemann.pb-c.h
-lib_libriemann_client_ladir	= ${includedir}
-lib_libriemann_client_la_HEADERS= \
+pkginclude_HEADERS = \
 	lib/riemann/client.h	  \
 	lib/riemann/event.h	  \
 	lib/riemann/message.h	  \

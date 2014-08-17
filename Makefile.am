@@ -106,7 +106,6 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  lib/riemann/riemann-client.pc \
 				  lib/riemann/_private.h \
 				  ${check_libriemann_srcs} \
-				  m4/.placeholder \
 				  src/riemann-client.ronn \
 				  ${src_riemann_client_EXTRA_DIST} \
 				  docs/API.md

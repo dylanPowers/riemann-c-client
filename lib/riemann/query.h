@@ -22,9 +22,17 @@
 
 typedef Query riemann_query_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 riemann_query_t *riemann_query_new (const char *string);
 void riemann_query_free (riemann_query_t *query);
 
 int riemann_query_set_string (riemann_query_t *query, const char *string);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif

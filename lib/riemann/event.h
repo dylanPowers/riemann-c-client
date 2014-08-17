@@ -40,6 +40,10 @@ typedef enum
     RIEMANN_EVENT_FIELD_METRIC_F
   } riemann_event_field_t;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 riemann_event_t *riemann_event_new (void);
 riemann_event_t *riemann_event_create (riemann_event_field_t field, ...);
 void riemann_event_free (riemann_event_t *event);
@@ -51,5 +55,9 @@ int riemann_event_set (riemann_event_t *event, ...);
 int riemann_event_tag_add (riemann_event_t *event, const char *tag);
 int riemann_event_attribute_add (riemann_event_t *event,
                                  riemann_attribute_t *attrib);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif

@@ -1,5 +1,5 @@
 /* riemann/event.h -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -20,6 +20,7 @@
 
 #include <riemann/proto/riemann.pb-c.h>
 #include <riemann/attribute.h>
+#include <stdarg.h>
 
 typedef Event riemann_event_t;
 
@@ -46,9 +47,13 @@ extern "C" {
 
 riemann_event_t *riemann_event_new (void);
 riemann_event_t *riemann_event_create (riemann_event_field_t field, ...);
+riemann_event_t *riemann_event_create_va (riemann_event_field_t field,
+                                          va_list aq);
 void riemann_event_free (riemann_event_t *event);
 
 int riemann_event_set (riemann_event_t *event, ...);
+int riemann_event_set_va (riemann_event_t *event,
+                          riemann_event_field_t first_field, va_list aq);
 #define riemann_event_set_one(event, field, ...)                        \
   riemann_event_set (event, RIEMANN_EVENT_FIELD_##field, __VA_ARGS__,   \
                      RIEMANN_EVENT_FIELD_NONE)

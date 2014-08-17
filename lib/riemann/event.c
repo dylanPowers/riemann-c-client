@@ -219,15 +219,15 @@ riemann_event_attribute_add (riemann_event_t *event,
 }
 
 riemann_event_t *
-riemann_event_create (riemann_event_field_t field, ...)
+riemann_event_create_va (riemann_event_field_t field, va_list aq)
 {
-  riemann_event_t *event;
   va_list ap;
+  riemann_event_t *event;
   int e;
 
   event = riemann_event_new ();
 
-  va_start (ap, field);
+  va_copy (ap, aq);
   if ((e = riemann_event_set_va (event, field, ap)) != 0)
     {
       va_end (ap);
@@ -235,6 +235,19 @@ riemann_event_create (riemann_event_field_t field, ...)
       errno = -e;
       return NULL;
     }
+  va_end (ap);
+
+  return event;
+}
+
+riemann_event_t *
+riemann_event_create (riemann_event_field_t field, ...)
+{
+  riemann_event_t *event;
+  va_list ap;
+
+  va_start (ap, field);
+  event = riemann_event_create_va (field, ap);
   va_end (ap);
 
   return event;

@@ -112,7 +112,7 @@ _riemann_message_combine_events (riemann_event_t **events,
 }
 
 int
-riemann_message_set_events (riemann_message_t *message, ...)
+riemann_message_set_events_va (riemann_message_t *message, va_list aq)
 {
   size_t n_events = 1;
   riemann_event_t **events, **nevents, *event;
@@ -121,7 +121,7 @@ riemann_message_set_events (riemann_message_t *message, ...)
   if (!message)
     return -EINVAL;
 
-  va_start (ap, message);
+  va_copy (ap, aq);
   event = va_arg (ap, riemann_event_t *);
   if (!event)
     {
@@ -141,8 +141,21 @@ riemann_message_set_events (riemann_message_t *message, ...)
   return riemann_message_set_events_n (message, n_events, nevents);
 }
 
+int
+riemann_message_set_events (riemann_message_t *message, ...)
+{
+  int r;
+  va_list ap;
+
+  va_start (ap, message);
+  r = riemann_message_set_events_va (message, ap);
+  va_end (ap);
+
+  return r;
+}
+
 riemann_message_t *
-riemann_message_create_with_events (riemann_event_t *event, ...)
+riemann_message_create_with_events_va (riemann_event_t *event, va_list aq)
 {
   riemann_message_t *message;
   riemann_event_t **events;
@@ -160,7 +173,7 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
   events = malloc (sizeof (riemann_event_t *));
   events[0] = event;
 
-  va_start (ap, event);
+  va_copy (ap, aq);
   events = _riemann_message_combine_events (events, event, &n_events, ap);
   va_end (ap);
 
@@ -168,6 +181,19 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
      valid by this point, and there is no other error path in the
      called function. */
   riemann_message_set_events_n (message, n_events, events);
+
+  return message;
+}
+
+riemann_message_t *
+riemann_message_create_with_events (riemann_event_t *event, ...)
+{
+  riemann_message_t *message;
+  va_list ap;
+
+  va_start (ap, event);
+  message = riemann_message_create_with_events_va (event, ap);
+  va_end (ap);
 
   return message;
 }

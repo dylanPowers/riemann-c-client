@@ -30,6 +30,7 @@ extern "C" {
 
 riemann_message_t *riemann_message_new (void);
 riemann_message_t *riemann_message_create_with_events (riemann_event_t *event, ...);
+riemann_message_t *riemann_message_create_with_events_va (riemann_event_t *event, va_list aq); 
 riemann_message_t *riemann_message_create_with_query (riemann_query_t *query);
 void riemann_message_free (riemann_message_t *message);
 
@@ -37,6 +38,7 @@ int riemann_message_set_events_n (riemann_message_t *message,
                                   size_t n_events,
                                   riemann_event_t **events);
 int riemann_message_set_events (riemann_message_t *message, ...);
+int riemann_message_set_events_va (riemann_message_t *message, va_list aq);
 
 int riemann_message_set_query (riemann_message_t *message,
                                riemann_query_t *query);

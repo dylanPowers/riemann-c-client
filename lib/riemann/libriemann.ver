@@ -55,3 +55,14 @@ RIEMANN_C_1.2 {
 global:
         riemann_client_get_fd;
 } RIEMANN_C_1.1;
+
+RIEMANN_C_1.3 {
+global:
+        riemann_event_set_va;
+        riemann_event_create_va;
+
+        riemann_message_set_events_va;
+        riemann_message_create_with_events_va;
+
+        riemann_send_va;
+} RIEMANN_C_1.2;

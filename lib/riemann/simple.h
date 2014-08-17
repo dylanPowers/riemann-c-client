@@ -26,6 +26,8 @@ extern "C" {
 
 int riemann_send (riemann_client_t *client,
                   riemann_event_field_t field, ...);
+int riemann_send_va (riemann_client_t *client,
+                     riemann_event_field_t field, va_list aq);
 riemann_message_t *riemann_query (riemann_client_t *client,
                                   const char *query);
 

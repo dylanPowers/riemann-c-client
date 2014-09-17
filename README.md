@@ -58,6 +58,11 @@ the [json-c][json-c] library installed, but this feature is optional.
 
  [json-c]: https://github.com/json-c/json-c/wiki
 
+If, for some reason the build fails, one may need to regenerate the
+`protobuf-c-compiler` generated headers (changes in the compiler are
+known to cause issues). To do this, do a `make distclean` first, and
+then start over from `configure`.
+
 Demo
 ----
 

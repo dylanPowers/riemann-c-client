@@ -1,5 +1,26 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.3.0 - <2014-12-02 Tue>
+
+** Bugfix: Support C++ compilers
+
+All the public riemann-c-client headers now have extern "C" guards, so
+that the headers can be included in C++ projects too.
+
+Thanks to Jan Engelhardt <jengelh@inai.de> for the patch.
+
+** Feature: Add _va variants for all relevant functions
+
+To make it easier to write wrappers, all functions that take a
+variable number of arguments now have a _va() variant, that takes a
+va_list instead.
+
+New functions are: riemann_event_set_va(), riemann_event_create_va(),
+riemann_message_set_events_va(),
+riemann_message_create_with_events_va(), riemann_send_va().
+
+Requested by Christopher Gilbert <christopher.john.gilbert@gmail.com>.
+
 * 1.2.1 - <2014-08-11 Mon>
 
 ** Bugfix: Fix compilation on at least Fedora rawhide

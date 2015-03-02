@@ -71,8 +71,6 @@ AC_CACHE_CHECK(whether $LD supports symbol version scripts,
 LDFLAGS=$ac_save_LDFLAGS
 AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
 
-AC_CHECK_PROG([HAVE_RONN], [ronn], [yes])
-AM_CONDITIONAL([HAVE_RONN], [test x$HAVE_RONN = xyes])
 AM_CONDITIONAL([HAVE_JSON_C], [test x$HAVE_JSON_C != xno])
 AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])
 

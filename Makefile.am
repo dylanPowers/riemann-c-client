@@ -106,29 +106,12 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  lib/riemann/riemann-client.pc \
 				  lib/riemann/_private.h \
 				  ${check_libriemann_srcs} \
-				  src/riemann-client.ronn \
 				  ${src_riemann_client_EXTRA_DIST} \
-				  docs/API.md
+				  docs/API.md ${man1_MANS}
 
 # -- Manual pages --
-if HAVE_RONN
-CLEANFILES			+= src/riemann-client.1
-
 man1_MANS			 = \
 	src/riemann-client.1
-
-src/riemann-client.1: DATE=$(shell grep '^\*' ${top_srcdir}/NEWS | \
-				   head -n 1 | sed -e "s,^.*<\([^ ]*\).*,\1,")
-src/riemann-client.1: src/riemann-client.ronn NEWS
-	${AM_V_at} ${mkinstalldirs} ${top_builddir}/src
-	$(AM_V_GEN)ronn --manual "riemann-c-client" \
-			--organization "The MadHouse Project" \
-			--roff \
-			--pipe \
-			--date "${DATE}" $< >$@
-
-all: ${man1_MANS}
-endif
 
 # -- Custom targets --
 coverage: coverage.info.html

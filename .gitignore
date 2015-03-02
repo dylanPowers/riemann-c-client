@@ -24,7 +24,6 @@ Makefile.in
 /lib/riemann/platform.h
 /lib/riemann-client.pc
 /src/riemann-client
-/src/riemann-client.1*
 /tests/check_libriemann
 /test-driver
 /debian/autoreconf.*

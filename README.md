@@ -49,10 +49,6 @@ and one can use `pkg-config` to compile programs against it:
 
     ${CC} $(pkg-config --cflags --libs riemann-client) demo.c -o demo -Wall
 
-To build the manual page for the `riemann-client` command-line tool,
-one will also need [Ronn](https://github.com/rtomayko/ronn) installed,
-but this is optional.
-
 To enable the JSON output support in `riemann-client`, one also needs
 the [json-c][json-c] library installed, but this feature is optional.
 

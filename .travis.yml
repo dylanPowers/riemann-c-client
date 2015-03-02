@@ -1,7 +1,7 @@
 language: c
 before_install:
   - sudo pip install cpp-coveralls
-  - wget http://aphyr.com/riemann/riemann_0.2.5_all.deb
+  - wget http://aphyr.com/riemann/riemann_0.2.8_all.deb
   - sudo dpkg -i riemann*deb
   - sudo service riemann start
 install:

@@ -127,7 +127,7 @@ find convenient and useful.
 License
 -------
 
-Copyright (C) 2013, 2014 Gergely Nagy <algernon@madhouse-project.org>,
+Copyright (C) 2013, 2014, 2015 Gergely Nagy <algernon@madhouse-project.org>,
 released under the terms of the
 [GNU Lesser General Public License][lgpl], version 3+.
 

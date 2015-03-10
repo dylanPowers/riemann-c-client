@@ -17,4 +17,4 @@ compiler:
   - gcc
   - clang
 after_success:
-  - if [ "${TRAVIS_BRANCH}" = "master" ]; then coveralls -e tests -e src -e lib/riemann/proto -x .c -r . -b .; fi
+  - tests/run-coveralls

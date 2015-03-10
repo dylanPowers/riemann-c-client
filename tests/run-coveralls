@@ -1,0 +1,8 @@
+#! /bin/sh
+
+if [ "${TRAVIS_BRANCH}" != "master" ]; then
+   exit 0
+fi
+
+cp lib/riemann/.libs/* lib/riemann/
+coveralls -e tests -e src -e lib/riemann/proto -x .c -b .

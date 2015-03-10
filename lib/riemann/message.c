@@ -1,5 +1,5 @@
 /* riemann/message.c -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -149,6 +149,76 @@ riemann_message_set_events (riemann_message_t *message, ...)
 
   va_start (ap, message);
   r = riemann_message_set_events_va (message, ap);
+  va_end (ap);
+
+  return r;
+}
+
+int
+riemann_message_append_events_n (riemann_message_t *message,
+                                 size_t n_events,
+                                 riemann_event_t **events)
+{
+  size_t n, start;
+
+  if (!message)
+    return -EINVAL;
+
+  if (n_events < 1)
+    return -ERANGE;
+
+  if (!events)
+    return -EINVAL;
+
+  start = message->n_events;
+  message->n_events += n_events;
+  message->events = realloc (message->events,
+                             sizeof (riemann_event_t *) * message->n_events);
+
+  for (n = 0; n < n_events; n++)
+    message->events[n + start] = events[n];
+
+  return 0;
+}
+
+int
+riemann_message_append_events_va (riemann_message_t *message, va_list aq)
+{
+  riemann_event_t *event, **events, **nevents;
+  size_t n_events = 1;
+  va_list ap;
+
+  if (!message)
+    return -EINVAL;
+
+  va_copy (ap, aq);
+
+  event = va_arg (ap, riemann_event_t *);
+  if (!event)
+    {
+      va_end (ap);
+      return -ERANGE;
+    }
+
+  events = malloc (sizeof (riemann_event_t *));
+  events[0] = event;
+  nevents = _riemann_message_combine_events(events, events[0], &n_events, ap);
+  va_end (ap);
+
+  /* This cannot fail, because all arguments are guaranteed to be
+     valid by this point, and there are no other error paths in the
+     called function. */
+  return riemann_message_append_events_n (message, n_events, nevents);
+}
+
+int
+riemann_message_append_events (riemann_message_t *message, ...)
+{
+  int r;
+  va_list ap;
+
+  va_start (ap, message);
+  r = riemann_message_append_events_va (message, ap);
   va_end (ap);
 
   return r;

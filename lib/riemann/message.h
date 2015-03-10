@@ -1,5 +1,5 @@
 /* riemann/message.h -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -39,6 +39,12 @@ int riemann_message_set_events_n (riemann_message_t *message,
                                   riemann_event_t **events);
 int riemann_message_set_events (riemann_message_t *message, ...);
 int riemann_message_set_events_va (riemann_message_t *message, va_list aq);
+
+int riemann_message_append_events_n (riemann_message_t *message,
+                                     size_t n_events,
+                                     riemann_event_t **events);
+int riemann_message_append_events (riemann_message_t *message, ...);
+int riemann_message_append_events_va (riemann_message_t *message, va_list aq);
 
 int riemann_message_set_query (riemann_message_t *message,
                                riemann_query_t *query);

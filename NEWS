@@ -1,5 +1,14 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.4.0 - UNRELEASED
+
+** Feature: Add riemann_message_append_events*() functions.
+
+To make it easier to iteratively build up Riemann messages, the
+riemann_message_append_events*() family of functions were added.
+
+Requested by Christopher Gilbert <christopher.john.gilbert@gmail.com>.
+
 * 1.3.0 - <2014-12-02 Tue>
 
 ** Bugfix: Support C++ compilers

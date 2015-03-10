@@ -184,7 +184,8 @@ riemann_message_append_events_n (riemann_message_t *message,
 int
 riemann_message_append_events_va (riemann_message_t *message, va_list aq)
 {
-  riemann_event_t *event;
+  riemann_event_t *event, **events, **nevents;
+  size_t n_events = 1;
   va_list ap;
 
   if (!message)
@@ -192,24 +193,22 @@ riemann_message_append_events_va (riemann_message_t *message, va_list aq)
 
   va_copy (ap, aq);
 
-  /*
-   * This is horribly inefficient, because this will do tons of
-   * reallocs. Will have to improve it in the near future.
-    */
-  while ((event = va_arg (ap, riemann_event_t *)) != NULL)
+  event = va_arg (ap, riemann_event_t *);
+  if (!event)
     {
-      /*
-       * We're not checking the return value, because we already
-       * checked message, n_events is 1, and due to the condition in
-       * the while above, &event can't be NULL either, and there are
-       * no other ways this can fail.
-       */
-      riemann_message_append_events_n (message, 1, &event);
+      va_end (ap);
+      return -ERANGE;
     }
 
+  events = malloc (sizeof (riemann_event_t *));
+  events[0] = event;
+  nevents = _riemann_message_combine_events(events, events[0], &n_events, ap);
   va_end (ap);
 
-  return 0;
+  /* This cannot fail, because all arguments are guaranteed to be
+     valid by this point, and there are no other error paths in the
+     called function. */
+  return riemann_message_append_events_n (message, n_events, nevents);
 }
 
 int

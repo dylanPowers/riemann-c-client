@@ -286,6 +286,8 @@ START_TEST (test_riemann_message_append_events)
 
   message = riemann_message_new ();
 
+  ck_assert_errno (riemann_message_append_events (message, NULL), ERANGE);
+
   /* --- */
 
   event1 = riemann_event_new ();

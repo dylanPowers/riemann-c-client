@@ -155,7 +155,8 @@ riemann_message_t *riemann_message_create_with_query (riemann_query_t *query);
 
 The first form creates an empty message, which one can later use to
 attach events or a query too, using
-[`riemann_event_set_events`](#api-event-set-events) or
+[`riemann_event_set_events`](#api-event-set-events),
+[`riemann_event_append_events`](#api-event-append-events) or
 [`riemann_event_set_query`](#api-event-set-query). The other two are
 the usual two-in-one functions that create a new message, and calls
 the appropriate set function aswell, with similar arguments.
@@ -173,6 +174,19 @@ Setting events on a message is as easy as passing a NULL-terminated
 list of [`riemann_event_t`](#api-event) objects to this function. If
 the message already had events, they will be freed before setting the
 new ones.
+
+To support building up a message iteratively, the library has another
+function:
+
+<a name="api-event-append-events">
+```c
+int riemann_message_append_events (riemann_message_t *message, ...);
+```
+
+Similarly to [`riemann_message_set_events()`](#api-event-set-events),
+this function expects a NULL-terminated list of
+[`riemann_event_t`](#api-event) objects. Existing events will not be
+freed or overwritten, but rather appended to.
 
 <a name="api-event-set-query">
 ```c

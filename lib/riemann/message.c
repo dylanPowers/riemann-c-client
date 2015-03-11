@@ -187,6 +187,7 @@ riemann_message_append_events_va (riemann_message_t *message, va_list aq)
   riemann_event_t *event, **events, **nevents;
   size_t n_events = 1;
   va_list ap;
+  int r;
 
   if (!message)
     return -EINVAL;
@@ -205,10 +206,9 @@ riemann_message_append_events_va (riemann_message_t *message, va_list aq)
   nevents = _riemann_message_combine_events(events, events[0], &n_events, ap);
   va_end (ap);
 
-  /* This cannot fail, because all arguments are guaranteed to be
-     valid by this point, and there are no other error paths in the
-     called function. */
-  return riemann_message_append_events_n (message, n_events, nevents);
+  r = riemann_message_append_events_n (message, n_events, nevents);
+  free (nevents);
+  return r;
 }
 
 int

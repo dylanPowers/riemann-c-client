@@ -178,6 +178,8 @@ riemann_message_append_events_n (riemann_message_t *message,
   for (n = 0; n < n_events; n++)
     message->events[n + start] = events[n];
 
+  free (events);
+
   return 0;
 }
 
@@ -187,7 +189,6 @@ riemann_message_append_events_va (riemann_message_t *message, va_list aq)
   riemann_event_t *event, **events, **nevents;
   size_t n_events = 1;
   va_list ap;
-  int r;
 
   if (!message)
     return -EINVAL;
@@ -206,9 +207,7 @@ riemann_message_append_events_va (riemann_message_t *message, va_list aq)
   nevents = _riemann_message_combine_events(events, events[0], &n_events, ap);
   va_end (ap);
 
-  r = riemann_message_append_events_n (message, n_events, nevents);
-  free (nevents);
-  return r;
+  return riemann_message_append_events_n (message, n_events, nevents);
 }
 
 int

@@ -271,6 +271,8 @@ START_TEST (test_riemann_message_append_events_n)
   ck_assert (riemann_message_append_events_n (message, 2, events2) == 0);
   ck_assert_int_eq (message->n_events, 4);
   ck_assert (message->events[0] == event1);
+  ck_assert (message->events[1] == event2);
+  ck_assert (message->events[2] == event3);
   ck_assert (message->events[3] == event4);
 
   riemann_message_free (message);

@@ -17,11 +17,12 @@
 
 #include <riemann/message.h>
 
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include <string.h>
+#include <unistd.h>
 
 riemann_message_t *
 riemann_message_new (void)

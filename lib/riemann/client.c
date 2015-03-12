@@ -1,5 +1,5 @@
 /* riemann/client.c -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -15,14 +15,14 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <riemann/client.h>
-
-#include <errno.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <netdb.h>
 
 #include "riemann/_private.h"

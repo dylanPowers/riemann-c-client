@@ -1,5 +1,5 @@
 /* riemann/event.c -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -15,13 +15,13 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <riemann/attribute.h>
 #include <riemann/event.h>
 
 #include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <unistd.h>
 
 riemann_event_t *
 riemann_event_new (void)

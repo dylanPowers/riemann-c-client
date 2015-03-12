@@ -45,5 +45,7 @@ Makefile.in
 *.tar.*
 *.gcno
 *.gcda
+*.gcov
 *.pc
+gmon.out
 stamp-h1

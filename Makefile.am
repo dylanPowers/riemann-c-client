@@ -107,7 +107,7 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  lib/riemann/_private.h \
 				  ${check_libriemann_srcs} \
 				  ${src_riemann_client_EXTRA_DIST} \
-				  docs/API.md ${man1_MANS}
+				  ${man1_MANS}
 
 # -- Manual pages --
 man1_MANS			 = \
@@ -129,3 +129,8 @@ CLEANFILES			+= coverage.info
 clean-local:
 	rm -rf coverage.info.html
 	find ${top_builddir} -name '*.gcda' -or -name '*.gcno' | xargs rm -f
+
+doxygen: Doxyfile
+	$(AM_V_GEN)doxygen
+
+.PHONY: doxygen

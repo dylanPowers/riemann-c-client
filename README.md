@@ -28,7 +28,7 @@ Features
  * API and ABI stability (including symbol versioning on platforms
    where it is available).
 
- [api-docs]: https://github.com/algernon/riemann-c-client/blob/master/docs/API.md
+ [api-docs]: https://algernon.github.io/riemann-c-client/
 
 Installation
 ------------
@@ -58,6 +58,9 @@ If, for some reason the build fails, one may need to regenerate the
 `protobuf-c-compiler` generated headers (changes in the compiler are
 known to cause issues). To do this, do a `make distclean` first, and
 then start over from `configure`.
+
+To build the API documentation, one will have to have
+[Doxygen](http://www.doxygen.org/) installed.
 
 Demo
 ----

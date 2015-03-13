@@ -13,6 +13,7 @@ Makefile.in
 /coverage.info
 /coverage.info.html
 /depcomp
+/docs/
 /install-sh
 /libtool
 /ltmain.sh

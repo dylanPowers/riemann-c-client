@@ -78,5 +78,9 @@ AC_DEFINE_UNQUOTED([HAVE_JSON_C],
   `if test x$HAVE_JSON_C != xno; then echo 1; else echo 0; fi`,
   [Define when json-c is available])
 
-AC_CONFIG_FILES([Makefile lib/riemann/riemann-client.pc])
+AC_CONFIG_FILES([
+        Makefile
+        Doxyfile
+        lib/riemann/riemann-client.pc
+])
 AC_OUTPUT

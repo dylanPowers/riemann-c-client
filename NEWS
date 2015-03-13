@@ -9,6 +9,14 @@ riemann_message_append_events*() family of functions were added.
 
 Requested by Christopher Gilbert <christopher.john.gilbert@gmail.com>.
 
+** Feature: Add support for cloning objects.
+
+All of the riemann objects (attributes, queries, events and messages)
+are now clonable. The clone family of functions will do a deep copy of
+the source objects.
+
+Requested by Christopher Gilbert <christopher.john.gilbert@gmail.com>.
+
 * 1.3.0 - <2014-12-02 Tue>
 
 ** Bugfix: Support C++ compilers

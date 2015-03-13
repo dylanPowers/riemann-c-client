@@ -198,6 +198,58 @@ START_TEST (test_riemann_event_attribute_add)
 }
 END_TEST
 
+START_TEST (test_riemann_event_clone)
+{
+  riemann_event_t *event, *clone;
+
+  ck_assert (riemann_event_clone (NULL) == NULL);
+  ck_assert_errno (-errno, EINVAL);
+
+  event = riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
+                                RIEMANN_EVENT_FIELD_SERVICE, "test",
+                                RIEMANN_EVENT_FIELD_TIME, (int64_t) 1234,
+                                RIEMANN_EVENT_FIELD_STATE, "ok",
+                                RIEMANN_EVENT_FIELD_DESCRIPTION, "something",
+                                RIEMANN_EVENT_FIELD_TAGS, "tag-1", "tag-2", NULL,
+                                RIEMANN_EVENT_FIELD_TTL, (float) 1,
+                                RIEMANN_EVENT_FIELD_ATTRIBUTES,
+                                riemann_attribute_create ("key-1", "value-1"),
+                                riemann_attribute_create ("key-2", "value-2"),
+                                NULL,
+                                RIEMANN_EVENT_FIELD_METRIC_S64, (int64_t) 12345,
+                                RIEMANN_EVENT_FIELD_NONE);
+  clone = riemann_event_clone (event);
+
+  ck_assert (clone != NULL);
+  ck_assert (clone != event);
+
+  ck_assert (clone->host != event->host);
+  ck_assert_str_eq (clone->host, event->host);
+  ck_assert (clone->service != event->service);
+  ck_assert_str_eq (clone->service, event->service);
+  ck_assert_int_eq (clone->time, event->time);
+  ck_assert (clone->state != event->state);
+  ck_assert_str_eq (clone->state, event->state);
+  ck_assert (clone->description != event->description);
+  ck_assert_str_eq (clone->description, event->description);
+  ck_assert_int_eq (clone->metric_sint64, event->metric_sint64);
+
+  ck_assert (clone->tags != NULL);
+  ck_assert_int_eq (clone->n_tags, event->n_tags);
+  ck_assert (clone->tags[0] != event->tags[0]);
+  ck_assert_str_eq (clone->tags[0], event->tags[0]);
+
+  ck_assert (clone->attributes != NULL);
+  ck_assert_int_eq (clone->n_attributes, event->n_attributes);
+  ck_assert (clone->attributes[0] != event->attributes[0]);
+  ck_assert_str_eq (clone->attributes[0]->key,
+                    event->attributes[0]->key);
+
+  riemann_event_free (event);
+  riemann_event_free (clone);
+}
+END_TEST
+
 static TCase *
 test_riemann_events (void)
 {
@@ -211,6 +263,7 @@ test_riemann_events (void)
   tcase_add_test (test_events, test_riemann_event_tag_add);
   tcase_add_test (test_events, test_riemann_event_attribute_add);
   tcase_add_test (test_events, test_riemann_event_create);
+  tcase_add_test (test_events, test_riemann_event_clone);
 
   return test_events;
 }

@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <string.h>
 #include <unistd.h>
 
 riemann_message_t *
@@ -341,4 +342,34 @@ riemann_message_from_buffer (uint8_t *buffer, size_t len)
 
   errno = EPROTO;
   return msg__unpack (NULL, len, buffer);
+}
+
+riemann_message_t *
+riemann_message_clone (const riemann_message_t *message)
+{
+  riemann_message_t *clone;
+  size_t n;
+
+  if (!message)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  clone = riemann_message_new ();
+  clone->has_ok = message->has_ok;
+  clone->ok = message->ok;
+
+  if (message->error)
+    clone->error = strdup (message->error);
+
+  if (message->query)
+    clone->query = riemann_query_clone (message->query);
+
+  clone->n_events = message->n_events;
+  clone->events = malloc (sizeof (riemann_event_t *) * clone->n_events);
+  for (n = 0; n < clone->n_events; n++)
+    clone->events[n] = riemann_event_clone (message->events[n]);
+
+  return clone;
 }

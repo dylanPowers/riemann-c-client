@@ -1,5 +1,5 @@
 /* riemann/query.c -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -63,4 +63,16 @@ riemann_query_set_string (riemann_query_t *query, const char *string)
   query->string = strdup (string);
 
   return 0;
+}
+
+riemann_query_t *
+riemann_query_clone (const riemann_query_t *query)
+{
+  if (!query)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  return riemann_query_new (query->string);
 }

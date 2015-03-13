@@ -307,6 +307,49 @@ START_TEST (test_riemann_message_append_events)
 }
 END_TEST
 
+START_TEST (test_riemann_message_clone)
+{
+  riemann_message_t *message, *clone;
+
+  errno = 0;
+  ck_assert (riemann_message_clone (NULL) == NULL);
+  ck_assert_errno (-errno, EINVAL);
+
+  message = riemann_message_create_with_query
+    (riemann_query_new ("state = \"ok\""));
+  clone = riemann_message_clone (message);
+
+  ck_assert (clone != NULL);
+  ck_assert (clone != message);
+  ck_assert (clone->query != message->query);
+  ck_assert_str_eq (clone->query->string, message->query->string);
+
+  riemann_message_free (message);
+  riemann_message_free (clone);
+
+  message = riemann_message_create_with_events
+    (riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
+                           RIEMANN_EVENT_FIELD_SERVICE, "test",
+                           RIEMANN_EVENT_FIELD_NONE),
+     riemann_event_create (RIEMANN_EVENT_FIELD_SERVICE, "test-two",
+                           RIEMANN_EVENT_FIELD_NONE),
+     NULL);
+  message->error = strdup ("foobar");
+  clone = riemann_message_clone (message);
+
+  ck_assert (clone != NULL);
+  ck_assert (clone != message);
+  ck_assert (clone->events != message->events);
+  ck_assert_int_eq (clone->n_events, message->n_events);
+
+  ck_assert (clone->events[0] != message->events[0]);
+  ck_assert_str_eq (clone->events[0]->host, message->events[0]->host);
+
+  riemann_message_free (message);
+  riemann_message_free (clone);
+}
+END_TEST
+
 static TCase *
 test_riemann_messages (void)
 {
@@ -324,6 +367,7 @@ test_riemann_messages (void)
   tcase_add_test (test_messages, test_riemann_message_create_with_query);
   tcase_add_test (test_messages, test_riemann_message_append_events_n);
   tcase_add_test (test_messages, test_riemann_message_append_events);
+  tcase_add_test (test_messages, test_riemann_message_clone);
 
   return test_messages;
 }

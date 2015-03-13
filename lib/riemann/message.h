@@ -32,6 +32,7 @@ riemann_message_t *riemann_message_new (void);
 riemann_message_t *riemann_message_create_with_events (riemann_event_t *event, ...);
 riemann_message_t *riemann_message_create_with_events_va (riemann_event_t *event, va_list aq); 
 riemann_message_t *riemann_message_create_with_query (riemann_query_t *query);
+riemann_message_t *riemann_message_clone (const riemann_message_t *message);
 void riemann_message_free (riemann_message_t *message);
 
 int riemann_message_set_events_n (riemann_message_t *message,

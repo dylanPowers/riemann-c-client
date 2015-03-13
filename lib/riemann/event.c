@@ -252,3 +252,49 @@ riemann_event_create (riemann_event_field_t field, ...)
 
   return event;
 }
+
+riemann_event_t *
+riemann_event_clone (const riemann_event_t *event)
+{
+  riemann_event_t *clone;
+  size_t n;
+
+  if (!event)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  clone = riemann_event_new ();
+
+  /* Copy non-pointer properties */
+  clone->time = event->time;
+  clone->ttl = event->ttl;
+  clone->metric_sint64 = event->metric_sint64;
+  clone->metric_d = event->metric_d;
+  clone->metric_f = event->metric_f;
+
+  /* Copy strings */
+  if (event->state)
+    clone->state = strdup (event->state);
+  if (event->host)
+    clone->host = strdup (event->host);
+  if (event->service)
+    clone->service = strdup (event->service);
+  if (event->description)
+    clone->description = strdup (event->description);
+
+  /* Copy deeper structures */
+  clone->n_tags = event->n_tags;
+  clone->tags = malloc (sizeof (char *) * clone->n_tags);
+  for (n = 0; n < clone->n_tags; n++)
+    clone->tags[n] = strdup (event->tags[n]);
+
+  clone->n_attributes = event->n_attributes;
+  clone->attributes = malloc (sizeof (riemann_attribute_t *) *
+                              clone->n_attributes);
+  for (n = 0; n < clone->n_attributes; n++)
+    clone->attributes[n] = riemann_attribute_clone (event->attributes[n]);
+
+  return clone;
+}

@@ -1,5 +1,5 @@
 /* riemann/attribute.h -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -27,6 +27,7 @@ extern "C" {
 #endif
 
 riemann_attribute_t *riemann_attribute_new (void);
+riemann_attribute_t *riemann_attribute_clone (const riemann_attribute_t *attrib);
 void riemann_attribute_free (riemann_attribute_t *attrib);
 
 int riemann_attribute_set_key (riemann_attribute_t *attrib, const char *key);

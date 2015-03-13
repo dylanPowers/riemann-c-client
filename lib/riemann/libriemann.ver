@@ -72,4 +72,6 @@ global:
         riemann_message_append_events_n;
         riemann_message_append_events;
         riemann_message_append_events_va;
+
+        riemann_attribute_clone;
 } RIEMANN_C_1.3;

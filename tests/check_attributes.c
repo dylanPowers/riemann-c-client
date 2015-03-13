@@ -63,6 +63,30 @@ START_TEST (test_riemann_attribute_create)
 }
 END_TEST
 
+START_TEST (test_riemann_attribute_clone)
+{
+  riemann_attribute_t *attrib, *clone;
+
+  errno = 0;
+  ck_assert (riemann_attribute_clone (NULL) == NULL);
+  ck_assert_errno (-errno, EINVAL);
+
+  attrib = riemann_attribute_create ("key", "value");
+  clone = riemann_attribute_clone (attrib);
+
+  ck_assert (clone != NULL);
+  ck_assert (attrib != clone);
+  ck_assert (attrib->key != clone->key);
+  ck_assert (attrib->value != clone->value);
+
+  ck_assert_str_eq (attrib->key, clone->key);
+  ck_assert_str_eq (attrib->value, clone->value);
+
+  riemann_attribute_free (attrib);
+  riemann_attribute_free (clone);
+}
+END_TEST
+
 static TCase *
 test_riemann_attributes (void)
 {
@@ -72,6 +96,7 @@ test_riemann_attributes (void)
   tcase_add_test (tests, test_riemann_attribute_new_and_free);
   tcase_add_test (tests, test_riemann_attribute_set);
   tcase_add_test (tests, test_riemann_attribute_create);
+  tcase_add_test (tests, test_riemann_attribute_clone);
 
   return tests;
 }

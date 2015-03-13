@@ -103,3 +103,15 @@ riemann_attribute_create (const char *key, const char *value)
 
   return attrib;
 }
+
+riemann_attribute_t *
+riemann_attribute_clone (const riemann_attribute_t *attrib)
+{
+  if (!attrib)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  return riemann_attribute_create (attrib->key, attrib->value);
+}

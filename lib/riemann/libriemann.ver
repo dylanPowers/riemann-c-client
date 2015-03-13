@@ -75,4 +75,5 @@ global:
 
         riemann_attribute_clone;
         riemann_event_clone;
+        riemann_query_clone;
 } RIEMANN_C_1.3;

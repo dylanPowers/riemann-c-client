@@ -1,5 +1,5 @@
 /* riemann/query.h -- Riemann C client library
- * Copyright (C) 2013  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -27,6 +27,7 @@ extern "C" {
 #endif
 
 riemann_query_t *riemann_query_new (const char *string);
+riemann_query_t *riemann_query_clone (const riemann_query_t *query);
 void riemann_query_free (riemann_query_t *query);
 
 int riemann_query_set_string (riemann_query_t *query, const char *string);

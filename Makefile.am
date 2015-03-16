@@ -130,7 +130,9 @@ clean-local:
 	rm -rf coverage.info.html
 	find ${top_builddir} -name '*.gcda' -or -name '*.gcno' | xargs rm -f
 
-doxygen: Doxyfile
+docs/html: Doxyfile $(pkginclude_HEADERS)
 	$(AM_V_GEN)doxygen
+
+doxygen: docs/html
 
 .PHONY: doxygen

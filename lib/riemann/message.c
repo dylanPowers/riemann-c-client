@@ -1,5 +1,5 @@
 /* riemann/message.c -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -17,11 +17,13 @@
 
 #include <riemann/message.h>
 
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <unistd.h>
 
 riemann_message_t *
 riemann_message_new (void)
@@ -112,7 +114,7 @@ _riemann_message_combine_events (riemann_event_t **events,
 }
 
 int
-riemann_message_set_events (riemann_message_t *message, ...)
+riemann_message_set_events_va (riemann_message_t *message, va_list aq)
 {
   size_t n_events = 1;
   riemann_event_t **events, **nevents, *event;
@@ -121,7 +123,7 @@ riemann_message_set_events (riemann_message_t *message, ...)
   if (!message)
     return -EINVAL;
 
-  va_start (ap, message);
+  va_copy (ap, aq);
   event = va_arg (ap, riemann_event_t *);
   if (!event)
     {
@@ -141,8 +143,90 @@ riemann_message_set_events (riemann_message_t *message, ...)
   return riemann_message_set_events_n (message, n_events, nevents);
 }
 
+int
+riemann_message_set_events (riemann_message_t *message, ...)
+{
+  int r;
+  va_list ap;
+
+  va_start (ap, message);
+  r = riemann_message_set_events_va (message, ap);
+  va_end (ap);
+
+  return r;
+}
+
+int
+riemann_message_append_events_n (riemann_message_t *message,
+                                 size_t n_events,
+                                 riemann_event_t **events)
+{
+  size_t n, start;
+
+  if (!message)
+    return -EINVAL;
+
+  if (n_events < 1)
+    return -ERANGE;
+
+  if (!events)
+    return -EINVAL;
+
+  start = message->n_events;
+  message->n_events += n_events;
+  message->events = realloc (message->events,
+                             sizeof (riemann_event_t *) * message->n_events);
+
+  for (n = 0; n < n_events; n++)
+    message->events[n + start] = events[n];
+
+  free (events);
+
+  return 0;
+}
+
+int
+riemann_message_append_events_va (riemann_message_t *message, va_list aq)
+{
+  riemann_event_t *event, **events, **nevents;
+  size_t n_events = 1;
+  va_list ap;
+
+  if (!message)
+    return -EINVAL;
+
+  va_copy (ap, aq);
+
+  event = va_arg (ap, riemann_event_t *);
+  if (!event)
+    {
+      va_end (ap);
+      return -ERANGE;
+    }
+
+  events = malloc (sizeof (riemann_event_t *));
+  events[0] = event;
+  nevents = _riemann_message_combine_events(events, events[0], &n_events, ap);
+  va_end (ap);
+
+  return riemann_message_append_events_n (message, n_events, nevents);
+}
+
+int
+riemann_message_append_events (riemann_message_t *message, ...)
+{
+  int r;
+  va_list ap;
+
+  va_start (ap, message);
+  r = riemann_message_append_events_va (message, ap);
+  va_end (ap);
+
+  return r;
+}
+
 riemann_message_t *
-riemann_message_create_with_events (riemann_event_t *event, ...)
+riemann_message_create_with_events_va (riemann_event_t *event, va_list aq)
 {
   riemann_message_t *message;
   riemann_event_t **events;
@@ -160,7 +244,7 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
   events = malloc (sizeof (riemann_event_t *));
   events[0] = event;
 
-  va_start (ap, event);
+  va_copy (ap, aq);
   events = _riemann_message_combine_events (events, event, &n_events, ap);
   va_end (ap);
 
@@ -168,6 +252,19 @@ riemann_message_create_with_events (riemann_event_t *event, ...)
      valid by this point, and there is no other error path in the
      called function. */
   riemann_message_set_events_n (message, n_events, events);
+
+  return message;
+}
+
+riemann_message_t *
+riemann_message_create_with_events (riemann_event_t *event, ...)
+{
+  riemann_message_t *message;
+  va_list ap;
+
+  va_start (ap, event);
+  message = riemann_message_create_with_events_va (event, ap);
+  va_end (ap);
 
   return message;
 }
@@ -245,4 +342,34 @@ riemann_message_from_buffer (uint8_t *buffer, size_t len)
 
   errno = EPROTO;
   return msg__unpack (NULL, len, buffer);
+}
+
+riemann_message_t *
+riemann_message_clone (const riemann_message_t *message)
+{
+  riemann_message_t *clone;
+  size_t n;
+
+  if (!message)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  clone = riemann_message_new ();
+  clone->has_ok = message->has_ok;
+  clone->ok = message->ok;
+
+  if (message->error)
+    clone->error = strdup (message->error);
+
+  if (message->query)
+    clone->query = riemann_query_clone (message->query);
+
+  clone->n_events = message->n_events;
+  clone->events = malloc (sizeof (riemann_event_t *) * clone->n_events);
+  for (n = 0; n < clone->n_events; n++)
+    clone->events[n] = riemann_event_clone (message->events[n]);
+
+  return clone;
 }

@@ -1,5 +1,5 @@
 /* riemann/event.c -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -15,13 +15,13 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <riemann/attribute.h>
 #include <riemann/event.h>
 
 #include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <unistd.h>
 
 riemann_event_t *
 riemann_event_new (void)
@@ -219,15 +219,15 @@ riemann_event_attribute_add (riemann_event_t *event,
 }
 
 riemann_event_t *
-riemann_event_create (riemann_event_field_t field, ...)
+riemann_event_create_va (riemann_event_field_t field, va_list aq)
 {
-  riemann_event_t *event;
   va_list ap;
+  riemann_event_t *event;
   int e;
 
   event = riemann_event_new ();
 
-  va_start (ap, field);
+  va_copy (ap, aq);
   if ((e = riemann_event_set_va (event, field, ap)) != 0)
     {
       va_end (ap);
@@ -238,4 +238,63 @@ riemann_event_create (riemann_event_field_t field, ...)
   va_end (ap);
 
   return event;
+}
+
+riemann_event_t *
+riemann_event_create (riemann_event_field_t field, ...)
+{
+  riemann_event_t *event;
+  va_list ap;
+
+  va_start (ap, field);
+  event = riemann_event_create_va (field, ap);
+  va_end (ap);
+
+  return event;
+}
+
+riemann_event_t *
+riemann_event_clone (const riemann_event_t *event)
+{
+  riemann_event_t *clone;
+  size_t n;
+
+  if (!event)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  clone = riemann_event_new ();
+
+  /* Copy non-pointer properties */
+  clone->time = event->time;
+  clone->ttl = event->ttl;
+  clone->metric_sint64 = event->metric_sint64;
+  clone->metric_d = event->metric_d;
+  clone->metric_f = event->metric_f;
+
+  /* Copy strings */
+  if (event->state)
+    clone->state = strdup (event->state);
+  if (event->host)
+    clone->host = strdup (event->host);
+  if (event->service)
+    clone->service = strdup (event->service);
+  if (event->description)
+    clone->description = strdup (event->description);
+
+  /* Copy deeper structures */
+  clone->n_tags = event->n_tags;
+  clone->tags = malloc (sizeof (char *) * clone->n_tags);
+  for (n = 0; n < clone->n_tags; n++)
+    clone->tags[n] = strdup (event->tags[n]);
+
+  clone->n_attributes = event->n_attributes;
+  clone->attributes = malloc (sizeof (riemann_attribute_t *) *
+                              clone->n_attributes);
+  for (n = 0; n < clone->n_attributes; n++)
+    clone->attributes[n] = riemann_attribute_clone (event->attributes[n]);
+
+  return clone;
 }

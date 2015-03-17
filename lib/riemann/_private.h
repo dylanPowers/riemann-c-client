@@ -19,10 +19,6 @@
 #define __MADHOUSE_RIEMANN_PRIVATE_H__ 1
 
 #include <riemann/riemann-client.h>
-#include <stdarg.h>
-
-int riemann_event_set_va (riemann_event_t *event,
-                          riemann_event_field_t first_field, va_list aq);
 
 typedef int (*riemann_client_send_message_t) (riemann_client_t *client,
                                               riemann_message_t *message);

@@ -1,0 +1,121 @@
+.TH "RIEMANN\-CLIENT" "1" "March 2015" "The MadHouse Project" "riemann-c-client"
+
+.SH "NAME"
+\fBriemann\-client\fR \- Riemann communication tool
+
+.SH "SYNOPSIS"
+\fBriemann\-client\fR \fBquery\fR [\fIOPTIONS\fR...] \fIQUERY\fR [\fIHOST\fR] [\fIPORT\fR]
+.br
+\fBriemann\-client\fR \fBsend\fR [\fIOPTIONS\fR...] [\fIHOST\fR] [\fIPORT\fR]
+.br
+\fBriemann\-client\fR \fB\-\-help\fR|\fB\-?\fR
+.br
+\fBriemann\-client\fR \fB\-\-version\fR
+
+.SH "DESCRIPTION"
+\fBriemann\-client\fR is a very simple tool to faciliate communication
+with a Riemann event stream processing server. It can be used both
+for sending events to one, and to query it too.
+
+.SH "OPTIONS"
+In both \fBquery\fR and \fBsend\fR mode, \fIHOST\fR and \fIPORT\fR
+default to \fIlocalhost\fR and \fI5555\fR, respectively.
+
+.SS "Query mode"
+In query mode, \fBriemann\-client\fR takes one mandatory argument: the
+query itself. It must be a single argument, which will be sent to
+Riemann as\-is, and the response dumped to the standard output, or, in
+case of an error, the error message will be written to the standard
+error.
+
+.P
+See the Riemann documentation \fIhttp://riemann.io/concepts.html\fR
+for more information about the query syntax.
+
+.P
+Apart from the mandatory argument, the \fBriemann\-client\fR accepts
+the following options in query mode:
+
+.TP
+\fB\-j\fR, \fB\-\-json\fR
+Print the result in JSON format, instead of the default,
+human\-readable one.
+
+.SS "Submit mode"
+In submit mode, \fBriemann\-client\fR accepts the following options:
+
+.TP
+\fB\-s\fR, \fB\-\-state\fR \fISTATE\fR
+The state the event should describe, free\-form text, optional.
+
+.TP
+\fB\-S\fR, \fB\-\-service\fR \fISERVICE\fR
+The service the event is coming from.
+
+.TP
+\fB\-h\fR, \fB\-\-host\fR \fIHOST\fR
+The host the event originates from. Not to be confused with the
+optional \fIHOST\fR parameter of \fBriemann\-client\fR itself, which
+sets where to send the events to.
+
+.TP
+\fB\-D\fR, \fB\-\-description\fR \fIDESCRIPTION\fR
+The description of the event, optional.
+
+.TP
+\fB\-t\fR, \fB\-\-tag\fR \fITAG\fR
+This option can be used multiple times to add tags to the event.
+
+.TP
+\fB\-a\fR, \fB\-\-attribute\fR \fINAME\fR=\fIVALUE\fR
+This option can be used multiple times to add custom attributes to the
+event.
+
+.TP
+\fB\-i\fR, \fB\-\-metric\-sint64\fR \fIMETRIC\fR
+Sets the metric for the event, using integer precision.
+
+.TP
+\fB\-d\fR, \fB\-\-metric\-d\fR \fIMETRIC\fR
+Sets the metric of the event, using double precision.
+
+.TP
+\fB\-f\fR, \fB\-\-metric\-f\fR \fIMETRIC\fR
+Sets the metric of the event, using floating point precision.
+
+.TP
+\fB\-L\fR, \fB\-\-ttl\fR \fITTL\fR
+An optional time\-to\-live of the event, in seconds (floating point number).
+
+.TP
+\fB\-T\fR, \fB\-\-tcp\fR
+Send the event via TCP (the default).
+
+.TP
+\fB\-U\fR, \fB\-\-udp\fR
+Send the event via UDP.
+
+.SH "EXAMPLES"
+
+.SS "Sending an event"
+
+.nf
+$ riemann\-client send \-\-state ok \e
+                      \-\-service "client\-test" \e
+                      \-\-host "my\-host" \e
+                      \-\-description "A message from the Manual" \e
+                      \-\-tag tag\-1 \-\-tag tag\-2 \e
+                      \-\-attribute x\-manual=best\-friend \e
+                      \-\-metric\-sint64 1 \e
+                      \-\-ttl 300.5 \e
+                      \-\-tcp
+.fi
+
+.SS "Querying Riemann"
+
+.nf
+$ riemann\-client query 'host = "my\-host"'
+.fi
+
+.SH "AUTHOR"
+Gergely Nagy \fIalgernon@madhouse\-project.org\fR

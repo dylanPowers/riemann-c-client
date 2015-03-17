@@ -1,5 +1,5 @@
 /* riemann-c-client -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -50,8 +50,6 @@ client_send (int argc, char *argv[])
 
   event = riemann_event_new ();
 
-  riemann_event_set_one (event, TAGS, "riemann-c-client", "example:send-events",
-                         NULL);
   riemann_event_set_one (event, ATTRIBUTES,
                          riemann_attribute_create ("x-client", "riemann-c-client"),
                          NULL);

@@ -1,5 +1,5 @@
 /* riemann/simple.c -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -15,13 +15,14 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <riemann/simple.h>
+#include <stdarg.h>
 
 #include "riemann/_private.h"
 
 int
-riemann_send (riemann_client_t *client,
-              riemann_event_field_t field, ...)
+riemann_send_va (riemann_client_t *client,
+                 riemann_event_field_t field,
+                 va_list aq)
 {
   riemann_message_t *message;
   riemann_event_t *event;
@@ -33,7 +34,7 @@ riemann_send (riemann_client_t *client,
 
   event = riemann_event_new ();
 
-  va_start (ap, field);
+  va_copy (ap, aq);
   if ((e = riemann_event_set_va (event, field, ap)) != 0)
     {
       va_end (ap);
@@ -49,6 +50,20 @@ riemann_send (riemann_client_t *client,
   message = riemann_message_create_with_events (event, NULL);
 
   return riemann_client_send_message_oneshot (client, message);
+}
+
+int
+riemann_send (riemann_client_t *client,
+              riemann_event_field_t field, ...)
+{
+  va_list ap;
+  int e;
+
+  va_start (ap, field);
+  e = riemann_send_va (client, field, ap);
+  va_end (ap);
+
+  return e;
 }
 
 riemann_message_t *

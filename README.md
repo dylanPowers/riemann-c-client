@@ -1,9 +1,9 @@
 Riemann C client library
 ========================
 
-[![Build Status](https://travis-ci.org/algernon/riemann-c-client.png?branch=master)](https://travis-ci.org/algernon/riemann-c-client)
-[![Build Status](https://drone.io/github.com/algernon/riemann-c-client/status.png)](https://drone.io/github.com/algernon/riemann-c-client/latest)
-[![Coverage Status](https://coveralls.io/repos/algernon/riemann-c-client/badge.png)](https://coveralls.io/r/algernon/riemann-c-client)
+[![Build Status](https://img.shields.io/travis/algernon/riemann-c-client/master.svg?style=flat-square)](https://travis-ci.org/algernon/riemann-c-client)
+[![Coverage Status](https://img.shields.io/coveralls/algernon/riemann-c-client.svg?style=flat-square)](https://coveralls.io/r/algernon/riemann-c-client)
+[![Latest release](https://img.shields.io/github/release/algernon/riemann-c-client.svg?style=flat-square)](https://github.com/algernon/riemann-c-client/releases/latest)
 
 This is a C client library for the [Riemann][riemann] monitoring
 system, providing a convenient and simple API, high test coverage and
@@ -28,7 +28,7 @@ Features
  * API and ABI stability (including symbol versioning on platforms
    where it is available).
 
- [api-docs]: https://github.com/algernon/riemann-c-client/blob/master/docs/API.md
+ [api-docs]: https://algernon.github.io/riemann-c-client/
 
 Installation
 ------------
@@ -49,14 +49,18 @@ and one can use `pkg-config` to compile programs against it:
 
     ${CC} $(pkg-config --cflags --libs riemann-client) demo.c -o demo -Wall
 
-To build the manual page for the `riemann-client` command-line tool,
-one will also need [Ronn](https://github.com/rtomayko/ronn) installed,
-but this is optional.
-
 To enable the JSON output support in `riemann-client`, one also needs
 the [json-c][json-c] library installed, but this feature is optional.
 
  [json-c]: https://github.com/json-c/json-c/wiki
+
+If, for some reason the build fails, one may need to regenerate the
+`protobuf-c-compiler` generated headers (changes in the compiler are
+known to cause issues). To do this, do a `make distclean` first, and
+then start over from `configure`.
+
+To build the API documentation, one will have to have
+[Doxygen](http://www.doxygen.org/) installed.
 
 Demo
 ----
@@ -126,7 +130,7 @@ find convenient and useful.
 License
 -------
 
-Copyright (C) 2013, 2014 Gergely Nagy <algernon@madhouse-project.org>,
+Copyright (C) 2013, 2014, 2015 Gergely Nagy <algernon@madhouse-project.org>,
 released under the terms of the
 [GNU Lesser General Public License][lgpl], version 3+.
 

@@ -1,7 +1,7 @@
-/Makefile
-/Makefile.in
+Makefile
+Makefile.in
 /aclocal.m4
-/autom4te.cache
+/autom4te.cache/
 /autoscan.log
 /compile
 /config.guess
@@ -13,10 +13,10 @@
 /coverage.info
 /coverage.info.html
 /depcomp
+/docs/
 /install-sh
 /libtool
 /ltmain.sh
-/m4/*.m4
 /missing
 /stamp-h1
 /lib/libriemann-client.la
@@ -25,7 +25,6 @@
 /lib/riemann/platform.h
 /lib/riemann-client.pc
 /src/riemann-client
-/src/riemann-client.1*
 /tests/check_libriemann
 /test-driver
 /debian/autoreconf.*
@@ -47,3 +46,7 @@
 *.tar.*
 *.gcno
 *.gcda
+*.gcov
+*.pc
+gmon.out
+stamp-h1

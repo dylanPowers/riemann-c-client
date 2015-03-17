@@ -1,9 +1,9 @@
 # -*- Autoconf -*-
 
-AC_INIT([riemann-c-client], [1.2.0], [algernon@madhouse-project.org])
+AC_INIT([riemann-c-client], [1.4.0], [algernon@madhouse-project.org])
 AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz no-dist-gzip])
 
-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([no])])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_CONFIG_SRCDIR([lib/riemann/client.c])
 AC_CONFIG_HEADERS([lib/riemann/platform.h])
@@ -71,8 +71,6 @@ AC_CACHE_CHECK(whether $LD supports symbol version scripts,
 LDFLAGS=$ac_save_LDFLAGS
 AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
 
-AC_CHECK_PROG([HAVE_RONN], [ronn], [yes])
-AM_CONDITIONAL([HAVE_RONN], [test x$HAVE_RONN = xyes])
 AM_CONDITIONAL([HAVE_JSON_C], [test x$HAVE_JSON_C != xno])
 AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])
 
@@ -80,5 +78,9 @@ AC_DEFINE_UNQUOTED([HAVE_JSON_C],
   `if test x$HAVE_JSON_C != xno; then echo 1; else echo 0; fi`,
   [Define when json-c is available])
 
-AC_CONFIG_FILES([Makefile lib/riemann/riemann-client.pc])
+AC_CONFIG_FILES([
+        Makefile
+        Doxyfile
+        lib/riemann/riemann-client.pc
+])
 AC_OUTPUT

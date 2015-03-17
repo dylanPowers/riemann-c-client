@@ -90,7 +90,7 @@ START_TEST (test_riemann_client_disconnect)
 
       ck_assert_errno (riemann_client_disconnect (client), EBADF);
       client->sock--;
-      riemann_client_disconnect (client);
+      riemann_client_free (client);
     }
 }
 END_TEST

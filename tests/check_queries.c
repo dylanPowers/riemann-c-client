@@ -39,6 +39,27 @@ START_TEST (test_riemann_query_set_string)
 }
 END_TEST
 
+START_TEST (test_riemann_query_clone)
+{
+  riemann_query_t *query, *clone;
+
+  errno = 0;
+  ck_assert (riemann_query_clone (NULL) == NULL);
+  ck_assert_errno (-errno, EINVAL);
+
+  query = riemann_query_new ("status = \"ok\"");
+  clone = riemann_query_clone (query);
+
+  ck_assert (clone != NULL);
+  ck_assert (clone != query);
+  ck_assert (clone->string != query->string);
+  ck_assert_str_eq (clone->string, query->string);
+
+  riemann_query_free (query);
+  riemann_query_free (clone);
+}
+END_TEST
+
 static TCase *
 test_riemann_queries (void)
 {
@@ -48,6 +69,7 @@ test_riemann_queries (void)
   tcase_add_test (tests, test_riemann_query_new);
   tcase_add_test (tests, test_riemann_query_free);
   tcase_add_test (tests, test_riemann_query_set_string);
+  tcase_add_test (tests, test_riemann_query_clone);
 
   return tests;
 }

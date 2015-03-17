@@ -1,6 +1,6 @@
 #+STARTUP: indent showall                       -*- org -*-
 
-* 1.4.0 - UNRELEASED
+* 1.4.0 - <2015-03-17 Tue>
 
 ** Feature: Add riemann_message_append_events*() functions.
 

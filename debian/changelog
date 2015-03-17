@@ -5,8 +5,10 @@ riemann-c-client (1.4.0-1) experimental; urgency=low
     nroff, upstream.
   * Updated the symbol file with new symbols.
   * Copyright years updated in debian/copyright.
+  * Drop the documentation from libriemann-client-dev. A -doc package can
+    be introduced later, if need be.
 
- -- Gergely Nagy <algernon@madhouse-project.org>  Tue, 17 Mar 2015 12:08:50 +0100
+ -- Gergely Nagy <algernon@madhouse-project.org>  Tue, 17 Mar 2015 12:11:31 +0100
 
 riemann-c-client (1.2.0-2) unstable; urgency=medium
 

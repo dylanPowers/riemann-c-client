@@ -279,6 +279,7 @@ client_query (int argc, char *argv[])
     {
       fprintf (stderr, "Message receipt failed: %s\n", response->error);
       exit_status = EXIT_FAILURE;
+      goto end;
     }
 
   dump (response->n_events, (const riemann_event_t **)response->events);

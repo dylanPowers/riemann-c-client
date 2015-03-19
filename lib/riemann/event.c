@@ -50,7 +50,10 @@ _riemann_event_set_string (char **str, char *value)
 {
   if (*str)
     free (*str);
-  *str = strdup (value);
+  if (value)
+    *str = strdup (value);
+  else
+    *str = NULL;
 }
 
 int

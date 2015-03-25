@@ -102,18 +102,22 @@ riemann_client_get_fd (riemann_client_t *client)
   return client->sock;
 }
 
-int
-riemann_client_connect (riemann_client_t *client,
-                        riemann_client_type_t type,
-                        const char *hostname, int port)
+static int
+riemann_client_connect_va (riemann_client_t *client,
+                           riemann_client_type_t type,
+                           const char *hostname, int port,
+                           va_list aq)
 {
   struct addrinfo hints, *res;
   int sock;
+  va_list ap;
 
   if (!client || !hostname)
     return -EINVAL;
   if (port <= 0)
     return -ERANGE;
+
+  va_copy (ap, aq);
 
   memset (&hints, 0, sizeof (hints));
   hints.ai_family = AF_UNSPEC;
@@ -133,10 +137,16 @@ riemann_client_connect (riemann_client_t *client,
       hints.ai_socktype = SOCK_DGRAM;
     }
   else
-    return -EINVAL;
+    {
+      va_end (ap);
+      return -EINVAL;
+    }
 
   if (getaddrinfo (hostname, NULL, &hints, &res) != 0)
-    return -EADDRNOTAVAIL;
+    {
+      va_end (ap);
+      return -EADDRNOTAVAIL;
+    }
 
   sock = socket (res->ai_family, res->ai_socktype, 0);
   if (sock == -1)
@@ -144,6 +154,7 @@ riemann_client_connect (riemann_client_t *client,
       int e = errno;
 
       freeaddrinfo (res);
+      va_end (ap);
       return -e;
     }
 
@@ -155,6 +166,7 @@ riemann_client_connect (riemann_client_t *client,
 
       freeaddrinfo (res);
       close (sock);
+      va_end (ap);
 
       return -e;
     }
@@ -164,25 +176,45 @@ riemann_client_connect (riemann_client_t *client,
   client->sock = sock;
   client->srv_addr = res;
 
+  va_end (ap);
+
   return 0;
+}
+
+int
+riemann_client_connect (riemann_client_t *client,
+                        riemann_client_type_t type,
+                        const char *hostname, int port, ...)
+{
+  va_list ap;
+  int r;
+
+  va_start (ap, port);
+  r = riemann_client_connect_va (client, type, hostname, port, ap);
+  va_end (ap);
+  return r;
 }
 
 riemann_client_t *
 riemann_client_create (riemann_client_type_t type,
-                       const char *hostname, int port)
+                       const char *hostname, int port, ...)
 {
   riemann_client_t *client;
   int e;
+  va_list ap;
 
   client = riemann_client_new ();
 
-  e = riemann_client_connect (client, type, hostname, port);
+  va_start (ap, port);
+  e = riemann_client_connect_va (client, type, hostname, port, ap);
   if (e != 0)
     {
       riemann_client_free (client);
+      va_end (ap);
       errno = -e;
       return NULL;
     }
+  va_end (ap);
 
   return client;
 }

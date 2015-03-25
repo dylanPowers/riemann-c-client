@@ -112,6 +112,7 @@ START_TEST (test_riemann_client_create)
   ck_assert (client != NULL);
   ck_assert_errno (riemann_client_disconnect (client), 0);
   ck_assert (client != NULL);
+  riemann_client_free (client);
 
   client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555,
                                   RIEMANN_CLIENT_OPTION_NONE);

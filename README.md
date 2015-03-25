@@ -18,8 +18,8 @@ The library uses [semantic versioning][semver].
 Features
 --------
 
- * Sending events over TCP and UDP
- * Launching queries (TCP only)
+ * Sending events over TCP, TLS and UDP
+ * Launching queries (TCP & TLS only)
  * Support for tags and attributes on events
  * Ability to send multiple events in a single message
  * Convenient and straightforward API (see the [API docs][api-docs]
@@ -42,7 +42,7 @@ The library follows the usual autotools way of installation:
 
 For the build to succeed, one will need libtool 2.2+ (only if building
 from a git checkout), the [protobuf-c compiler][protoc]. Optionally,
-for TLS support, one needs [gnutls][gnutls] 3.3+, and to enable the
+for TLS support, one needs [GnuTLS][gnutls] 3.3+, and to enable the
 JSON output support in `riemann-client`, one also needs the
 [json-c][json-c] library installed.
 

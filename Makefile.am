@@ -64,7 +64,8 @@ pkgconfig_DATA			= lib/riemann/riemann-client.pc
 
 # -- Testcases --
 if HAVE_CHECK
-UNIT_TESTS			= tests/check_libriemann
+UNIT_TESTS			= tests/check_libriemann \
+				  tests/check_symver
 TESTS				= ${UNIT_TESTS}
 
 TESTS_ENVIRONMENT		= CK_FORK=no

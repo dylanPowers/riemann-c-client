@@ -59,6 +59,17 @@ HAVE_JSON_C=yes
 PKG_CHECK_MODULES(JSON_C, json-c >= 0.11,,[HAVE_JSON_C="no"])
 
 # Check for linker version script support.
+enable_value () {
+   case "$1" in
+        yes|y*)
+                echo 1
+                ;;
+        *)
+                echo 0
+                ;;
+   esac
+}
+
 ac_save_LDFLAGS=$LDFLAGS
 AC_CACHE_CHECK(whether $LD supports symbol version scripts,
         ac_cv_prog_ld_version_script,
@@ -70,6 +81,8 @@ AC_CACHE_CHECK(whether $LD supports symbol version scripts,
         ])
 LDFLAGS=$ac_save_LDFLAGS
 AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
+AC_DEFINE_UNQUOTED(HAVE_VERSIONING, `enable_value ${ac_cv_prog_ld_version_script}`,
+                   [Define to 1 if symbol versioning is enabled])
 
 AM_CONDITIONAL([HAVE_JSON_C], [test x$HAVE_JSON_C != xno])
 AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])

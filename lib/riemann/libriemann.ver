@@ -1,5 +1,9 @@
+RIEMANN_C_LOCAL {
+local:
+        *;
+};
+
 RIEMANN_C_1.0 {
-global:
         riemann_client_version;
         riemann_client_version_string;
 
@@ -33,31 +37,23 @@ global:
         riemann_message_from_buffer;
 
         riemann_client_new;
-        riemann_client_create;
         riemann_client_free;
-        riemann_client_connect;
         riemann_client_disconnect;
         riemann_client_send_message;
         riemann_client_send_message_oneshot;
         riemann_client_recv_message;
-
-local:
-        *;
-};
+} RIEMANN_C_LOCAL;
 
 RIEMANN_C_1.1 {
-global:
         riemann_send;
         riemann_query;
 } RIEMANN_C_1.0;
 
 RIEMANN_C_1.2 {
-global:
         riemann_client_get_fd;
 } RIEMANN_C_1.1;
 
 RIEMANN_C_1.3 {
-global:
         riemann_event_set_va;
         riemann_event_create_va;
 
@@ -68,7 +64,6 @@ global:
 } RIEMANN_C_1.2;
 
 RIEMANN_C_1.4 {
-global:
         riemann_message_append_events_n;
         riemann_message_append_events;
         riemann_message_append_events_va;
@@ -78,3 +73,12 @@ global:
         riemann_query_clone;
         riemann_message_clone;
 } RIEMANN_C_1.3;
+
+RIEMANN_C_1.5 {
+global:
+        riemann_client_create;
+        riemann_client_connect;
+local:
+        riemann_client_create_1_0;
+        riemann_client_connect_1_0;
+} RIEMANN_C_1.4;

@@ -35,6 +35,8 @@ help_send (void)
           "\n"
           "  -T, --tcp                         Send the message over TCP (default).\n"
           "  -U, --udp                         Send the message over UDP.\n"
+          "  -G, --tls                         Send the message over TLS.\n"
+          "  -o, --option option=value         Set a client option to a given value.\n"
           "  -?, --help                        This help screen.\n");
 }
 
@@ -47,6 +49,12 @@ client_send (int argc, char *argv[])
   riemann_client_type_t client_type = RIEMANN_CLIENT_TCP;
   char *host = "localhost";
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
+  struct
+  {
+    char *cafn;
+    char *certfn;
+    char *keyfn;
+  } tls = {NULL, NULL, NULL};
 
   event = riemann_event_new ();
 
@@ -69,13 +77,15 @@ client_send (int argc, char *argv[])
         {"metric-f", required_argument, NULL, 'f'},
         {"tcp", no_argument, NULL, 'T'},
         {"udp", no_argument, NULL, 'U'},
+        {"tls", no_argument, NULL, 'G'},
         {"ttl", required_argument, NULL, 'L'},
+        {"option", required_argument, NULL, 'o'},
         {"help", no_argument, NULL, '?'},
         {"version", no_argument, NULL, 'V'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?VUTL:",
+      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?VUTGL:o:",
                        long_options, &option_index);
 
       if (c == -1)
@@ -142,8 +152,27 @@ client_send (int argc, char *argv[])
           client_type = RIEMANN_CLIENT_UDP;
           break;
 
+        case 'G':
+          client_type = RIEMANN_CLIENT_TLS;
+          break;
+
         case 'L':
           riemann_event_set_one (event, TTL, (float) atof (optarg));
+          break;
+
+        case 'o':
+          if (strncmp (optarg, "cafile=", strlen ("cafile=")) == 0)
+            tls.cafn = &optarg[strlen ("cafile=")];
+          else if (strncmp (optarg, "certfile=", strlen ("certfile=")) == 0)
+            tls.certfn = &optarg[strlen ("certfile=")];
+          else if (strncmp (optarg, "keyfile=", strlen ("keyfile=")) == 0)
+            tls.keyfn = &optarg[strlen ("keyfile=")];
+          else
+            {
+              fprintf (stderr, "Unknown client option: %s\n", optarg);
+              return EXIT_FAILURE;
+            }
+
           break;
 
         case '?':
@@ -178,7 +207,12 @@ client_send (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  client = riemann_client_create (client_type, host, port);
+  client = riemann_client_create
+    (client_type, host, port,
+     RIEMANN_CLIENT_OPTION_TLS_CA_FILE, tls.cafn,
+     RIEMANN_CLIENT_OPTION_TLS_CERT_FILE, tls.certfn,
+     RIEMANN_CLIENT_OPTION_TLS_KEY_FILE, tls.keyfn,
+     RIEMANN_CLIENT_OPTION_NONE);
   if (!client)
     {
       fprintf (stderr, "Unable to connect: %s\n", (char *)strerror (errno));

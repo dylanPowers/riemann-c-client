@@ -1,5 +1,5 @@
 /* riemann/_private.h -- Riemann C client library
- * Copyright (C) 2013, 2014  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -20,6 +20,12 @@
 
 #include <riemann/riemann-client.h>
 
+#include "riemann/platform.h"
+
+#if HAVE_GNUTLS
+#include <gnutls/gnutls.h>
+#endif
+
 typedef int (*riemann_client_send_message_t) (riemann_client_t *client,
                                               riemann_message_t *message);
 typedef riemann_message_t *(*riemann_client_recv_message_t) (riemann_client_t *client);
@@ -31,6 +37,14 @@ struct _riemann_client_t
 
   riemann_client_send_message_t send;
   riemann_client_recv_message_t recv;
+
+#if HAVE_GNUTLS
+  struct
+  {
+    gnutls_session_t session;
+    gnutls_certificate_credentials_t creds;
+  } tls;
+#endif
 };
 
 #endif

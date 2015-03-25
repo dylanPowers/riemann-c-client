@@ -41,6 +41,37 @@ the following options in query mode:
 Print the result in JSON format, instead of the default,
 human\-readable one.
 
+.TP
+\fB\-T\fR, \fB\-\-tcp\fR
+Send the event via TCP (the default).
+
+.TP
+\fB\-G\fR, \fB\-\-tls\fR
+Send the event via TLS.
+
+.TP
+\fB\-o\fR, \fB\-\-option\fR \fIoption\fR=\fIvalue\fR
+Set one client option to the given value.
+
+Available client options are:
+
+.RS
+.TP
+\fBcafile\fR
+Path to the file containing trusted certificate authority
+certificates. Only used for TLS connections.
+
+.TP
+\fBcertfile\fR
+Path to the file containing the public client certificate. Only used
+for TLS connections.
+
+.TP
+\fBkeyfile\fR
+Path to the file containing the private client key. Only used for TLS
+connections.
+.RE
+
 .SS "Submit mode"
 In submit mode, \fBriemann\-client\fR accepts the following options:
 
@@ -94,6 +125,33 @@ Send the event via TCP (the default).
 .TP
 \fB\-U\fR, \fB\-\-udp\fR
 Send the event via UDP.
+
+.TP
+\fB\-G\fR, \fB\-\-tls\fR
+Send the event via TLS.
+
+.TP
+\fB\-o\fR, \fB\-\-option\fR \fIoption\fR=\fIvalue\fR
+Set one client option to the given value.
+
+Available client options are:
+
+.RS
+.TP
+\fBcafile\fR
+Path to the file containing trusted certificate authority
+certificates. Only used for TLS connections.
+
+.TP
+\fBcertfile\fR
+Path to the file containing the public client certificate. Only used
+for TLS connections.
+
+.TP
+\fBkeyfile\fR
+Path to the file containing the private client key. Only used for TLS
+connections.
+.RE
 
 .SH "EXAMPLES"
 

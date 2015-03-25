@@ -1,5 +1,18 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.5.0 - UNRELEASED
+
+** Feature: TLS support
+
+The library now supports TLS connections via GnuTLS.
+
+To be able to properly set up a TLS-enabled connection,
+riemann_client_connect() and riemann_client_create() take optional
+extra arguments after the port if the type is RIEMANN_CLIENT_TLS.
+
+An older version of these functions are provided for ABI
+compatibility, and the new API is backwards-compatible too.
+
 * 1.4.0 - <2015-03-17 Tue>
 
 ** Feature: Add riemann_message_append_events*() functions.

@@ -171,6 +171,9 @@ help_query (void)
           "\n"
           " Options:\n"
           "  -j, --json                        Output the results as a JSON array.\n"
+          "  -T, --tcp                         Send the message over TCP (default).\n"
+          "  -G, --tls                         Send the message over TLS.\n"
+          "  -o, --option option=value         Set a client option to a given value.\n"
           "  -?, --help                        This help screen.\n");
 }
 
@@ -181,9 +184,17 @@ client_query (int argc, char *argv[])
 {
   riemann_message_t *response;
   riemann_client_t *client;
+  riemann_client_type_t client_type = RIEMANN_CLIENT_TCP;
   char *host = "localhost", *query_string = NULL;
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
   query_func_t dump = query_dump_events;
+  struct
+  {
+    char *cafn;
+    char *certfn;
+    char *keyfn;
+  } tls = {NULL, NULL, NULL};
+
 
   while (1)
     {
@@ -192,10 +203,13 @@ client_query (int argc, char *argv[])
         {"help", no_argument, NULL, '?'},
         {"version", no_argument, NULL, 'V'},
         {"json", no_argument, NULL, 'j'},
+        {"tcp", no_argument, NULL, 'T'},
+        {"tls", no_argument, NULL, 'G'},
+        {"option", required_argument, NULL, 'o'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "?Vj",
+      c = getopt_long (argc, argv, "?VjTGo:",
                        long_options, &option_index);
 
       if (c == -1)
@@ -203,8 +217,31 @@ client_query (int argc, char *argv[])
 
       switch (c)
         {
+        case 'T':
+          client_type = RIEMANN_CLIENT_TCP;
+          break;
+
+        case 'G':
+          client_type = RIEMANN_CLIENT_TLS;
+          break;
+
         case 'j':
           dump = query_dump_events_json;
+          break;
+
+        case 'o':
+          if (strncmp (optarg, "cafile=", strlen ("cafile=")) == 0)
+            tls.cafn = &optarg[strlen ("cafile=")];
+          else if (strncmp (optarg, "certfile=", strlen ("certfile=")) == 0)
+            tls.certfn = &optarg[strlen ("certfile=")];
+          else if (strncmp (optarg, "keyfile=", strlen ("keyfile=")) == 0)
+            tls.keyfn = &optarg[strlen ("keyfile=")];
+          else
+            {
+              fprintf (stderr, "Unknown client option: %s\n", optarg);
+              return EXIT_FAILURE;
+            }
+
           break;
 
         case '?':
@@ -249,7 +286,12 @@ client_query (int argc, char *argv[])
       return EXIT_FAILURE;
     }
 
-  client = riemann_client_create (RIEMANN_CLIENT_TCP, host, port);
+  client = riemann_client_create
+    (client_type, host, port,
+     RIEMANN_CLIENT_OPTION_TLS_CA_FILE, tls.cafn,
+     RIEMANN_CLIENT_OPTION_TLS_CERT_FILE, tls.certfn,
+     RIEMANN_CLIENT_OPTION_TLS_KEY_FILE, tls.keyfn,
+     RIEMANN_CLIENT_OPTION_NONE);
   if (!client)
     {
       fprintf (stderr, "Unable to connect: %s\n", (char *)strerror (errno));

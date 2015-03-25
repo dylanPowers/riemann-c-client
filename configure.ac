@@ -58,6 +58,22 @@ PKG_CHECK_MODULES(CHECK, check,,[HAVE_CHECK="no"])
 HAVE_JSON_C=yes
 PKG_CHECK_MODULES(JSON_C, json-c >= 0.11,,[HAVE_JSON_C="no"])
 
+HAVE_GNUTLS="auto"
+AC_ARG_ENABLE([tls],
+  AS_HELP_STRING([--disable-tls], [disable TLS support (default: auto)]))
+
+case "${enable_tls}" in
+     no)
+        HAVE_GNUTLS="no"
+        ;;
+     yes)
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 3.3.0)
+        ;;
+     *)
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 3.3.0,,[HAVE_GNUTLS="no"])
+        ;;
+esac
+
 # Check for linker version script support.
 enable_value () {
    case "$1" in
@@ -90,6 +106,9 @@ AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])
 AC_DEFINE_UNQUOTED([HAVE_JSON_C],
   `if test x$HAVE_JSON_C != xno; then echo 1; else echo 0; fi`,
   [Define when json-c is available])
+AC_DEFINE_UNQUOTED([HAVE_GNUTLS],
+  `if test x$HAVE_GNUTLS != xno; then echo 1; else echo 0; fi`,
+  [Define when GnuTLS is available])
 
 AC_CONFIG_FILES([
         Makefile

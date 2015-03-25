@@ -41,6 +41,7 @@ typedef enum
     RIEMANN_CLIENT_NONE, /**< Unspecified. Used for error handling only. */
     RIEMANN_CLIENT_TCP, /**< TCP, for both events and queries. */
     RIEMANN_CLIENT_UDP, /**< UDP, for events only. */
+    RIEMANN_CLIENT_TLS  /**< TLS, for both events and queries. */
   } riemann_client_type_t;
 
 /** Supported client settings.
@@ -55,6 +56,32 @@ typedef enum
      * It takes no value.
      */
     RIEMANN_CLIENT_OPTION_NONE,
+    /** Path to the CA trust file.
+     *
+     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
+     * string. The string is copied, ownership remains at the
+     * caller.
+     */
+    RIEMANN_CLIENT_OPTION_TLS_CA_FILE,
+    /** Path to the client certificate file.
+     *
+     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
+     * string. The string is copied, ownership remains at the caller.
+     */
+    RIEMANN_CLIENT_OPTION_TLS_CERT_FILE,
+    /** Path to the client private key file.
+     *
+     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
+     * string. The string is copied, ownership remains at the caller.
+     */
+    RIEMANN_CLIENT_OPTION_TLS_KEY_FILE,
+    /** Timeout of the TLS handshake.
+     *
+     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be an
+     * unsigned integer: the time in milliseconds to wait before
+     * timing out the TLS handshake.
+     */
+    RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT,
   } riemann_client_option_t;
 
 /** The Riemann Client object.

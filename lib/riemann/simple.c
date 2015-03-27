@@ -18,6 +18,7 @@
 #include <stdarg.h>
 
 #include "riemann/_private.h"
+#include <riemann/simple.h>
 
 int
 riemann_send_va (riemann_client_t *client,

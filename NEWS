@@ -13,6 +13,18 @@ extra arguments after the port if the type is RIEMANN_CLIENT_TLS.
 An older version of these functions are provided for ABI
 compatibility, and the new API is backwards-compatible too.
 
+** Bugfix: riemann-client query handles error responses correctly.
+
+The riemann-client query command previously tried to dump the events
+of an error response too. It does not do that anymore, because in case
+of an error, we print the error itself, not the empty result set.
+
+** Bugfix: riemann_event_set() accepts NULL strings as value properties.
+
+The riemann_event_set() function was changed to accept NULL strings as
+values for string properties. Instead of crashing in this case, the
+library now removes the property from the event.
+
 * 1.4.0 - <2015-03-17 Tue>
 
 ** Feature: Add riemann_message_append_events*() functions.

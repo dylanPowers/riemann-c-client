@@ -107,6 +107,11 @@ START_TEST (test_riemann_event_set)
                                       0,
                                       RIEMANN_EVENT_FIELD_NONE), EPROTO);
 
+  ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_SERVICE,
+                                NULL,
+                                RIEMANN_EVENT_FIELD_NONE) == 0);
+  ck_assert (event->service == NULL);
+
   riemann_event_free (event);
 }
 END_TEST

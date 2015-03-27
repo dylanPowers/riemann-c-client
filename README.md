@@ -18,8 +18,8 @@ The library uses [semantic versioning][semver].
 Features
 --------
 
- * Sending events over TCP and UDP
- * Launching queries (TCP only)
+ * Sending events over TCP, TLS and UDP
+ * Launching queries (TCP & TLS only)
  * Support for tags and attributes on events
  * Ability to send multiple events in a single message
  * Convenient and straightforward API (see the [API docs][api-docs]
@@ -33,26 +33,27 @@ Features
 Installation
 ------------
 
-The library follows the usual autotools way of installation (one will
-need libtool 2.2+ to build from git, along with the other
-dependency: the [protobuf-c compiler][protoc]):
-
- [protoc]: http://protobuf-c.googlecode.com
+The library follows the usual autotools way of installation:
 
     $ git clone git://github.com/algernon/riemann-c-client.git
     $ cd riemann-c-client
     $ autoreconf -i
     $ ./configure && make && make check && make install
 
+For the build to succeed, one will need libtool 2.2+ (only if building
+from a git checkout), the [protobuf-c compiler][protoc]. Optionally,
+for TLS support, one needs [GnuTLS][gnutls] 3.3+, and to enable the
+JSON output support in `riemann-client`, one also needs the
+[json-c][json-c] library installed.
+
+ [protoc]: http://protobuf-c.googlecode.com
+ [gnutls]: http://www.gnutls.org/
+ [json-c]: https://github.com/json-c/json-c/wiki
+
 From this point onward, the library is installed and fully functional,
 and one can use `pkg-config` to compile programs against it:
 
     ${CC} $(pkg-config --cflags --libs riemann-client) demo.c -o demo -Wall
-
-To enable the JSON output support in `riemann-client`, one also needs
-the [json-c][json-c] library installed, but this feature is optional.
-
- [json-c]: https://github.com/json-c/json-c/wiki
 
 If, for some reason the build fails, one may need to regenerate the
 `protobuf-c-compiler` generated headers (changes in the compiler are

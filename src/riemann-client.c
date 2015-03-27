@@ -78,7 +78,7 @@ typedef int (*cmd_t) (int argc, char *argv[]);
 
 static struct
 {
-  char *command;
+  const char *command;
   cmd_t handler;
   int (*cmp) (const char *s1, const char *s2);
 } command_map[] = {

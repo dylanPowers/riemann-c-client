@@ -10,10 +10,13 @@
 #define ck_assert_float_eq(X, Y) \
   _ck_assert_float(X, ==, Y)
 
-#define ck_assert_errno(X, E) \
-  ck_assert_msg((X) == -(E), \
-                "Assertion '" #X " == -" #E "' failed: errno==%d (%s), " \
-                "expected==%d (%s)", \
-                errno, (char *)strerror (errno), E, (char *)strerror (E))
+#define ck_assert_errno(X, E)                                              \
+  {                                                                        \
+    int e = (X);                                                           \
+    ck_assert_msg(e == -(E),                                               \
+                  "Assertion '" #X " == -" #E "' failed: errno==%d (%s), " \
+                  "expected==%d (%s)",                                     \
+                  -e, (char *)strerror (-e), E, (char *)strerror (E));     \
+  }
 
 #endif

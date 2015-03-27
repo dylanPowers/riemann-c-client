@@ -41,7 +41,48 @@ typedef enum
     RIEMANN_CLIENT_NONE, /**< Unspecified. Used for error handling only. */
     RIEMANN_CLIENT_TCP, /**< TCP, for both events and queries. */
     RIEMANN_CLIENT_UDP, /**< UDP, for events only. */
+    RIEMANN_CLIENT_TLS  /**< TLS, for both events and queries. */
   } riemann_client_type_t;
+
+/** Supported client settings.
+ */
+typedef enum
+  {
+    /** The terminating option.
+     * This must be used as the last option passed to
+     * riemann_client_connect() or riemann_client_create(), to
+     * terminate the list of additional options.
+     *
+     * It takes no value.
+     */
+    RIEMANN_CLIENT_OPTION_NONE,
+    /** Path to the CA trust file.
+     *
+     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
+     * string. The string is copied, ownership remains at the
+     * caller.
+     */
+    RIEMANN_CLIENT_OPTION_TLS_CA_FILE,
+    /** Path to the client certificate file.
+     *
+     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
+     * string. The string is copied, ownership remains at the caller.
+     */
+    RIEMANN_CLIENT_OPTION_TLS_CERT_FILE,
+    /** Path to the client private key file.
+     *
+     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
+     * string. The string is copied, ownership remains at the caller.
+     */
+    RIEMANN_CLIENT_OPTION_TLS_KEY_FILE,
+    /** Timeout of the TLS handshake.
+     *
+     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be an
+     * unsigned integer: the time in milliseconds to wait before
+     * timing out the TLS handshake.
+     */
+    RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT,
+  } riemann_client_option_t;
 
 /** The Riemann Client object.
  *
@@ -79,6 +120,10 @@ riemann_client_t *riemann_client_new (void);
  * @param type is the client type to use.
  * @param hostname is the hostname to connect to.
  * @param port is the port number to connect to on the server.
+ * @param ... are optional extra settings, based on the client type.
+ *
+ * The extra options are key-value pairs, where the key must be
+ * #riemann_client_option_t. See the description of options there.
  *
  * @retval NULL is returned on error, and `errno` is set to any of the
  * values riemann_client_connect() can set it to.
@@ -86,7 +131,8 @@ riemann_client_t *riemann_client_new (void);
  * be freed with riemann_client_free() once no longer needed.
  */
 riemann_client_t *riemann_client_create (riemann_client_type_t type,
-                                         const char *hostname, int port);
+                                         const char *hostname, int port,
+                                         ...);
 
 /** Get the file descriptor associated to a client.
  *
@@ -121,6 +167,10 @@ void riemann_client_free (riemann_client_t *client);
  * @param type is the client type to use.
  * @param hostname is the hostname to connect to.
  * @param port is the port number to connect to on the server.
+ * @param ... are optional extra settings, based on the client type.
+ *
+ * The extra options are key-value pairs, where the key must be
+ * #riemann_client_option_t. See the description of options there.
  *
  * @retval NULL is returned on error, and `errno` is set to either
  * `EINVAL`, `ERANGE`, `EADDRNOTAVAIL`, or any of the errno values
@@ -128,7 +178,7 @@ void riemann_client_free (riemann_client_t *client);
  * @retval riemann_client_t object is returned on success.
  */
 int riemann_client_connect (riemann_client_t *client, riemann_client_type_t type,
-                            const char *hostname, int port);
+                            const char *hostname, int port, ...);
 
 /** Disconnect an existing client.
  *

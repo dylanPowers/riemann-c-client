@@ -1,6 +1,6 @@
 # -*- Autoconf -*-
 
-AC_INIT([riemann-c-client], [1.4.0], [algernon@madhouse-project.org])
+AC_INIT([riemann-c-client], [1.5.0], [algernon@madhouse-project.org])
 AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz no-dist-gzip])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -58,7 +58,34 @@ PKG_CHECK_MODULES(CHECK, check,,[HAVE_CHECK="no"])
 HAVE_JSON_C=yes
 PKG_CHECK_MODULES(JSON_C, json-c >= 0.11,,[HAVE_JSON_C="no"])
 
+HAVE_GNUTLS="auto"
+AC_ARG_ENABLE([tls],
+  AS_HELP_STRING([--disable-tls], [disable TLS support (default: auto)]))
+
+case "${enable_tls}" in
+     no)
+        HAVE_GNUTLS="no"
+        ;;
+     yes)
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 3.3.0)
+        ;;
+     *)
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 3.3.0,,[HAVE_GNUTLS="no"])
+        ;;
+esac
+
 # Check for linker version script support.
+enable_value () {
+   case "$1" in
+        yes|y*)
+                echo 1
+                ;;
+        *)
+                echo 0
+                ;;
+   esac
+}
+
 ac_save_LDFLAGS=$LDFLAGS
 AC_CACHE_CHECK(whether $LD supports symbol version scripts,
         ac_cv_prog_ld_version_script,
@@ -70,6 +97,8 @@ AC_CACHE_CHECK(whether $LD supports symbol version scripts,
         ])
 LDFLAGS=$ac_save_LDFLAGS
 AM_CONDITIONAL([HAVE_VERSIONING], [test x$ac_cv_prog_ld_version_script = xyes])
+AC_DEFINE_UNQUOTED(HAVE_VERSIONING, `enable_value ${ac_cv_prog_ld_version_script}`,
+                   [Define to 1 if symbol versioning is enabled])
 
 AM_CONDITIONAL([HAVE_JSON_C], [test x$HAVE_JSON_C != xno])
 AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])
@@ -77,6 +106,9 @@ AM_CONDITIONAL([HAVE_CHECK], [test x$HAVE_CHECK != xno])
 AC_DEFINE_UNQUOTED([HAVE_JSON_C],
   `if test x$HAVE_JSON_C != xno; then echo 1; else echo 0; fi`,
   [Define when json-c is available])
+AC_DEFINE_UNQUOTED([HAVE_GNUTLS],
+  `if test x$HAVE_GNUTLS != xno; then echo 1; else echo 0; fi`,
+  [Define when GnuTLS is available])
 
 AC_CONFIG_FILES([
         Makefile

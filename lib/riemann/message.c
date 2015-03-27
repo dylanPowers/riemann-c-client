@@ -98,7 +98,8 @@ _riemann_message_combine_events (riemann_event_t **events,
       if (*n_events >= alloced)
         {
           alloced *= 2;
-          events = realloc (events, sizeof (riemann_event_t *) * alloced);
+          events = (riemann_event_t **)
+            realloc (events, sizeof (riemann_event_t *) * alloced);
         }
 
       event = va_arg (ap, riemann_event_t *);
@@ -131,7 +132,7 @@ riemann_message_set_events_va (riemann_message_t *message, va_list aq)
       return -ERANGE;
     }
 
-  events = malloc (sizeof (riemann_event_t *));
+  events = (riemann_event_t **) malloc (sizeof (riemann_event_t *));
 
   events[0] = event;
   nevents = _riemann_message_combine_events (events, events[0], &n_events, ap);
@@ -174,8 +175,9 @@ riemann_message_append_events_n (riemann_message_t *message,
 
   start = message->n_events;
   message->n_events += n_events;
-  message->events = realloc (message->events,
-                             sizeof (riemann_event_t *) * message->n_events);
+  message->events = (riemann_event_t **)
+    realloc (message->events,
+             sizeof (riemann_event_t *) * message->n_events);
 
   for (n = 0; n < n_events; n++)
     message->events[n + start] = events[n];
@@ -204,7 +206,7 @@ riemann_message_append_events_va (riemann_message_t *message, va_list aq)
       return -ERANGE;
     }
 
-  events = malloc (sizeof (riemann_event_t *));
+  events = (riemann_event_t **) malloc (sizeof (riemann_event_t *));
   events[0] = event;
   nevents = _riemann_message_combine_events(events, events[0], &n_events, ap);
   va_end (ap);
@@ -241,7 +243,7 @@ riemann_message_create_with_events_va (riemann_event_t *event, va_list aq)
 
   message = riemann_message_new ();
 
-  events = malloc (sizeof (riemann_event_t *));
+  events = (riemann_event_t **) malloc (sizeof (riemann_event_t *));
   events[0] = event;
 
   va_copy (ap, aq);
@@ -307,7 +309,7 @@ uint8_t *
 riemann_message_to_buffer (riemann_message_t *message, size_t *len)
 {
   size_t l;
-  struct
+  struct buff
   {
     uint32_t header;
     uint8_t data[0];
@@ -320,7 +322,7 @@ riemann_message_to_buffer (riemann_message_t *message, size_t *len)
     }
 
   l = msg__get_packed_size (message) + sizeof (buff->header);
-  buff = malloc (l);
+  buff = (struct buff *) malloc (l);
   msg__pack (message, buff->data);
 
   buff->header = htonl (l - sizeof (buff->header));
@@ -367,7 +369,8 @@ riemann_message_clone (const riemann_message_t *message)
     clone->query = riemann_query_clone (message->query);
 
   clone->n_events = message->n_events;
-  clone->events = malloc (sizeof (riemann_event_t *) * clone->n_events);
+  clone->events = (riemann_event_t **)
+    malloc (sizeof (riemann_event_t *) * clone->n_events);
   for (n = 0; n < clone->n_events; n++)
     clone->events[n] = riemann_event_clone (message->events[n]);
 

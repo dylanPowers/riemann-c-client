@@ -11,15 +11,17 @@ protodir			= ${pkgincludedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 4
+LRC_CURRENT			= 5
 LRC_REVISION			= 0
-LRC_AGE				= 4
+LRC_AGE				= 5
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 
-lib_libriemann_client_la_CFLAGS	= ${AM_CFLAGS} ${PROTOBUF_C_CFLAGS}
+lib_libriemann_client_la_CFLAGS	= ${AM_CFLAGS} ${PROTOBUF_C_CFLAGS} \
+				  ${GNUTLS_CFLAGS}
 lib_libriemann_client_la_LDFLAGS= \
 	${PROTOBUF_C_LDFLAGS}	  \
+	${GNUTLS_LIBS}		  \
 	-version-info ${LRC_CURRENT}:${LRC_REVISION}:${LRC_AGE}
 lib_libriemann_client_la_LIBADD	= -lprotobuf-c
 proto_files			= \
@@ -64,10 +66,12 @@ pkgconfig_DATA			= lib/riemann/riemann-client.pc
 
 # -- Testcases --
 if HAVE_CHECK
-UNIT_TESTS			= tests/check_libriemann
+UNIT_TESTS			= tests/check_libriemann \
+				  tests/check_symver
 TESTS				= ${UNIT_TESTS}
 
-TESTS_ENVIRONMENT		= CK_FORK=no
+AM_TESTS_ENVIRONMENT		= \
+	CK_FORK=no; test -e tests/data || ln -s ${abs_top_srcdir}/tests/etc tests/data;
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
 tests/check_%: LDADD += ${CHECK_LIBS} -ldl
@@ -107,7 +111,7 @@ EXTRA_DIST			= README.md NEWS GPL LGPL \
 				  lib/riemann/_private.h \
 				  ${check_libriemann_srcs} \
 				  ${src_riemann_client_EXTRA_DIST} \
-				  ${man1_MANS}
+				  ${man1_MANS} tests/etc
 
 # -- Manual pages --
 man1_MANS			 = \

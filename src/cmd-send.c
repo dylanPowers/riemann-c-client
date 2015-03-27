@@ -47,7 +47,7 @@ client_send (int argc, char *argv[])
   riemann_message_t *response;
   riemann_client_t *client;
   riemann_client_type_t client_type = RIEMANN_CLIENT_TCP;
-  char *host = "localhost";
+  const char *host = "localhost";
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
   struct
   {

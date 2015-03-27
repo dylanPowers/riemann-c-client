@@ -26,7 +26,8 @@ riemann_query_new (const char *string)
 {
   riemann_query_t *query;
 
-  query = malloc (sizeof (riemann_query_t));
+  query = (riemann_query_t *)
+    malloc (sizeof (riemann_query_t));
   query__init (query);
 
   if (!string)

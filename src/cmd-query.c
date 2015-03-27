@@ -185,7 +185,7 @@ client_query (int argc, char *argv[])
   riemann_message_t *response;
   riemann_client_t *client;
   riemann_client_type_t client_type = RIEMANN_CLIENT_TCP;
-  char *host = "localhost", *query_string = NULL;
+  const char *host = "localhost", *query_string = NULL;
   int port = 5555, c, e, exit_status = EXIT_SUCCESS;
   query_func_t dump = query_dump_events;
   struct

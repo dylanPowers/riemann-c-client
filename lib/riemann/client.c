@@ -63,7 +63,7 @@ riemann_client_new (void)
 {
   riemann_client_t *client;
 
-  client = malloc (sizeof (riemann_client_t));
+  client = (riemann_client_t *) malloc (sizeof (riemann_client_t));
 
   client->sock = -1;
   client->srv_addr = NULL;
@@ -143,15 +143,15 @@ _verify_certificate_callback(gnutls_session_t session)
   const char *hostname;
   gnutls_typed_vdata_st data[2];
 
-  hostname = gnutls_session_get_ptr (session);
+  hostname = (const char *) gnutls_session_get_ptr (session);
 
   memset (data, 0, sizeof (data));
 
   data[0].type = GNUTLS_DT_DNS_HOSTNAME;
-  data[0].data = (void*)hostname;
+  data[0].data = (unsigned char *) hostname;
 
   data[1].type = GNUTLS_DT_KEY_PURPOSE_OID;
-  data[1].data = (void*)GNUTLS_KP_TLS_WWW_SERVER;
+  data[1].data = (unsigned char *) GNUTLS_KP_TLS_WWW_SERVER;
 
   ret = gnutls_certificate_verify_peers (session, data, 2,
                                          &status);
@@ -211,7 +211,7 @@ riemann_client_connect_va (riemann_client_t *client,
 
       va_copy (ap, aq);
 
-      option = va_arg (ap, riemann_client_option_t);
+      option = (riemann_client_option_t) va_arg (ap, int);
       do
         {
           switch (option)
@@ -241,7 +241,7 @@ riemann_client_connect_va (riemann_client_t *client,
             }
 
           if (option != RIEMANN_CLIENT_OPTION_NONE)
-            option = va_arg (ap, riemann_client_option_t);
+            option = (riemann_client_option_t) va_arg (ap, int);
         }
       while (option != RIEMANN_CLIENT_OPTION_NONE);
       va_end (ap);
@@ -520,7 +520,7 @@ _riemann_client_recv_message_tcp (riemann_client_t *client)
     return NULL;
   len = ntohl (header);
 
-  buffer = malloc (len);
+  buffer = (uint8_t *) malloc (len);
 
   received = recv (client->sock, buffer, len, MSG_WAITALL);
   if (received != len)
@@ -570,7 +570,7 @@ _riemann_client_recv_message_tls (riemann_client_t *client)
     }
   len = ntohl (header);
 
-  buffer = malloc (len);
+  buffer = (uint8_t *) malloc (len);
 
   received = gnutls_record_recv (client->tls.session, buffer, len);
   if (received != len)

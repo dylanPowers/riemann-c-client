@@ -26,7 +26,8 @@ riemann_attribute_new (void)
 {
   riemann_attribute_t *attrib;
 
-  attrib = malloc (sizeof (riemann_attribute_t));
+  attrib = (riemann_attribute_t *)
+    malloc (sizeof (riemann_attribute_t));
   attribute__init (attrib);
   return attrib;
 }

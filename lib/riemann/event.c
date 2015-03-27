@@ -110,7 +110,7 @@ riemann_event_set_va (riemann_event_t *event,
 
             while ((tag = va_arg (ap, char *)) != NULL)
               {
-                event->tags =
+                event->tags = (char **)
                   realloc (event->tags, sizeof (char *) * (event->n_tags + 1));
                 event->tags[event->n_tags] = strdup (tag);
                 event->n_tags++;
@@ -138,7 +138,7 @@ riemann_event_set_va (riemann_event_t *event,
 
             while ((attrib = va_arg (ap, riemann_attribute_t *)) != NULL)
               {
-                event->attributes =
+                event->attributes = (riemann_attribute_t **)
                   realloc (event->attributes,
                            sizeof (riemann_attribute_t *) * (event->n_attributes + 1));
                 event->attributes[event->n_attributes] = attrib;
@@ -169,7 +169,7 @@ riemann_event_set_va (riemann_event_t *event,
         }
 
       if (field != RIEMANN_EVENT_FIELD_NONE)
-        field = va_arg (ap, riemann_event_field_t);
+        field = (riemann_event_field_t) va_arg (ap, int);
     }
   while (field != RIEMANN_EVENT_FIELD_NONE);
   va_end (ap);
@@ -185,7 +185,7 @@ riemann_event_set (riemann_event_t *event, ...)
   riemann_event_field_t first_field;
 
   va_start (ap, event);
-  first_field = va_arg (ap, riemann_event_field_t);
+  first_field = (riemann_event_field_t) va_arg (ap, int);
   r = riemann_event_set_va (event, first_field, ap);
   va_end (ap);
   return r;
@@ -197,7 +197,7 @@ riemann_event_tag_add (riemann_event_t *event, const char *tag)
   if (!event || !tag)
     return -EINVAL;
 
-  event->tags =
+  event->tags = (char **)
     realloc (event->tags, sizeof (char *) * (event->n_tags + 1));
   event->tags[event->n_tags] = strdup (tag);
   event->n_tags++;
@@ -212,7 +212,7 @@ riemann_event_attribute_add (riemann_event_t *event,
   if (!event || !attrib)
     return -EINVAL;
 
-  event->attributes =
+  event->attributes = (riemann_attribute_t **)
     realloc (event->attributes,
              sizeof (riemann_attribute_t *) * (event->n_attributes + 1));
   event->attributes[event->n_attributes] = attrib;
@@ -289,13 +289,14 @@ riemann_event_clone (const riemann_event_t *event)
 
   /* Copy deeper structures */
   clone->n_tags = event->n_tags;
-  clone->tags = malloc (sizeof (char *) * clone->n_tags);
+  clone->tags = (char **) malloc (sizeof (char *) * clone->n_tags);
   for (n = 0; n < clone->n_tags; n++)
     clone->tags[n] = strdup (event->tags[n]);
 
   clone->n_attributes = event->n_attributes;
-  clone->attributes = malloc (sizeof (riemann_attribute_t *) *
-                              clone->n_attributes);
+  clone->attributes = (riemann_attribute_t **)
+    malloc (sizeof (riemann_attribute_t *) *
+            clone->n_attributes);
   for (n = 0; n < clone->n_attributes; n++)
     clone->attributes[n] = riemann_attribute_clone (event->attributes[n]);
 

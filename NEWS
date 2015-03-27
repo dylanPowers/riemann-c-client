@@ -1,6 +1,6 @@
 #+STARTUP: indent showall                       -*- org -*-
 
-* 1.5.0 - UNRELEASED
+* 1.5.0 - <2015-03-27 Fri>
 
 ** Feature: TLS support
 

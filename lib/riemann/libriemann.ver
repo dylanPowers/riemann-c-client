@@ -82,3 +82,7 @@ local:
         riemann_client_create_1_0;
         riemann_client_connect_1_0;
 } RIEMANN_C_1.4;
+
+RIEMANN_C_1.6 {
+	riemann_message_get_packed_size;
+} RIEMANN_C_1.5;

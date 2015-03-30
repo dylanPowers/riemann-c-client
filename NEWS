@@ -1,5 +1,12 @@
 #+STARTUP: indent showall                       -*- org -*-
 
+* 1.6.0 - UNRELEASED
+
+** Feature: riemann_message_get_packed_size() added
+
+To aid implementing clients that batch messages up until a certain
+size, the riemann_message_get_packed_size() method was added.
+
 * 1.5.0 - <2015-03-27 Fri>
 
 ** Feature: TLS support

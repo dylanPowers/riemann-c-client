@@ -76,6 +76,7 @@ START_TEST (test_riemann_simple_communicate)
   dummy_client = riemann_client_new ();
   ck_assert (riemann_communicate (dummy_client, message) == NULL);
   ck_assert_errno (-errno, ENOTCONN);
+  riemann_client_free (dummy_client);
 
   message = riemann_message_create_with_events
     (riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
@@ -86,6 +87,7 @@ START_TEST (test_riemann_simple_communicate)
   response = riemann_communicate (client, message);
   ck_assert (response != NULL);
   ck_assert_int_eq (response->ok, 1);
+  riemann_message_free (response);
 
   response = riemann_communicate
     (client,
@@ -94,6 +96,7 @@ START_TEST (test_riemann_simple_communicate)
   ck_assert (response != NULL);
   ck_assert_int_eq (response->ok, 1);
   ck_assert (response->n_events > 0);
+  riemann_message_free (response);
 
   riemann_client_disconnect (client);
   riemann_client_connect (client, RIEMANN_CLIENT_UDP, "127.0.0.1", 5555);
@@ -106,8 +109,8 @@ START_TEST (test_riemann_simple_communicate)
   response = riemann_communicate (client, message);
   ck_assert (response != NULL);
   ck_assert_int_eq (response->ok, 1);
-
   riemann_message_free (response);
+
   riemann_client_free (client);
 }
 END_TEST

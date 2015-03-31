@@ -77,8 +77,8 @@ typedef enum
     /** The TTL (`float`) field. */
     RIEMANN_EVENT_FIELD_TTL,
     /** The attributes (a NULL-terminated list of riemann_attribute_t
-        objects). The arguments are copied, ownership remains at the
-        caller. */
+        objects). The arguments are borrowed, ownership transfers to
+        the event. */
     RIEMANN_EVENT_FIELD_ATTRIBUTES,
     /** The metric field, as a signed 64-bit int. */
     RIEMANN_EVENT_FIELD_METRIC_S64,

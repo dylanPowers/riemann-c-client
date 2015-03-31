@@ -7,6 +7,16 @@
 To aid implementing clients that batch messages up until a certain
 size, the riemann_message_get_packed_size() method was added.
 
+** Feature: riemann_event_string_attribute_add() added
+
+To make it easier to build up attributes, a convenience function was
+added that creates a riemann_attribute_t object out of key-value
+pairs, before attaching the result to an event.
+
+riemann_event_set() was also updated to handle this new style of
+attributes, along with the old way of explicitly using
+riemann_attribute_t objects.
+
 * 1.5.0 - <2015-03-27 Fri>
 
 ** Feature: TLS support

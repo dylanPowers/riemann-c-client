@@ -85,7 +85,11 @@ typedef enum
     /** The metric field as double. */
     RIEMANN_EVENT_FIELD_METRIC_D,
     /** The metric field as float. */
-    RIEMANN_EVENT_FIELD_METRIC_F
+    RIEMANN_EVENT_FIELD_METRIC_F,
+    /** The attributes, as a NULL-terminated list of key-value
+        pairs. The arguments are copied, ownership remains at the
+        caller. */
+    RIEMANN_EVENT_FIELD_STRING_ATTRIBUTES
   } riemann_event_field_t;
 
 #ifdef __cplusplus
@@ -202,6 +206,23 @@ int riemann_event_tag_add (riemann_event_t *event, const char *tag);
  */
 int riemann_event_attribute_add (riemann_event_t *event,
                                  riemann_attribute_t *attrib);
+
+/** Attach an attribute to an event.
+ *
+ * @param event is the event to attach an attribute to.
+ * @param key is the key part of the attribute to attach.
+ * @param value is the value part of the attribute to attach.
+ *
+ * @note Does not attempt to verify that the key is unique.
+ * @note Both #key and #value are copied, ownership remains at the
+ * caller.
+ *
+ * @retval 0 is returned on success.
+ * @retval -errno is returned on failure.
+ */
+int riemann_event_string_attribute_add (riemann_event_t *event,
+                                        const char *key,
+                                        const char *value);
 
 #ifdef __cplusplus
 } /* extern "C" */

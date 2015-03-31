@@ -87,4 +87,6 @@ RIEMANN_C_1.6 {
 	riemann_message_get_packed_size;
 
         riemann_event_string_attribute_add;
+
+        riemann_communicate;
 } RIEMANN_C_1.5;

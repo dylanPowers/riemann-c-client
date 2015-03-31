@@ -17,6 +17,13 @@ riemann_event_set() was also updated to handle this new style of
 attributes, along with the old way of explicitly using
 riemann_attribute_t objects.
 
+** Feature: riemann_communicate() added to <riemann/simple.h>
+
+The new function takes care of both ways of communication: when
+sending events, it will read back the ACK when using TCP or TLS; when
+sending queries, it will read the results. When sending over UDP, it
+will fake an ACK for uniformity.
+
 * 1.5.0 - <2015-03-27 Fri>
 
 ** Feature: TLS support

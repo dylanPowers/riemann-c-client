@@ -58,6 +58,20 @@ static int _riemann_client_send_message_tls (riemann_client_t *client,
 static riemann_message_t *_riemann_client_recv_message_tls (riemann_client_t *client);
 #endif
 
+#if HAVE_GNUTLS
+static void
+_riemann_client_init_tls (riemann_client_t *client)
+{
+  client->tls.session = NULL;
+  client->tls.creds = NULL;
+}
+#else
+static void
+_riemann_client_init_tls (riemann_client_t __attribute__((unused)) *client)
+{
+}
+#endif
+
 riemann_client_t *
 riemann_client_new (void)
 {
@@ -69,21 +83,15 @@ riemann_client_new (void)
   client->srv_addr = NULL;
   client->send = NULL;
   client->recv = NULL;
-#if HAVE_GNUTLS
-  client->tls.session = NULL;
-  client->tls.creds = NULL;
-#endif
+  _riemann_client_init_tls (client);
 
   return client;
 }
 
-int
-riemann_client_disconnect (riemann_client_t *client)
-{
-  if (!client || client->sock == -1)
-    return -ENOTCONN;
-
 #if HAVE_GNUTLS
+static void
+_riemann_client_disconnect_tls (riemann_client_t *client)
+{
   if (client->send == _riemann_client_send_message_tls)
     {
       if (client->tls.session)
@@ -98,7 +106,21 @@ riemann_client_disconnect (riemann_client_t *client)
           client->tls.creds = NULL;
         }
     }
+}
+#else
+static void
+_riemann_client_disconnect_tls (riemann_client_t __attribute__((unused)) *client)
+{
+}
 #endif
+
+int
+riemann_client_disconnect (riemann_client_t *client)
+{
+  if (!client || client->sock == -1)
+    return -ENOTCONN;
+
+  _riemann_client_disconnect_tls (client);
 
   if (close (client->sock) != 0)
     return -errno;
@@ -162,6 +184,162 @@ _verify_certificate_callback (gnutls_session_t session)
 }
 #endif
 
+static void
+_riemann_client_connect_setup_tcp (riemann_client_t *client,
+                                   struct addrinfo *hints)
+{
+  client->send = _riemann_client_send_message_tcp;
+  client->recv = _riemann_client_recv_message_tcp;
+
+  hints->ai_socktype = SOCK_STREAM;
+}
+
+static void
+_riemann_client_connect_setup_udp (riemann_client_t *client,
+                                   struct addrinfo *hints)
+{
+  client->send = _riemann_client_send_message_udp;
+  client->recv = _riemann_client_recv_message_udp;
+
+  hints->ai_socktype = SOCK_DGRAM;
+}
+
+typedef struct
+{
+  char *cafn;
+  char *certfn;
+  char *keyfn;
+  unsigned int handshake_timeout;
+} riemann_client_tls_options_t;
+
+#if HAVE_GNUTLS
+static int
+_riemann_client_connect_setup_tls (riemann_client_t *client,
+                                   struct addrinfo *hints,
+                                   va_list aq,
+                                   riemann_client_tls_options_t *tls_options)
+{
+  va_list ap;
+  riemann_client_option_t option;
+
+  memset (tls_options, 0, sizeof (riemann_client_tls_options_t));
+  tls_options->handshake_timeout = GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT;
+
+  client->send = _riemann_client_send_message_tls;
+  client->recv = _riemann_client_recv_message_tls;
+
+  hints->ai_socktype = SOCK_STREAM;
+
+  va_copy (ap, aq);
+
+  option = (riemann_client_option_t) va_arg (ap, int);
+  do
+    {
+      switch (option)
+        {
+        case RIEMANN_CLIENT_OPTION_NONE:
+          break;
+
+        case RIEMANN_CLIENT_OPTION_TLS_CA_FILE:
+          tls_options->cafn = va_arg (ap, char *);
+          break;
+
+        case RIEMANN_CLIENT_OPTION_TLS_CERT_FILE:
+          tls_options->certfn = va_arg (ap, char *);
+          break;
+
+        case RIEMANN_CLIENT_OPTION_TLS_KEY_FILE:
+          tls_options->keyfn = va_arg (ap, char *);
+          break;
+
+        case RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT:
+          tls_options->handshake_timeout = va_arg (ap, unsigned int);
+          break;
+
+        default:
+          va_end (ap);
+          return -EINVAL;
+        }
+
+      if (option != RIEMANN_CLIENT_OPTION_NONE)
+        option = (riemann_client_option_t) va_arg (ap, int);
+    }
+  while (option != RIEMANN_CLIENT_OPTION_NONE);
+  va_end (ap);
+
+  if (!tls_options->cafn || !tls_options->certfn || !tls_options->keyfn)
+    {
+      return -EINVAL;
+    }
+
+  return 0;
+}
+#else
+static void
+_riemann_client_connect_setup_tls (riemann_client_t __attribute__((unused)) *client,
+                                   struct addrinfo __attribute__((unused)) *hints,
+                                   va_list __attribute__((unused)) aq,
+                                   riemann_client_tls_options_t __attribute__((unused)) *tls_options)
+{
+  return -ENOSYS;
+}
+#endif
+
+#if HAVE_GNUTLS
+static int
+_riemann_client_connect_tls_handshake (riemann_client_t *client,
+                                       riemann_client_tls_options_t *tls_options)
+{
+  int e;
+
+  gnutls_certificate_allocate_credentials (&(client->tls.creds));
+  gnutls_certificate_set_x509_trust_file (client->tls.creds, tls_options->cafn,
+                                          GNUTLS_X509_FMT_PEM);
+  gnutls_certificate_set_verify_function (client->tls.creds,
+                                          _verify_certificate_callback);
+
+  gnutls_certificate_set_x509_key_file (client->tls.creds,
+                                        tls_options->certfn, tls_options->keyfn,
+                                        GNUTLS_X509_FMT_PEM);
+
+  gnutls_init (&client->tls.session, GNUTLS_CLIENT);
+
+  gnutls_set_default_priority (client->tls.session);
+
+  gnutls_credentials_set (client->tls.session, GNUTLS_CRD_CERTIFICATE,
+                          client->tls.creds);
+
+  gnutls_transport_set_int (client->tls.session, client->sock);
+  gnutls_handshake_set_timeout (client->tls.session,
+                                tls_options->handshake_timeout);
+
+  do {
+    e = gnutls_handshake (client->tls.session);
+  }
+  while (e < 0 && gnutls_error_is_fatal (e) == 0);
+
+  if (e != 0)
+    {
+      gnutls_deinit (client->tls.session);
+      gnutls_certificate_free_credentials (client->tls.creds);
+
+      client->tls.session = NULL;
+      client->tls.creds = NULL;
+
+      return -EPROTO;
+    }
+
+  return 0;
+}
+#else
+static int
+_riemann_client_connect_tls_handshake (riemann_client_t __attribute__((unused)) *client,
+                                       riemann_client_tls_options_t __attribute__((unused)) *tls_options)
+{
+  return -ENOSYS;
+}
+#endif
+
 static int
 riemann_client_connect_va (riemann_client_t *client,
                            riemann_client_type_t type,
@@ -170,17 +348,7 @@ riemann_client_connect_va (riemann_client_t *client,
 {
   struct addrinfo hints, *res;
   int sock;
-  va_list ap;
-#if HAVE_GNUTLS
-  struct
-  {
-    char *cafn;
-    char *certfn;
-    char *keyfn;
-    unsigned int handshake_timeout;
-  } tls = {NULL, NULL, NULL,
-           GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT};
-#endif
+  riemann_client_tls_options_t tls_options;
 
   if (!client || !hostname)
     return -EINVAL;
@@ -190,78 +358,31 @@ riemann_client_connect_va (riemann_client_t *client,
   memset (&hints, 0, sizeof (hints));
   hints.ai_family = AF_UNSPEC;
 
-  if (type == RIEMANN_CLIENT_TCP)
+  switch (type)
     {
-      client->send = _riemann_client_send_message_tcp;
-      client->recv = _riemann_client_recv_message_tcp;
+    case RIEMANN_CLIENT_TCP:
+      _riemann_client_connect_setup_tcp (client, &hints);
+      break;
+    case RIEMANN_CLIENT_UDP:
+      _riemann_client_connect_setup_udp (client, &hints);
+      break;
+    case RIEMANN_CLIENT_TLS:
+      {
+        va_list ap;
+        int e;
 
-      hints.ai_socktype = SOCK_STREAM;
+        va_copy (ap, aq);
+        e = _riemann_client_connect_setup_tls (client, &hints, ap, &tls_options);
+        va_end (ap);
+
+        if (e != 0)
+          return e;
+
+        break;
+      }
+    default:
+      return -EINVAL;
     }
-  else if (type == RIEMANN_CLIENT_UDP)
-    {
-      client->send = _riemann_client_send_message_udp;
-      client->recv = _riemann_client_recv_message_udp;
-
-      hints.ai_socktype = SOCK_DGRAM;
-    }
-  else if (type == RIEMANN_CLIENT_TLS)
-    {
-#if HAVE_GNUTLS
-      riemann_client_option_t option;
-
-      va_copy (ap, aq);
-
-      option = (riemann_client_option_t) va_arg (ap, int);
-      do
-        {
-          switch (option)
-            {
-            case RIEMANN_CLIENT_OPTION_NONE:
-              break;
-
-            case RIEMANN_CLIENT_OPTION_TLS_CA_FILE:
-              tls.cafn = va_arg (ap, char *);
-              break;
-
-            case RIEMANN_CLIENT_OPTION_TLS_CERT_FILE:
-              tls.certfn = va_arg (ap, char *);
-              break;
-
-            case RIEMANN_CLIENT_OPTION_TLS_KEY_FILE:
-              tls.keyfn = va_arg (ap, char *);
-              break;
-
-            case RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT:
-              tls.handshake_timeout = va_arg (ap, unsigned int);
-              break;
-
-            default:
-              va_end (ap);
-              return -EINVAL;
-            }
-
-          if (option != RIEMANN_CLIENT_OPTION_NONE)
-            option = (riemann_client_option_t) va_arg (ap, int);
-        }
-      while (option != RIEMANN_CLIENT_OPTION_NONE);
-      va_end (ap);
-
-      if (!tls.cafn || !tls.certfn || !tls.keyfn)
-        {
-          return -EINVAL;
-        }
-
-      client->send = _riemann_client_send_message_tls;
-      client->recv = _riemann_client_recv_message_tls;
-#else
-      va_copy (ap, aq);
-      va_end (ap);
-
-      return -ENOTSUP;
-#endif
-    }
-  else
-    return -EINVAL;
 
   if (getaddrinfo (hostname, NULL, &hints, &res) != 0)
     return -EADDRNOTAVAIL;
@@ -292,49 +413,8 @@ riemann_client_connect_va (riemann_client_t *client,
   client->sock = sock;
   client->srv_addr = res;
 
-#if HAVE_GNUTLS
   if (type == RIEMANN_CLIENT_TLS)
-    {
-      int e;
-
-      gnutls_certificate_allocate_credentials (&(client->tls.creds));
-      gnutls_certificate_set_x509_trust_file (client->tls.creds, tls.cafn,
-                                              GNUTLS_X509_FMT_PEM);
-      gnutls_certificate_set_verify_function (client->tls.creds,
-                                              _verify_certificate_callback);
-
-      gnutls_certificate_set_x509_key_file (client->tls.creds,
-                                            tls.certfn, tls.keyfn,
-                                            GNUTLS_X509_FMT_PEM);
-
-      gnutls_init (&client->tls.session, GNUTLS_CLIENT);
-
-      gnutls_set_default_priority (client->tls.session);
-
-      gnutls_credentials_set (client->tls.session, GNUTLS_CRD_CERTIFICATE,
-                              client->tls.creds);
-
-      gnutls_transport_set_int (client->tls.session, sock);
-      gnutls_handshake_set_timeout (client->tls.session,
-                                    tls.handshake_timeout);
-
-      do {
-        e = gnutls_handshake (client->tls.session);
-      }
-      while (e < 0 && gnutls_error_is_fatal (e) == 0);
-
-      if (e != 0)
-        {
-          gnutls_deinit (client->tls.session);
-          gnutls_certificate_free_credentials (client->tls.creds);
-
-          client->tls.session = NULL;
-          client->tls.creds = NULL;
-
-          return -EPROTO;
-        }
-    }
-#endif
+    return _riemann_client_connect_tls_handshake (client, &tls_options);
 
   return 0;
 }

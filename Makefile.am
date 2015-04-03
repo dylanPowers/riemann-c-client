@@ -39,6 +39,9 @@ pkginclude_HEADERS		= \
 	lib/riemann/riemann-client.h
 lib_libriemann_client_la_SOURCES= \
 	lib/riemann/client.c	  \
+	lib/riemann/client/tcp.c  \
+	lib/riemann/client/tls.c  \
+	lib/riemann/client/udp.c  \
 	lib/riemann/event.c	  \
 	lib/riemann/message.c	  \
 	lib/riemann/attribute.c	  \
@@ -46,7 +49,10 @@ lib_libriemann_client_la_SOURCES= \
 	lib/riemann/simple.c
 $(am_lib_libriemann_client_la_OBJECTS): ${proto_files}
 noinst_HEADERS			= \
-	lib/riemann/_private.h
+	lib/riemann/_private.h	  \
+	lib/riemann/client/tcp.h  \
+	lib/riemann/client/tls.h  \
+	lib/riemann/client/udp.h
 
 nodist_lib_libriemann_client_la_SOURCES	= \
 	${proto_files}

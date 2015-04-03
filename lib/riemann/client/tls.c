@@ -264,13 +264,13 @@ _riemann_client_disconnect_tls (riemann_client_t __attribute__((unused)) *client
 {
 }
 
-void
+int
 _riemann_client_connect_setup_tls (riemann_client_t __attribute__((unused)) *client,
                                    struct addrinfo __attribute__((unused)) *hints,
                                    va_list __attribute__((unused)) aq,
                                    riemann_client_tls_options_t __attribute__((unused)) *tls_options)
 {
-  return -ENOSYS;
+  return -ENOTSUP;
 }
 
 int

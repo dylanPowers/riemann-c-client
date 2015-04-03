@@ -136,7 +136,7 @@ riemann_client_get_fd (riemann_client_t *client)
 
 #if HAVE_GNUTLS
 static int
-_verify_certificate_callback(gnutls_session_t session)
+_verify_certificate_callback (gnutls_session_t session)
 {
   unsigned int status;
   int ret;

@@ -104,7 +104,7 @@ src_riemann_client_EXTRA_DIST	= \
 	src/cmd-query.c
 
 # -- Extra files to distribute --
-EXTRA_DIST			= README.md NEWS GPL LGPL \
+EXTRA_DIST			= README.md NEWS.md GPL LGPL \
 				  lib/riemann/proto/riemann.proto \
 				  lib/riemann/libriemann.ver \
 				  lib/riemann/riemann-client.pc \

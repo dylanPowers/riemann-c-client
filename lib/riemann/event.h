@@ -210,12 +210,12 @@ int riemann_event_attribute_add (riemann_event_t *event,
 /** Attach an attribute to an event.
  *
  * @param event is the event to attach an attribute to.
- * @param key is the key part of the attribute to attach.
- * @param value is the value part of the attribute to attach.
+ * @param key is the key part of the attribute to attach, the value is
+ * copied, ownership remains at the caller.
+ * @param value is the value part of the attribute to attach, the
+ * value is copied, ownership remains at the caller.
  *
  * @note Does not attempt to verify that the key is unique.
- * @note Both #key and #value are copied, ownership remains at the
- * caller.
  *
  * @retval 0 is returned on success.
  * @retval -errno is returned on failure.

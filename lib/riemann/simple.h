@@ -99,9 +99,9 @@ riemann_message_t *riemann_query (riemann_client_t *client,
  * Sends a message, and if need be, waits for a reply.
  *
  * @param client is the client to send and receive with.
- * @param message is the message to send.
+ * @param message is the message to send. The object will be freed
+ * before the function returns.
  *
- * @note The #message is freed before the function returns.
  *
  * @returns The newly allocated response message (query results, ACK
  * over TCP and TLS, generated response on UDP), or NULL on

@@ -29,7 +29,7 @@ proto_files			= \
 	lib/riemann/proto/riemann.pb-c.h
 nodist_proto_HEADERS		= \
 	lib/riemann/proto/riemann.pb-c.h
-pkginclude_HEADERS = \
+pkginclude_HEADERS		= \
 	lib/riemann/client.h	  \
 	lib/riemann/event.h	  \
 	lib/riemann/message.h	  \
@@ -39,12 +39,20 @@ pkginclude_HEADERS = \
 	lib/riemann/riemann-client.h
 lib_libriemann_client_la_SOURCES= \
 	lib/riemann/client.c	  \
+	lib/riemann/client/tcp.c  \
+	lib/riemann/client/tls.c  \
+	lib/riemann/client/udp.c  \
 	lib/riemann/event.c	  \
 	lib/riemann/message.c	  \
 	lib/riemann/attribute.c	  \
 	lib/riemann/query.c	  \
 	lib/riemann/simple.c
 $(am_lib_libriemann_client_la_OBJECTS): ${proto_files}
+noinst_HEADERS			= \
+	lib/riemann/_private.h	  \
+	lib/riemann/client/tcp.h  \
+	lib/riemann/client/tls.h  \
+	lib/riemann/client/udp.h
 
 nodist_lib_libriemann_client_la_SOURCES	= \
 	${proto_files}
@@ -108,7 +116,6 @@ EXTRA_DIST			= README.md NEWS.md GPL LGPL \
 				  lib/riemann/proto/riemann.proto \
 				  lib/riemann/libriemann.ver \
 				  lib/riemann/riemann-client.pc \
-				  lib/riemann/_private.h \
 				  ${check_libriemann_srcs} \
 				  ${src_riemann_client_EXTRA_DIST} \
 				  ${man1_MANS} tests/etc

@@ -79,7 +79,8 @@ UNIT_TESTS			= tests/check_libriemann \
 TESTS				= ${UNIT_TESTS}
 
 AM_TESTS_ENVIRONMENT		= \
-	CK_FORK=no; test -e tests/data || ln -s ${abs_top_srcdir}/tests/etc tests/data;
+	CK_FORK=no; test -e tests/data || ln -s ${abs_top_srcdir}/tests/etc tests/data; \
+	export CK_FORK;
 TESTS_ENVIRONMENT		?= ${AM_TESTS_ENVIRONMENT}
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}

@@ -67,10 +67,10 @@ case "${enable_tls}" in
         HAVE_GNUTLS="no"
         ;;
      yes)
-        PKG_CHECK_MODULES(GNUTLS, gnutls >= 3.3.0)
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.8)
         ;;
      *)
-        PKG_CHECK_MODULES(GNUTLS, gnutls >= 3.3.0,,[HAVE_GNUTLS="no"])
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.8,, [HAVE_GNUTLS="no"])
         ;;
 esac
 

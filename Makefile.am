@@ -119,7 +119,10 @@ EXTRA_DIST			= README.md NEWS.md GPL LGPL \
 				  lib/riemann/riemann-client.pc \
 				  ${check_libriemann_srcs} \
 				  ${src_riemann_client_EXTRA_DIST} \
-				  ${man1_MANS} tests/etc
+				  ${man1_MANS} tests/etc \
+				  lib/riemann/client/tls-gnutls.c \
+				  lib/riemann/client/tls-gnutls3.c \
+				  lib/riemann/client/tls-gnutls2.c
 
 # -- Manual pages --
 man1_MANS			 = \

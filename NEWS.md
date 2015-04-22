@@ -5,6 +5,14 @@ riemann-c-client 1.6.0
 Features
 --------
 
+* TLS support's GnuTLS dependency lowered
+
+  The minimum version of GnuTLS required was lowered from 3.3 to 2.8,
+  so TLS support can be enabled on distributions and releases that
+  ship with an older GnuTLS library.
+
+  Requested by Fabien Wernli.
+
 * `riemann_message_get_packed_size()` added
 
   To aid implementing clients that batch messages up until a certain

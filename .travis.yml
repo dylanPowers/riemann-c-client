@@ -3,6 +3,10 @@ before_install:
   - sudo pip install cpp-coveralls
   - wget http://aphyr.com/riemann/riemann_0.2.9_all.deb
   - sudo dpkg -i riemann*deb
+  - sudo install -d /etc/riemann/tls
+  - sudo cp tests/etc/server.* tests/etc/cacert.pem /etc/riemann/tls/
+  - sudo cp tests/etc/riemann.config /etc/riemann/
+  - sudo service riemann stop
   - sudo service riemann start
 install:
   - sudo apt-get update -qq

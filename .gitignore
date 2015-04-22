@@ -14,6 +14,7 @@ Makefile.in
 /coverage.info.html
 /depcomp
 /docs/
+/Doxyfile
 /install-sh
 /libtool
 /ltmain.sh
@@ -26,6 +27,8 @@ Makefile.in
 /lib/riemann-client.pc
 /src/riemann-client
 /tests/check_libriemann
+/tests/check_symver
+/tests/data
 /test-driver
 /debian/autoreconf.*
 /debian/build-tree/

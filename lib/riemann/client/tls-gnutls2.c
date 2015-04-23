@@ -59,10 +59,14 @@ static void
 _tls_handshake_setup (riemann_client_t *client,
                       riemann_client_tls_options_t __attribute__((unused)) *tls_options)
 {
+#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
+#endif
   gnutls_transport_set_ptr (client->tls.session,
                             (gnutls_transport_ptr_t) client->sock);
+#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #pragma GCC diagnostic warning "-Wint-to-pointer-cast"
+#endif
 }
 
 __attribute__((constructor))

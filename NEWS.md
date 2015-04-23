@@ -1,3 +1,25 @@
+riemann-c-client 1.6.1
+======================
+Released on 2015-04-23
+
+Bugfixes
+--------
+
+* TLS support's GnuTLS dependency lowered even more
+
+  Turns out that we need a little more work to support GnuTLS 2.8, and
+  the previous release only lowered the requirement to 2.10+. With
+  this release, 2.8+ is supported too.
+
+  Reported by Fabien Wernli.
+
+* Allow compiling with GCC < 4.4
+
+  A #pragma used in the TLS code did not work with gcc < 4.4, this has
+  been corrected.
+
+  Reported by Fabien Wernli.
+
 riemann-c-client 1.6.0
 ======================
 Released on 2015-04-23

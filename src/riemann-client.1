@@ -1,4 +1,4 @@
-.TH "RIEMANN\-CLIENT" "1" "March 2015" "The MadHouse Project" "riemann-c-client"
+.TH "RIEMANN\-CLIENT" "1" "April 2015" "The MadHouse Project" "riemann-c-client"
 
 .SH "NAME"
 \fBriemann\-client\fR \- Riemann communication tool
@@ -173,6 +173,17 @@ $ riemann\-client send \-\-state ok \e
 
 .nf
 $ riemann\-client query 'host = "my\-host"'
+.fi
+
+.SS "Using TLS"
+
+.nf
+$ riemann\-client query 'host = "my\-host"' \e
+                       \-\-tls \e
+                       \-\-option cafile=tests/data/cacert.pem \e
+                       \-\-option certfile=tests/data/client.crt \e
+                       \-\-option keyfile=tests/data/client.key \e
+                       localhost 5554
 .fi
 
 .SH "AUTHOR"

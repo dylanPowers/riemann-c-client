@@ -26,7 +26,7 @@ Features
 
   `riemann_event_set()` was also updated to handle this new style of
   attributes, along with the old way of explicitly using
-  riemann_attribute_t objects.
+  `riemann_attribute_t` objects.
 
 * `riemann_communicate()` added to `<riemann/simple.h>`
 

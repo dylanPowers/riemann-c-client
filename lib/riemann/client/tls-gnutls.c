@@ -132,8 +132,10 @@ _riemann_client_connect_tls_handshake (riemann_client_t *client,
   gnutls_certificate_allocate_credentials (&(client->tls.creds));
   gnutls_certificate_set_x509_trust_file (client->tls.creds, tls_options->cafn,
                                           GNUTLS_X509_FMT_PEM);
+#if GNUTLS_VERSION_MAJOR > 2 || (GNUTLS_VERSION_MAJOR == 2 && GNUTLS_VERSION_MINOR >= 10)
   gnutls_certificate_set_verify_function (client->tls.creds,
                                           _verify_certificate_callback);
+#endif
 
   gnutls_certificate_set_x509_key_file (client->tls.creds,
                                         tls_options->certfn, tls_options->keyfn,
@@ -152,6 +154,12 @@ _riemann_client_connect_tls_handshake (riemann_client_t *client,
     e = gnutls_handshake (client->tls.session);
   }
   while (e < 0 && gnutls_error_is_fatal (e) == 0);
+
+#if GNUTLS_VERSION_MAJOR == 2 && GNUTLS_VERSION_MINOR < 10
+  if (e == 0 &&
+      _verify_certificate_callback (client->tls.session) != 0)
+      e = -1;
+#endif
 
   if (e != 0)
     {

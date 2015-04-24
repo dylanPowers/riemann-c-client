@@ -253,6 +253,15 @@ uint8_t *riemann_message_to_buffer (riemann_message_t *message, size_t *len);
  */
 riemann_message_t *riemann_message_from_buffer (uint8_t *buffer, size_t len);
 
+/** Get the packed size of a message object.
+ *
+ * @param message is the message to get the packed size of.
+ *
+ * @returns the packed message size, or 0 on error (in which case,
+ * errno is set appropriately).
+ */
+size_t riemann_message_get_packed_size (riemann_message_t *message);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

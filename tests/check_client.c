@@ -3,6 +3,10 @@
 #include "riemann/_private.h"
 #include "mocks.h"
 
+#if HAVE_GNUTLS
+#include <gnutls/gnutls.h>
+#endif
+
 START_TEST (test_riemann_client_new)
 {
   riemann_client_t *client;
@@ -99,6 +103,7 @@ START_TEST (test_riemann_client_connect)
           RIEMANN_CLIENT_OPTION_NONE),
          EPROTO);
 
+#if GNUTLS_VERSION_MAJOR > 2
       ck_assert_errno
         (riemann_client_connect
          (client, RIEMANN_CLIENT_TLS,
@@ -109,6 +114,8 @@ START_TEST (test_riemann_client_connect)
           RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT, 1000,
           RIEMANN_CLIENT_OPTION_NONE),
          EPROTO);
+#endif
+
 #endif
     }
 

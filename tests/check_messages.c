@@ -350,6 +350,23 @@ START_TEST (test_riemann_message_clone)
 }
 END_TEST
 
+START_TEST (test_riemann_message_get_packed_size)
+{
+  riemann_message_t *message;
+
+  message = riemann_message_create_with_query
+    (riemann_query_new ("state = \"ok\""));
+
+  errno = 0;
+  ck_assert_int_eq (riemann_message_get_packed_size (NULL), 0);
+  ck_assert_errno (-errno, EINVAL);
+
+  ck_assert_int_eq (riemann_message_get_packed_size (message), 16);
+
+  riemann_message_free (message);
+}
+END_TEST
+
 static TCase *
 test_riemann_messages (void)
 {
@@ -368,6 +385,7 @@ test_riemann_messages (void)
   tcase_add_test (test_messages, test_riemann_message_append_events_n);
   tcase_add_test (test_messages, test_riemann_message_append_events);
   tcase_add_test (test_messages, test_riemann_message_clone);
+  tcase_add_test (test_messages, test_riemann_message_get_packed_size);
 
   return test_messages;
 }

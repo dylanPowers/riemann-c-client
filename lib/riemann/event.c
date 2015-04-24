@@ -148,6 +148,33 @@ riemann_event_set_va (riemann_event_t *event,
             break;
           }
 
+        case RIEMANN_EVENT_FIELD_STRING_ATTRIBUTES:
+          {
+            const char *key, *value;
+            size_t n;
+
+            for (n = 0; n < event->n_attributes; n++)
+              riemann_attribute_free (event->attributes[n]);
+            if (event->attributes)
+              free (event->attributes);
+            event->attributes = NULL;
+            event->n_attributes = 0;
+
+            while ((key = va_arg (ap, const char *)) != NULL)
+              {
+                value = va_arg (ap, const char *);
+
+                event->attributes = (riemann_attribute_t **)
+                  realloc (event->attributes,
+                           sizeof (riemann_attribute_t *) * (event->n_attributes + 1));
+                event->attributes[event->n_attributes] =
+                  riemann_attribute_create (key, value);
+                event->n_attributes++;
+              }
+
+            break;
+          }
+
         case RIEMANN_EVENT_FIELD_METRIC_S64:
           event->metric_sint64 = va_arg (ap, int64_t);
           event->has_metric_sint64 = 1;
@@ -219,6 +246,18 @@ riemann_event_attribute_add (riemann_event_t *event,
   event->n_attributes++;
 
   return 0;
+}
+
+int
+riemann_event_string_attribute_add (riemann_event_t *event,
+                                    const char *key,
+                                    const char *value)
+{
+  if (!key || !value)
+    return -EINVAL;
+
+  return riemann_event_attribute_add (event,
+                                      riemann_attribute_create (key, value));
 }
 
 riemann_event_t *

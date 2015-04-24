@@ -1,6 +1,6 @@
 # -*- Autoconf -*-
 
-AC_INIT([riemann-c-client], [1.5.0], [algernon@madhouse-project.org])
+AC_INIT([riemann-c-client], [1.6.1], [algernon@madhouse-project.org])
 AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz no-dist-gzip])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -67,10 +67,10 @@ case "${enable_tls}" in
         HAVE_GNUTLS="no"
         ;;
      yes)
-        PKG_CHECK_MODULES(GNUTLS, gnutls >= 3.3.0)
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.8)
         ;;
      *)
-        PKG_CHECK_MODULES(GNUTLS, gnutls >= 3.3.0,,[HAVE_GNUTLS="no"])
+        PKG_CHECK_MODULES(GNUTLS, gnutls >= 2.8,, [HAVE_GNUTLS="no"])
         ;;
 esac
 

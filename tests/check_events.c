@@ -85,6 +85,16 @@ START_TEST (test_riemann_event_set)
   ck_assert_str_eq (event->attributes[0]->key, "key-3");
   ck_assert_str_eq (event->attributes[0]->value, "value-3");
 
+  ck_assert_errno
+    (riemann_event_set (event, RIEMANN_EVENT_FIELD_STRING_ATTRIBUTES,
+                        "key-4", "value-4",
+                        "key-5", "value-5",
+                        NULL,
+                        RIEMANN_EVENT_FIELD_NONE), 0);
+  ck_assert_int_eq (event->n_attributes, 2);
+  ck_assert_str_eq (event->attributes[0]->key, "key-4");
+  ck_assert_str_eq (event->attributes[1]->value, "value-5");
+
   ck_assert (riemann_event_set (event, RIEMANN_EVENT_FIELD_METRIC_S64,
                                 (int64_t) 12345,
                                 RIEMANN_EVENT_FIELD_NONE) == 0);
@@ -203,6 +213,29 @@ START_TEST (test_riemann_event_attribute_add)
 }
 END_TEST
 
+START_TEST (test_riemann_event_string_attribute_add)
+{
+  riemann_event_t *event;
+
+  event = riemann_event_new ();
+
+  ck_assert_errno (riemann_event_string_attribute_add (NULL, NULL, NULL),
+                   EINVAL);
+  ck_assert_errno (riemann_event_string_attribute_add (event, "key", NULL),
+                   EINVAL);
+  ck_assert_errno (riemann_event_string_attribute_add (event, NULL, "value"),
+                   EINVAL);
+
+  ck_assert_errno (riemann_event_string_attribute_add
+                   (event, "test-key", "value"), 0);
+
+  ck_assert_int_eq (event->n_attributes, 1);
+  ck_assert_str_eq (event->attributes[0]->key, "test-key");
+
+  riemann_event_free (event);
+}
+END_TEST
+
 START_TEST (test_riemann_event_clone)
 {
   riemann_event_t *event, *clone;
@@ -267,6 +300,7 @@ test_riemann_events (void)
   tcase_add_test (test_events, test_riemann_event_set_one);
   tcase_add_test (test_events, test_riemann_event_tag_add);
   tcase_add_test (test_events, test_riemann_event_attribute_add);
+  tcase_add_test (test_events, test_riemann_event_string_attribute_add);
   tcase_add_test (test_events, test_riemann_event_create);
   tcase_add_test (test_events, test_riemann_event_clone);
 

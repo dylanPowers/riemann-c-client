@@ -5,4 +5,5 @@ if [ "${TRAVIS_BRANCH}" != "master" ]; then
 fi
 
 cp lib/riemann/.libs/* lib/riemann/
+cp lib/riemann/client/.libs/* lib/riemann/client/
 coveralls -e tests -e src -e lib/riemann/proto -x .c -b .

@@ -42,7 +42,7 @@ The library follows the usual autotools way of installation:
 
 For the build to succeed, one will need libtool 2.2+ (only if building
 from a git checkout), the [protobuf-c compiler][protoc]. Optionally,
-for TLS support, one needs [GnuTLS][gnutls] 3.3+, and to enable the
+for TLS support, one needs [GnuTLS][gnutls] 2.8+, and to enable the
 JSON output support in `riemann-client`, one also needs the
 [json-c][json-c] library installed.
 

@@ -15,6 +15,7 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <netdb.h>
 #include <stdarg.h>
 
 #include "riemann/_private.h"
@@ -78,6 +79,48 @@ riemann_query (riemann_client_t *client, const char *query)
     {
       errno = -e;
       return NULL;
+    }
+
+  return riemann_client_recv_message (client);
+}
+
+riemann_message_t *
+riemann_communicate (riemann_client_t *client,
+                     riemann_message_t *message)
+{
+  int r;
+
+  if (!client)
+    {
+      if (message)
+        riemann_message_free (message);
+
+      errno = ENOTCONN;
+      return NULL;
+    }
+
+  if (!message)
+    {
+      errno = EINVAL;
+      return NULL;
+    }
+
+  r = riemann_client_send_message_oneshot (client, message);
+  if (r != 0)
+    {
+      errno = -r;
+      return NULL;
+    }
+
+  if (client->srv_addr->ai_socktype == SOCK_DGRAM)
+    {
+      riemann_message_t *response;
+
+      response = riemann_message_new ();
+      response->has_ok = 1;
+      response->ok = 1;
+
+      return response;
     }
 
   return riemann_client_recv_message (client);

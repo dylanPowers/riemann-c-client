@@ -94,6 +94,23 @@ int riemann_send_va (riemann_client_t *client,
 riemann_message_t *riemann_query (riemann_client_t *client,
                                   const char *query);
 
+/** Send & receive a message.
+ *
+ * Sends a message, and if need be, waits for a reply.
+ *
+ * @param client is the client to send and receive with.
+ * @param message is the message to send. The object will be freed
+ * before the function returns.
+ *
+ *
+ * @returns The newly allocated response message (query results, ACK
+ * over TCP and TLS, generated response on UDP), or NULL on
+ * communication error.
+ *
+ */
+riemann_message_t *riemann_communicate (riemann_client_t *client,
+                                        riemann_message_t *message);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

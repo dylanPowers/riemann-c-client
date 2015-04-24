@@ -376,3 +376,15 @@ riemann_message_clone (const riemann_message_t *message)
 
   return clone;
 }
+
+size_t
+riemann_message_get_packed_size (riemann_message_t *message)
+{
+  if (!message)
+    {
+      errno = EINVAL;
+      return 0;
+    }
+
+  return msg__get_packed_size (message);
+}

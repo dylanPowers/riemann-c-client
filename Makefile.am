@@ -11,9 +11,9 @@ protodir			= ${pkgincludedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 5
-LRC_REVISION			= 0
-LRC_AGE				= 5
+LRC_CURRENT			= 6
+LRC_REVISION			= 1
+LRC_AGE				= 6
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 
@@ -29,7 +29,7 @@ proto_files			= \
 	lib/riemann/proto/riemann.pb-c.h
 nodist_proto_HEADERS		= \
 	lib/riemann/proto/riemann.pb-c.h
-pkginclude_HEADERS = \
+pkginclude_HEADERS		= \
 	lib/riemann/client.h	  \
 	lib/riemann/event.h	  \
 	lib/riemann/message.h	  \
@@ -39,12 +39,20 @@ pkginclude_HEADERS = \
 	lib/riemann/riemann-client.h
 lib_libriemann_client_la_SOURCES= \
 	lib/riemann/client.c	  \
+	lib/riemann/client/tcp.c  \
+	lib/riemann/client/tls.c  \
+	lib/riemann/client/udp.c  \
 	lib/riemann/event.c	  \
 	lib/riemann/message.c	  \
 	lib/riemann/attribute.c	  \
 	lib/riemann/query.c	  \
 	lib/riemann/simple.c
 $(am_lib_libriemann_client_la_OBJECTS): ${proto_files}
+noinst_HEADERS			= \
+	lib/riemann/_private.h	  \
+	lib/riemann/client/tcp.h  \
+	lib/riemann/client/tls.h  \
+	lib/riemann/client/udp.h
 
 nodist_lib_libriemann_client_la_SOURCES	= \
 	${proto_files}
@@ -71,7 +79,9 @@ UNIT_TESTS			= tests/check_libriemann \
 TESTS				= ${UNIT_TESTS}
 
 AM_TESTS_ENVIRONMENT		= \
-	CK_FORK=no; test -e tests/data || ln -s ${abs_top_srcdir}/tests/etc tests/data;
+	CK_FORK=no; test -e tests/data || ln -s ${abs_top_srcdir}/tests/etc tests/data; \
+	export CK_FORK;
+TESTS_ENVIRONMENT		?= ${AM_TESTS_ENVIRONMENT}
 
 tests/check_%: CFLAGS += ${CHECK_CFLAGS}
 tests/check_%: LDADD += ${CHECK_LIBS} -ldl
@@ -104,14 +114,16 @@ src_riemann_client_EXTRA_DIST	= \
 	src/cmd-query.c
 
 # -- Extra files to distribute --
-EXTRA_DIST			= README.md NEWS GPL LGPL \
+EXTRA_DIST			= README.md NEWS.md GPL LGPL \
 				  lib/riemann/proto/riemann.proto \
 				  lib/riemann/libriemann.ver \
 				  lib/riemann/riemann-client.pc \
-				  lib/riemann/_private.h \
 				  ${check_libriemann_srcs} \
 				  ${src_riemann_client_EXTRA_DIST} \
-				  ${man1_MANS} tests/etc
+				  ${man1_MANS} tests/etc \
+				  lib/riemann/client/tls-gnutls.c \
+				  lib/riemann/client/tls-gnutls3.c \
+				  lib/riemann/client/tls-gnutls2.c
 
 # -- Manual pages --
 man1_MANS			 = \

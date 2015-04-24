@@ -10,7 +10,7 @@ override_dh_installdocs:
 	dh_installdocs --link-doc=libriemann-client0
 
 override_dh_installchangelogs:
-	dh_installchangelogs NEWS
+	dh_installchangelogs NEWS.md
 
 override_dh_auto_test:
 	dh_auto_test -- VERBOSE=1

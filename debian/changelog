@@ -1,7 +1,14 @@
+riemann-c-client (1.6.1-1) experimental; urgency=low
+
+  * New upstream release.
+  * Updated the symbol file with new symbols.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Fri, 24 Apr 2015 10:25:45 +0200
+
 riemann-c-client (1.5.0-1) experimental; urgency=low
 
   * New upstream release.
-  * Add libgnutls26-dev to Build-Depends, to include TLS support too.
+  * Add libgnutls28-dev to Build-Depends, to include TLS support too.
   * Updated the symbol file with new symbols.
   * Bump Standards-Version to 3.9.6 (no changes necessary)
 

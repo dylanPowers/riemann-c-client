@@ -29,7 +29,7 @@
 #include <gnutls/gnutls.h>
 #include <gnutls/x509.h>
 
-#if GNUTLS_VERSION_MAJOR == 2
+#if GNUTLS_VERSION_MAJOR == 2 || (GNUTLS_VERSION_MAJOR == 3 && GNUTLS_VERSION_MINOR < 3)
 #include "riemann/client/tls-gnutls2.c"
 #else
 #include "riemann/client/tls-gnutls3.c"

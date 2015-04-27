@@ -20,10 +20,9 @@ lib_LTLIBRARIES			= lib/libriemann-client.la
 lib_libriemann_client_la_CFLAGS	= ${AM_CFLAGS} ${PROTOBUF_C_CFLAGS} \
 				  ${GNUTLS_CFLAGS}
 lib_libriemann_client_la_LDFLAGS= \
-	${PROTOBUF_C_LDFLAGS}	  \
+	${PROTOBUF_C_LIBS}	  \
 	${GNUTLS_LIBS}		  \
 	-version-info ${LRC_CURRENT}:${LRC_REVISION}:${LRC_AGE}
-lib_libriemann_client_la_LIBADD	= -lprotobuf-c
 proto_files			= \
 	lib/riemann/proto/riemann.pb-c.c  \
 	lib/riemann/proto/riemann.pb-c.h

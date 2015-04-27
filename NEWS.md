@@ -1,3 +1,22 @@
+riemann-c-client 1.6.2
+======================
+UNRELEASED
+
+Bugfixes
+--------
+
+* Fix the TLS support to work with GnuTLS 3.1 tool
+
+  Treat anything less than GnuTLS 3.3 as if it were GnuTLS 2.x, so
+  that the library compiles and works for every possible GnuTLS
+  version between 2.8 and 3.3+.
+
+  Reported by Peter Czanik.
+
+* Add a TLS example to the riemann-client(1) manual page.
+
+  Suggested by Fabien Wernli.
+
 riemann-c-client 1.6.1
 ======================
 Released on 2015-04-23

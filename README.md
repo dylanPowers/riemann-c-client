@@ -124,21 +124,6 @@ then start over from `configure`.
 To build the API documentation, one will have to have
 [Doxygen](http://www.doxygen.org/) installed.
 
-Why?
-----
-
-There already is an [existing library][gkos-riemann], and before
-sitting down to write an independent one, I evaluated that one first.
-Unfortunately, it failed on a few key points, like licensing, lack of
-tests and promise of stability, sometimes awkward API, and so on and
-so forth.
-
- [gkos-riemann]: https://github.com/gkos/riemann-c-client
-
-I could have sent patches correcting these, but it was much easier to
-just write a library that is designed from the ground up for an API I
-find convenient and useful.
-
 License
 -------
 

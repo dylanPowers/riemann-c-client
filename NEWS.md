@@ -1,6 +1,17 @@
-riemann-c-client 1.6.2
+riemann-c-client 1.7.0
 ======================
 UNRELEASED
+
+Features
+--------
+
+* Added the `riemann_communicate_query` and
+  `riemann_communicate_event` functions.
+
+  To make the `riemann_communicate()` API simpler for common use
+  cases, two new functions were introduced, to be able to easily send
+  queries and receive replies, and another to send a single event, and
+  read the ACK back.
 
 Bugfixes
 --------

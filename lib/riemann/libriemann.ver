@@ -90,3 +90,8 @@ RIEMANN_C_1.6 {
 
         riemann_communicate;
 } RIEMANN_C_1.5;
+
+RIEMANN_C_1.7 {
+	riemann_communicate_query;
+	riemann_communicate_event;
+} RIEMANN_C_1.6;

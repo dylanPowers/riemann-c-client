@@ -86,7 +86,7 @@ int
 main (void)
 {
   riemann_client_t *client;
-  int e;
+  riemann_message_t *r;
 
   client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
   if (!client)
@@ -96,17 +96,28 @@ main (void)
       exit (EXIT_FAILURE);
     }
 
-  if ((e = riemann_send (client,
-                         RIEMANN_EVENT_FIELD_HOST, "localhost",
-                         RIEMANN_EVENT_FIELD_SERVICE, "demo-client",
-                         RIEMANN_EVENT_FIELD_STATE, "ok",
-                         RIEMANN_EVENT_FIELD_TAGS, "demo-client", "riemann-c-client", NULL,
-                         RIEMANN_EVENT_FIELD_NONE)) != 0)
+  r = riemann_communicate_event
+    (client,
+     RIEMANN_EVENT_FIELD_HOST, "localhost",
+     RIEMANN_EVENT_FIELD_SERVICE, "demo-client",
+     RIEMANN_EVENT_FIELD_STATE, "ok",
+     RIEMANN_EVENT_FIELD_TAGS, "demo-client", "riemann-c-client", NULL,
+     RIEMANN_EVENT_FIELD_NONE);
+
+  if (!r)
     {
-      fprintf (stderr, "Error while sending message: %s\n", strerror (-e));
+      fprintf (stderr, "Error while sending message: %s\n", strerror (errno));
       exit (EXIT_FAILURE);
     }
 
+  if (r->ok != 1)
+    {
+      fprintf (stderr,  "Error communicating with Riemann: %s\n",
+               (r->error) ? r->error : strerror (errno));
+      exit (EXIT_FAILURE);
+    }
+
+  riemann_message_free (r);
   riemann_client_free (client);
 
   return EXIT_SUCCESS;

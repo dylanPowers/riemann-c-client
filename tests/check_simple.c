@@ -110,6 +110,92 @@ START_TEST (test_riemann_simple_communicate)
   ck_assert (response != NULL);
   ck_assert_int_eq (response->ok, 1);
   riemann_message_free (response);
+  riemann_client_disconnect (client);
+
+  riemann_client_connect (client, RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+  message = riemann_message_create_with_events
+    (riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
+                           RIEMANN_EVENT_FIELD_SERVICE, "test_riemann_simple_communicate #2",
+                           RIEMANN_EVENT_FIELD_STATE, "ok",
+                           RIEMANN_EVENT_FIELD_NONE),
+     NULL);
+  riemann_message_set_query (message,
+                             riemann_query_new ("true"));
+
+  response = riemann_communicate (client, message);
+  ck_assert (response != NULL);
+  ck_assert_int_eq (response->ok, 1);
+  ck_assert (response->n_events > 0);
+  riemann_message_free (response);
+  riemann_client_disconnect (client);
+
+  riemann_client_connect (client, RIEMANN_CLIENT_UDP, "127.0.0.1", 5555);
+  message = riemann_message_create_with_events
+    (riemann_event_create (RIEMANN_EVENT_FIELD_HOST, "localhost",
+                           RIEMANN_EVENT_FIELD_SERVICE, "test_riemann_simple_communicate #2",
+                           RIEMANN_EVENT_FIELD_STATE, "ok",
+                           RIEMANN_EVENT_FIELD_NONE),
+     NULL);
+  riemann_message_set_query (message,
+                             riemann_query_new ("true"));
+
+  response = riemann_communicate (client, message);
+  ck_assert (response != NULL);
+  ck_assert_int_eq (response->ok, 1);
+  ck_assert (response->n_events == 0);
+  riemann_message_free (response);
+  riemann_client_disconnect (client);
+
+  riemann_client_free (client);
+}
+END_TEST
+
+START_TEST (test_riemann_simple_communicate_query)
+{
+  riemann_client_t *client;
+  riemann_message_t *response;
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+  response = riemann_communicate_query (client, "true");
+  ck_assert (response != NULL);
+  ck_assert_int_eq (response->ok, 1);
+  ck_assert (response->n_events > 0);
+  riemann_message_free (response);
+  riemann_client_disconnect (client);
+
+  client = riemann_client_create (RIEMANN_CLIENT_UDP, "127.0.0.1", 5555);
+  response = riemann_communicate_query (client, "true");
+  ck_assert (response == NULL);
+  ck_assert_errno (-errno, ENOTSUP);
+  riemann_client_disconnect (client);
+
+  riemann_client_free (client);
+}
+END_TEST
+
+START_TEST (test_riemann_simple_communicate_event)
+{
+  riemann_client_t *client;
+  riemann_message_t *response;
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+  response = riemann_communicate_event
+    (client,
+     RIEMANN_EVENT_FIELD_HOST, "localhost",
+     RIEMANN_EVENT_FIELD_SERVICE, "test_riemann_simple_communicate_event",
+     RIEMANN_EVENT_FIELD_STATE, "ok",
+     RIEMANN_EVENT_FIELD_NONE);
+  ck_assert (response != NULL);
+  ck_assert_int_eq (response->ok, 1);
+  ck_assert_int_eq (response->n_events, 0);
+  riemann_message_free (response);
+
+  response = riemann_communicate_event
+    (client,
+     256,
+     RIEMANN_EVENT_FIELD_NONE);
+  ck_assert (response == NULL);
+  ck_assert_errno (-errno, EPROTO);
 
   riemann_client_free (client);
 }
@@ -127,6 +213,8 @@ test_riemann_simple (void)
       tcase_add_test (test_simple, test_riemann_simple_send);
       tcase_add_test (test_simple, test_riemann_simple_query);
       tcase_add_test (test_simple, test_riemann_simple_communicate);
+      tcase_add_test (test_simple, test_riemann_simple_communicate_query);
+      tcase_add_test (test_simple, test_riemann_simple_communicate_event);
     }
 
   return test_simple;

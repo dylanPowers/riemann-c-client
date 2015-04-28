@@ -125,3 +125,38 @@ riemann_communicate (riemann_client_t *client,
 
   return riemann_client_recv_message (client);
 }
+
+riemann_message_t *
+riemann_communicate_query (riemann_client_t *client,
+                           const char *query_string)
+{
+  if (client && client->srv_addr->ai_socktype == SOCK_DGRAM)
+    {
+      errno = ENOTSUP;
+      return NULL;
+    }
+
+  return riemann_communicate
+    (client,
+     riemann_message_create_with_query
+     (riemann_query_new (query_string)));
+}
+
+riemann_message_t *
+riemann_communicate_event (riemann_client_t *client,
+                           riemann_event_field_t field, ...)
+{
+  va_list ap;
+  riemann_event_t *event;
+
+  va_start (ap, field);
+  event = riemann_event_create_va (field, ap);
+  va_end (ap);
+
+  if (!event)
+    return NULL;
+
+  return riemann_communicate
+    (client,
+     riemann_message_create_with_events (event, NULL));
+}

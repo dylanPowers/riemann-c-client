@@ -1,6 +1,6 @@
 # -*- Autoconf -*-
 
-AC_INIT([riemann-c-client], [1.6.1], [algernon@madhouse-project.org])
+AC_INIT([riemann-c-client], [1.7.0], [algernon@madhouse-project.org])
 AM_INIT_AUTOMAKE([foreign subdir-objects dist-xz no-dist-gzip])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
@@ -31,27 +31,24 @@ AC_TYPE_UINT8_T
 AC_TYPE_INT64_T
 AC_TYPE_SSIZE_T
 
-# Check for protobuf-c
-AC_ARG_WITH(protobuf-c-dir, AC_HELP_STRING([--with-protobuf-c-dir], [Path to protobuf-c]), 
-[if test "x$withval" != "xno" && test "x$withval" != "xyes"; then
-    PROTOBUF_C_LDFLAGS="-L$withval/lib"
-    PROTOBUF_C_CFLAGS="-I$withval/include"
-    AC_SUBST(PROTOBUF_C_LDFLAGS)
-    AC_SUBST(PROTOBUF_C_CFLAGS)
-fi])
-
-ac_save_LDFLAGS=$LDFLAGS
-ac_save_CFLAGS=$CFLAGS
-
-LDFLAGS="$PROTOBUF_C_LDFLAGS $LDFLAGS"
-CFLAGS="$PROTOBUF_C_CFLAGS $CFLAGS"
-AC_CHECK_LIB(protobuf-c, protobuf_c_message_pack, [], [
-    AC_MSG_ERROR([Can't link against protobuf-c lib, use --with-protobuf-c-dir= for non-standard directories])])
-LDFLAGS=$ac_save_LDFLAGS
-CFLAGS=$ac_save_CFLAGS
-
 # Check for pkg-config-enabled libraries
 PKG_PROG_PKG_CONFIG
+
+# Check for protobuf-c
+PKG_CHECK_MODULES(PROTOBUF_C, libprotobuf-c,,
+ [dnl No libprotobuf-c found with pkg-config.
+  dnl Fall back to manually trying to find it.
+  ac_save_LIBS=$LIBS
+  ac_save_CFLAGS=$CFLAGS
+
+  LIBS="$PROTOBUF_C_LIBS $LIBS"
+  CFLAGS="$PROTOBUF_C_CFLAGS $CFLAGS"
+  AC_CHECK_LIB(protobuf-c, protobuf_c_message_pack,
+    [PROTOBUF_C_LIBS="${PROTOBUF_C_LIBS:--lprotobuf-c}"],
+    [AC_MSG_ERROR([Can't link against protobuf-c lib, please set PROTOBUF_C_CFLAGS/PROTOBUF_C_LIBS before calling configure])])
+
+  LIBS=$ac_save_LIBS
+  CFLAGS=$ac_save_CFLAGS])
 
 HAVE_CHECK=yes
 PKG_CHECK_MODULES(CHECK, check,,[HAVE_CHECK="no"])

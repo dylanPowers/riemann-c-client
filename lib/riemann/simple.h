@@ -102,7 +102,6 @@ riemann_message_t *riemann_query (riemann_client_t *client,
  * @param message is the message to send. The object will be freed
  * before the function returns.
  *
- *
  * @returns The newly allocated response message (query results, ACK
  * over TCP and TLS, generated response on UDP), or NULL on
  * communication error.
@@ -110,6 +109,33 @@ riemann_message_t *riemann_query (riemann_client_t *client,
  */
 riemann_message_t *riemann_communicate (riemann_client_t *client,
                                         riemann_message_t *message);
+
+/** Send a query, and receive replies.
+ *
+ * Sends a query, and collects the replies.
+ *
+ * @param client is the client to send and receive with.
+ * @param query_string is the query in string format.
+ *
+ * @returns The newly allocated response message, with results
+ * included, or NULL on communication error.
+ */
+riemann_message_t *riemann_communicate_query (riemann_client_t *client,
+                                              const char *query_string);
+
+/** Send an event, and receive the ACK (if any).
+ *
+ * Sends a single event, and waits for the ACK (or fakes one, when
+ * used over UDP).
+ *
+ * @param client is the client to send and receive with.
+ * @param field is the first event field.
+ * @param ... are the value and the rest of the field-value pairs.
+ *
+ * @returns The newly allocated ACK message.
+ */
+riemann_message_t *riemann_communicate_event (riemann_client_t *client,
+                                              riemann_event_field_t field, ...);
 
 #ifdef __cplusplus
 } /* extern "C" */

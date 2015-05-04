@@ -30,6 +30,67 @@ Features
 
  [api-docs]: https://algernon.github.io/riemann-c-client/
 
+Demo
+----
+
+A simple program that sends a static event to [Riemann][riemann] is
+included below. A few more useful programs are included in the
+[src][src] directory of the source code.
+
+ [src]: https://github.com/algernon/riemann-c-client/tree/master/src
+
+```c
+#include <riemann/riemann-client.h>
+#include <riemann/simple.h>
+
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+int
+main (void)
+{
+  riemann_client_t *client;
+  riemann_message_t *r;
+
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
+  if (!client)
+    {
+      fprintf (stderr, "Error while connecting to Riemann: %s\n",
+               strerror (errno));
+      exit (EXIT_FAILURE);
+    }
+
+  r = riemann_communicate_event
+    (client,
+     RIEMANN_EVENT_FIELD_HOST, "localhost",
+     RIEMANN_EVENT_FIELD_SERVICE, "demo-client",
+     RIEMANN_EVENT_FIELD_STATE, "ok",
+     RIEMANN_EVENT_FIELD_TAGS, "demo-client", "riemann-c-client", NULL,
+     RIEMANN_EVENT_FIELD_NONE);
+
+  if (!r)
+    {
+      fprintf (stderr, "Error while sending message: %s\n", strerror (errno));
+      exit (EXIT_FAILURE);
+    }
+
+  if (r->ok != 1)
+    {
+      fprintf (stderr,  "Error communicating with Riemann: %s\n",
+               (r->error) ? r->error : strerror (errno));
+      exit (EXIT_FAILURE);
+    }
+
+  riemann_message_free (r);
+  riemann_client_free (client);
+
+  return EXIT_SUCCESS;
+}
+```
+
 Installation
 ------------
 
@@ -62,71 +123,6 @@ then start over from `configure`.
 
 To build the API documentation, one will have to have
 [Doxygen](http://www.doxygen.org/) installed.
-
-Demo
-----
-
-A simple program that sends a static event to [Riemann][riemann] is
-included below. A few more useful programs are included in the
-[src][src] directory of the source code.
-
- [src]: https://github.com/algernon/riemann-c-client/tree/master/src
-
-```c
-#include <riemann/riemann-client.h>
-#include <riemann/simple.h>
-
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-int
-main (void)
-{
-  riemann_client_t *client;
-  int e;
-
-  client = riemann_client_create (RIEMANN_CLIENT_TCP, "localhost", 5555);
-  if (!client)
-    {
-      fprintf (stderr, "Error while connecting to Riemann: %s\n",
-               strerror (errno));
-      exit (EXIT_FAILURE);
-    }
-
-  if ((e = riemann_send (client,
-                         RIEMANN_EVENT_FIELD_HOST, "localhost",
-                         RIEMANN_EVENT_FIELD_SERVICE, "demo-client",
-                         RIEMANN_EVENT_FIELD_STATE, "ok",
-                         RIEMANN_EVENT_FIELD_TAGS, "demo-client", "riemann-c-client", NULL,
-                         RIEMANN_EVENT_FIELD_NONE)) != 0)
-    {
-      fprintf (stderr, "Error while sending message: %s\n", strerror (-e));
-      exit (EXIT_FAILURE);
-    }
-
-  riemann_client_free (client);
-
-  return EXIT_SUCCESS;
-}
-```
-
-Why?
-----
-
-There already is an [existing library][gkos-riemann], and before
-sitting down to write an independent one, I evaluated that one first.
-Unfortunately, it failed on a few key points, like licensing, lack of
-tests and promise of stability, sometimes awkward API, and so on and
-so forth.
-
- [gkos-riemann]: https://github.com/gkos/riemann-c-client
-
-I could have sent patches correcting these, but it was much easier to
-just write a library that is designed from the ground up for an API I
-find convenient and useful.
 
 License
 -------

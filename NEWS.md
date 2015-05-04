@@ -1,3 +1,33 @@
+riemann-c-client 1.7.0
+======================
+Released on 2015-05-04
+
+Features
+--------
+
+* Added the `riemann_communicate_query` and
+  `riemann_communicate_event` functions.
+
+  To make the `riemann_communicate()` API simpler for common use
+  cases, two new functions were introduced, to be able to easily send
+  queries and receive replies, and another to send a single event, and
+  read the ACK back.
+
+Bugfixes
+--------
+
+* Fix the TLS support to work with GnuTLS 3.1 tool
+
+  Treat anything less than GnuTLS 3.3 as if it were GnuTLS 2.x, so
+  that the library compiles and works for every possible GnuTLS
+  version between 2.8 and 3.3+.
+
+  Reported by Peter Czanik.
+
+* Add a TLS example to the riemann-client(1) manual page.
+
+  Suggested by Fabien Wernli.
+
 riemann-c-client 1.6.1
 ======================
 Released on 2015-04-23

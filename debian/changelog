@@ -1,3 +1,11 @@
+riemann-c-client (1.7.0-1) unstable; urgency=low
+
+  * New upstream release.
+  * Forcibly enable TLS support, to make sure it is not off by accident.
+  * Updated the symbol file with new symbols.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Mon, 04 May 2015 11:36:08 +0200
+
 riemann-c-client (1.6.1-1) experimental; urgency=low
 
   * New upstream release.

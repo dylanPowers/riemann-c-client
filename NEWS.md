@@ -1,3 +1,18 @@
+riemann-c-client 1.8.0
+======================
+UNRELEASED
+
+Features
+--------
+
+* Added the `riemann_client_set_timeout` function.
+
+  To be able to reliably detect whether a connection died, we need to
+  set a timeout for the blocking operations. The new
+  `riemann_client_set_timeout()` function does just that.
+
+  Suggested by Fabien Wernli and others.
+
 riemann-c-client 1.7.0
 ======================
 Released on 2015-05-04

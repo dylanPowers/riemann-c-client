@@ -103,6 +103,23 @@ riemann_client_get_fd (riemann_client_t *client)
   return client->sock;
 }
 
+int
+riemann_client_set_timeout (riemann_client_t *client,
+                            struct timeval *timeout)
+{
+  if (!client || !timeout)
+    return -EINVAL;
+
+  if (setsockopt (client->sock, SOL_SOCKET, SO_SNDTIMEO, timeout,
+                  sizeof (struct timeval)) == -1)
+    return -errno;
+  if (setsockopt (client->sock, SOL_SOCKET, SO_RCVTIMEO, timeout,
+                  sizeof (struct timeval)) == -1)
+    return -errno;
+
+  return 0;
+}
+
 static int
 riemann_client_connect_va (riemann_client_t *client,
                            riemann_client_type_t type,

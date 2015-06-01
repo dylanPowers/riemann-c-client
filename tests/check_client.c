@@ -140,6 +140,64 @@ START_TEST (test_riemann_client_get_fd)
 }
 END_TEST
 
+make_mock (setsockopt, int,
+           int sockfd, int level, int optname,
+           const void *optval, socklen_t optlen)
+{
+  STUB (setsockopt, sockfd, level, optname, optval, optlen);
+}
+
+static int
+_mock_setsockopt (int sockfd __attribute__((unused)),
+                  int level __attribute__((unused)),
+                  int optname,
+                  const void *optval __attribute__((unused)),
+                  socklen_t optlen __attribute__((unused)))
+{
+  if (optname == SO_RCVTIMEO)
+    {
+      errno = ENOSYS;
+      return -1;
+    }
+
+  return 0;
+}
+
+START_TEST (test_riemann_client_set_timeout)
+{
+  struct timeval timeout;
+
+  timeout.tv_sec = 5;
+  timeout.tv_usec = 42;
+
+  ck_assert_errno (riemann_client_set_timeout (NULL, NULL), EINVAL);
+  ck_assert_errno (riemann_client_set_timeout (NULL, &timeout), EINVAL);
+
+  if (network_tests_enabled ())
+    {
+      riemann_client_t *client;
+      int fd;
+
+      client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+      ck_assert_errno (riemann_client_set_timeout (client, NULL), EINVAL);
+      ck_assert_errno (riemann_client_set_timeout (client, &timeout), 0);
+
+      fd = client->sock;
+      client->sock = -1;
+
+      ck_assert_errno (riemann_client_set_timeout (client, &timeout), EBADF);
+
+      mock (setsockopt, _mock_setsockopt);
+      ck_assert_errno (riemann_client_set_timeout (client, &timeout), ENOSYS);
+      restore (setsockopt);
+
+      client->sock = fd;
+
+      riemann_client_free (client);
+    }
+}
+END_TEST
+
 START_TEST (test_riemann_client_disconnect)
 {
   ck_assert_errno (riemann_client_disconnect (NULL), ENOTCONN);
@@ -560,6 +618,7 @@ test_riemann_client (void)
   tcase_add_test (test_client, test_riemann_client_connect);
   tcase_add_test (test_client, test_riemann_client_disconnect);
   tcase_add_test (test_client, test_riemann_client_get_fd);
+  tcase_add_test (test_client, test_riemann_client_set_timeout);
 
   if (network_tests_enabled ())
     {

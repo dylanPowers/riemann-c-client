@@ -33,6 +33,7 @@
 #define __MADHOUSE_RIEMANN_CLIENT_H__
 
 #include <riemann/message.h>
+#include <sys/time.h>
 
 /** Supported Riemann client types.
  */
@@ -147,6 +148,25 @@ riemann_client_t *riemann_client_create (riemann_client_type_t type,
  * @retval fd otherwise.
  */
 int riemann_client_get_fd (riemann_client_t *client);
+
+/** Set an IO timeout on the client.
+ *
+ * In case a connection finished in the middle of a read or a write,
+ * the only way to reliably return from a blocking call is to use a
+ * timeout. With this function, one can set such a timeout.
+ *
+ * @param client is the object to set a timeout for.
+ * @param timeout is the maximum amount of time to wait for IO to
+ * complete.
+ *
+ * @retval -errno in case of error.
+ * @retval 0 on success.
+ *
+ * @note This option only makes sense for TCP connections. TLS has its
+ * own timeout mechanism, and for UDP, it is not needed.
+ */
+int riemann_client_set_timeout (riemann_client_t *client,
+                                struct timeval *timeout);
 
 /** Free a Riemann client.
  *

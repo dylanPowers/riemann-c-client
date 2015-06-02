@@ -166,6 +166,7 @@ _mock_setsockopt (int sockfd __attribute__((unused)),
 START_TEST (test_riemann_client_set_timeout)
 {
   struct timeval timeout;
+  riemann_client_t *client;
 
   timeout.tv_sec = 5;
   timeout.tv_usec = 42;
@@ -173,9 +174,12 @@ START_TEST (test_riemann_client_set_timeout)
   ck_assert_errno (riemann_client_set_timeout (NULL, NULL), EINVAL);
   ck_assert_errno (riemann_client_set_timeout (NULL, &timeout), EINVAL);
 
+  client = riemann_client_new ();
+  ck_assert_errno (riemann_client_set_timeout (client, &timeout), EINVAL);
+  riemann_client_free (client);
+
   if (network_tests_enabled ())
     {
-      riemann_client_t *client;
       int fd;
 
       client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
@@ -183,7 +187,7 @@ START_TEST (test_riemann_client_set_timeout)
       ck_assert_errno (riemann_client_set_timeout (client, &timeout), 0);
 
       fd = client->sock;
-      client->sock = -1;
+      client->sock = client->sock + 10;
 
       ck_assert_errno (riemann_client_set_timeout (client, &timeout), EBADF);
 

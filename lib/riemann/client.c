@@ -110,6 +110,9 @@ riemann_client_set_timeout (riemann_client_t *client,
   if (!client || !timeout)
     return -EINVAL;
 
+  if (client->sock < 0)
+    return -EINVAL;
+
   if (setsockopt (client->sock, SOL_SOCKET, SO_SNDTIMEO, timeout,
                   sizeof (struct timeval)) == -1)
     return -errno;

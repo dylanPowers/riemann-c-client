@@ -13,6 +13,16 @@ Features
 
   Suggested by Fabien Wernli and others.
 
+Bugfixes
+--------
+
+* Handshake timeouts now work with GnuTLS 2.x too.
+
+  When compiled with GnuTLS 2.x, the
+  RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT option was silently
+  ignored. Now the timeouts are properly set up, but the timeout
+  applies to all TLS operations, not only the handshake.
+
 riemann-c-client 1.7.0
 ======================
 Released on 2015-05-04

@@ -152,8 +152,7 @@ _riemann_client_connect_tls_handshake (riemann_client_t *client,
 
   do {
     e = gnutls_handshake (client->tls.session);
-  }
-  while (e < 0 && gnutls_error_is_fatal (e) == 0);
+  } while (e < 0 && e != GNUTLS_E_AGAIN && gnutls_error_is_fatal (e) == 0);
 
 #if GNUTLS_VERSION_MAJOR == 2 && GNUTLS_VERSION_MINOR < 10
   if (e == 0 &&

@@ -103,7 +103,6 @@ START_TEST (test_riemann_client_connect)
           RIEMANN_CLIENT_OPTION_NONE),
          EPROTO);
 
-#if GNUTLS_VERSION_MAJOR > 2
       ck_assert_errno
         (riemann_client_connect
          (client, RIEMANN_CLIENT_TLS,
@@ -114,7 +113,6 @@ START_TEST (test_riemann_client_connect)
           RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT, 1000,
           RIEMANN_CLIENT_OPTION_NONE),
          EPROTO);
-#endif
 
 #endif
     }

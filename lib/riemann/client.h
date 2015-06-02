@@ -178,7 +178,7 @@ int riemann_client_set_timeout (riemann_client_t *client,
  */
 void riemann_client_free (riemann_client_t *client);
 
-/** Create a new, connected client.
+/** Connect an existing client.
  *
  * @param client is the client to connect to a Riemann server.
  * @param type is the client type to use.
@@ -189,10 +189,8 @@ void riemann_client_free (riemann_client_t *client);
  * The extra options are key-value pairs, where the key must be
  * #riemann_client_option_t. See the description of options there.
  *
- * @retval NULL is returned on error, and `errno` is set to either
- * `EINVAL`, `ERANGE`, `EADDRNOTAVAIL`, or any of the errno values
- * `socket()` and `connect()` can set.
- * @retval riemann_client_t object is returned on success.
+ * @retval -errno is returned on error.
+ * @retval 0 is returned on success.
  */
 int riemann_client_connect (riemann_client_t *client, riemann_client_type_t type,
                             const char *hostname, int port, ...);

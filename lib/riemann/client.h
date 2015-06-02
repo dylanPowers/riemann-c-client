@@ -161,9 +161,6 @@ int riemann_client_get_fd (riemann_client_t *client);
  *
  * @retval -errno in case of error.
  * @retval 0 on success.
- *
- * @note This option only makes sense for TCP connections. TLS has its
- * own timeout mechanism, and for UDP, it is not needed.
  */
 int riemann_client_set_timeout (riemann_client_t *client,
                                 struct timeval *timeout);

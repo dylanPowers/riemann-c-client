@@ -197,6 +197,11 @@ START_TEST (test_riemann_client_set_timeout)
 
       client->sock = fd;
 
+      riemann_client_disconnect (client);
+
+      riemann_client_connect (client, RIEMANN_CLIENT_UDP, "127.0.0.1", 5555);
+      ck_assert_errno (riemann_client_set_timeout (client, &timeout), 0);
+
       riemann_client_free (client);
     }
 }

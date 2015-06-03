@@ -1,4 +1,4 @@
-/* riemann/riemann-client.h -- Riemann C client library
+/* riemann/riemann-client.h.in -- Riemann C client library
  * Copyright (C) 2013, 2015  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
@@ -29,6 +29,31 @@
 #include <riemann/query.h>
 #include <riemann/message.h>
 #include <riemann/client.h>
+
+/** @defgroup version_macros Version Macros
+ *
+ * Macros related to the library version.
+ *
+ * These macros can be used to determine the version of the library at
+ * compile time, without the help of pkg-config. One use case for this
+ * would be optional support for features provided by later versions
+ * of the library.
+ *
+ * @addtogroup version_macros
+ * @{
+ */
+
+/** The major version of the library. */
+#define RCC_MAJOR_VERSION @MAJOR_VERSION@
+/** The minor version of the library. */
+#define RCC_MINOR_VERSION @MINOR_VERSION@
+/** The patch level of the library. */
+#define RCC_PATCH_VERSION @PATCH_VERSION@
+
+/** The library version as a hex number. */
+#define RCC_VERSION_NUMBER @NUMBER_VERSION@
+
+/** @} */
 
 /** @mainpage
  *

@@ -57,7 +57,7 @@ WARN_NO_PARAMDOC       = NO
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @top_srcdir@/lib/riemann
+INPUT                  = @top_srcdir@/lib/riemann @top_builddir@/lib/riemann
 INPUT_ENCODING         = UTF-8
 RECURSIVE              = NO
 FILE_PATTERNS          = *.h

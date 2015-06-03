@@ -9,6 +9,11 @@ AC_CONFIG_SRCDIR([lib/riemann/client.c])
 AC_CONFIG_HEADERS([lib/riemann/platform.h])
 AC_CONFIG_MACRO_DIR([m4])
 
+AC_SUBST(MAJOR_VERSION, `echo $PACKAGE_VERSION | sed 's/\(.*\)\..*\..*/\1/g'`)
+AC_SUBST(MINOR_VERSION, `echo $PACKAGE_VERSION | sed 's/.*\.\(.*\)\..*/\1/g'`)
+AC_SUBST(PATCH_VERSION, [[`echo $PACKAGE_VERSION | sed 's/.*\..*\.\([0-9]*\).*/\1/g'`]])
+AC_SUBST(NUMBER_VERSION, `printf "0x%02x%02x%02x" $MAJOR_VERSION $MINOR_VERSION $PATCH_VERSION`)
+
 AC_PROG_CC
 AC_PROG_CC_C_O
 AC_PROG_CXX
@@ -110,6 +115,7 @@ AC_DEFINE_UNQUOTED([HAVE_GNUTLS],
 AC_CONFIG_FILES([
         Makefile
         Doxyfile
+        lib/riemann/riemann-client.h
         lib/riemann/riemann-client.pc
 ])
 AC_OUTPUT

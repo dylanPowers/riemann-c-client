@@ -13,6 +13,16 @@ Features
 
   Suggested by Fabien Wernli and others.
 
+* Added a set of version macros.
+
+  The `RCC_MAJOR_VERSION`, `RCC_MINOR_VERSION`, `RCC_PATCH_VERSION`
+  and `RCC_VERSION_NUMBER` macros were added to aid developers in
+  determining the version of the library at build-time without the
+  need of `pkg-config`.
+
+  The primary reason to do this would be to use features of the
+  library, if available, optionally.
+
 Bugfixes
 --------
 

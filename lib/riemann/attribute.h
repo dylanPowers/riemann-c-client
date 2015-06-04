@@ -120,7 +120,7 @@ int riemann_attribute_set_value (riemann_attribute_t *attrib, const char *value)
 
 /** Set the both key and value parts of an attribute.
  *
- * @param attrib is the attribute to set the key part of.
+ * @param attrib is the attribute to set the key and value of.
  * @param key is the key to use.
  * @param value is the value to use.
  *

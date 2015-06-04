@@ -1,4 +1,4 @@
-.TH "RIEMANN\-CLIENT" "1" "April 2015" "The MadHouse Project" "riemann-c-client"
+.TH "RIEMANN\-CLIENT" "1" "June 2015" "The MadHouse Project" "riemann-c-client"
 
 .SH "NAME"
 \fBriemann\-client\fR \- Riemann communication tool
@@ -153,6 +153,15 @@ Path to the file containing the private client key. Only used for TLS
 connections.
 .RE
 
+.TP
+\fB\-0\fR,  \fB\-\-stdin\fR
+Continously read and send metrics and states from standard input. Uses
+all other fields specified on the command line. For each line on
+standard input, a new event will be sent to Riemann. If the input is a
+number, it will be used as a metric. If not, it will be used as the
+state. If it is a number, followed by a space and some string, then
+both metric and state will be set for the outgoing event.
+
 .SH "EXAMPLES"
 
 .SS "Sending an event"
@@ -167,6 +176,18 @@ $ riemann\-client send \-\-state ok \e
                       \-\-metric\-sint64 1 \e
                       \-\-ttl 300.5 \e
                       \-\-tcp
+.fi
+
+.SS "Sending metrics / state from standard input"
+
+.nf
+$ echo "1.5 ok" | \ \e
+  riemann\-client send \-\-service "client\-test: stdin" \e
+                      \-\-host "my\-host" \e
+                      \-\-description "A message from STDIN" \e
+                      \-\-tag stdin \e
+                      \-\-tcp \e
+                      \-\-stdin
 .fi
 
 .SS "Querying Riemann"

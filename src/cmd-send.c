@@ -37,7 +37,89 @@ help_send (void)
           "  -U, --udp                         Send the message over UDP.\n"
           "  -G, --tls                         Send the message over TLS.\n"
           "  -o, --option option=value         Set a client option to a given value.\n"
+          "\n"
+          "  -0, --stdin                       Read metric/state from STDIN continuously.\n"
+          "\n"
           "  -?, --help                        This help screen.\n");
+}
+
+static int
+_send_continously (riemann_client_type_t client_type,
+                   riemann_client_t *client,
+                   riemann_event_t *source_event)
+{
+  char buffer[1024];
+  int e = 0;
+
+  while (fgets (buffer, sizeof (buffer) - 1, stdin) != NULL)
+    {
+      riemann_message_t *response, *message;
+      riemann_event_t *event;
+      char *endptr;
+      double d;
+      long long int l;
+
+      buffer[strlen (buffer) - 1] = '\0';
+      if (strlen (buffer) == 0)
+        continue;
+
+      event = riemann_event_clone (source_event);
+
+      errno = 0;
+      l = strtoll (buffer, &endptr, 10);
+      if (((l == 0) && (endptr == buffer)) || (errno == ERANGE) ||
+          (endptr[0] != '\0' && endptr[0] != ' '))
+        {
+          d = strtod (buffer, &endptr);
+          if (((d == 0) && (endptr == buffer)) || (errno == ERANGE) ||
+              (endptr[0] != '\0' && endptr[0] != ' '))
+            riemann_event_set_one (event,
+                                   STATE, buffer);
+          else
+            {
+              riemann_event_set_one (event, METRIC_D, (double) d);
+              if (endptr[0] != '\0')
+                riemann_event_set_one (event, STATE, endptr + 1);
+            }
+        }
+      else
+        {
+          riemann_event_set_one (event, METRIC_S64, (int64_t) l);
+          if (endptr[0] != '\0')
+            riemann_event_set_one (event, STATE, endptr + 1);
+        }
+
+      message = riemann_message_create_with_events (event, NULL);
+      e = riemann_client_send_message_oneshot (client, message);
+
+      if (e != 0)
+        break;
+
+      if (client_type == RIEMANN_CLIENT_UDP)
+        continue;
+
+      response = riemann_client_recv_message (client);
+      if (!response)
+        {
+          fprintf (stderr, "Error when asking for a message receipt: %s\n",
+                   strerror (errno));
+          e = -EPROTO;
+          break;
+        }
+
+      if (response->ok != 1)
+        {
+          fprintf (stderr, "Message receipt failed: %s\n", response->error);
+          riemann_message_free (response);
+          e = -EPROTO;
+          break;
+        }
+
+      riemann_message_free (response);
+    }
+
+  riemann_event_free (source_event);
+  return e;
 }
 
 static int
@@ -55,6 +137,7 @@ client_send (int argc, char *argv[])
     char *certfn;
     char *keyfn;
   } tls = {NULL, NULL, NULL};
+  int stdin = 0;
 
   event = riemann_event_new ();
 
@@ -80,12 +163,13 @@ client_send (int argc, char *argv[])
         {"tls", no_argument, NULL, 'G'},
         {"ttl", required_argument, NULL, 'L'},
         {"option", required_argument, NULL, 'o'},
+        {"stdin", no_argument, NULL, '0'},
         {"help", no_argument, NULL, '?'},
         {"version", no_argument, NULL, 'V'},
         {NULL, 0, NULL, 0}
       };
 
-      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?VUTGL:o:",
+      c = getopt_long (argc, argv, "s:S:h:D:a:t:i:d:f:?VUTGL:o:0",
                        long_options, &option_index);
 
       if (c == -1)
@@ -175,6 +259,10 @@ client_send (int argc, char *argv[])
 
           break;
 
+        case '0':
+          stdin = 1;
+          break;
+
         case '?':
           help_display (argv[0], help_send);
           return EXIT_SUCCESS;
@@ -220,34 +308,48 @@ client_send (int argc, char *argv[])
       goto end;
     }
 
-  e = riemann_client_send_message_oneshot
-    (client, riemann_message_create_with_events (event, NULL));
-  if (e != 0)
+  if (stdin)
     {
-      fprintf (stderr, "Error sending message: %s\n", (char *)strerror (-e));
-      exit_status = EXIT_FAILURE;
-      goto end;
+      e = _send_continously (client_type, client, event);
+
+      if (e != 0)
+        {
+          fprintf (stderr, "Error sending message: %s\n", (char *)strerror (-e));
+          exit_status = EXIT_FAILURE;
+          goto end;
+        }
     }
-
-  if (client_type == RIEMANN_CLIENT_UDP)
-    goto end;
-
-  response = riemann_client_recv_message (client);
-  if (!response)
+  else
     {
-      fprintf (stderr, "Error when asking for a message receipt: %s\n",
-               strerror (errno));
-      exit_status = EXIT_FAILURE;
-      goto end;
-    }
+      e = riemann_client_send_message_oneshot
+        (client, riemann_message_create_with_events (event, NULL));
+      if (e != 0)
+        {
+          fprintf (stderr, "Error sending message: %s\n", (char *)strerror (-e));
+          exit_status = EXIT_FAILURE;
+          goto end;
+        }
 
-  if (response->ok != 1)
-    {
-      fprintf (stderr, "Message receipt failed: %s\n", response->error);
-      exit_status = EXIT_FAILURE;
-    }
+      if (client_type == RIEMANN_CLIENT_UDP)
+        goto end;
 
-  riemann_message_free (response);
+      response = riemann_client_recv_message (client);
+      if (!response)
+        {
+          fprintf (stderr, "Error when asking for a message receipt: %s\n",
+                   strerror (errno));
+          exit_status = EXIT_FAILURE;
+          goto end;
+        }
+
+      if (response->ok != 1)
+        {
+          fprintf (stderr, "Message receipt failed: %s\n", response->error);
+          exit_status = EXIT_FAILURE;
+        }
+
+      riemann_message_free (response);
+    }
 
  end:
   riemann_client_free (client);

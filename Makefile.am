@@ -11,9 +11,9 @@ protodir			= ${pkgincludedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 7
+LRC_CURRENT			= 8
 LRC_REVISION			= 0
-LRC_AGE				= 7
+LRC_AGE				= 8
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 

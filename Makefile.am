@@ -142,12 +142,14 @@ coverage.info: check
 CLEANFILES			+= coverage.info
 
 clean-local:
-	rm -rf coverage.info.html
+	rm -rf coverage.info.html docs/html gmon.out
 	find ${top_builddir} -name '*.gcda' -or -name '*.gcno' | xargs rm -f
 
 docs/html: Doxyfile $(pkginclude_HEADERS)
 	$(AM_V_GEN)doxygen
 
 doxygen: docs/html
+
+CLEANFILES			+= docs/doxygen_sqlite3.db
 
 .PHONY: doxygen

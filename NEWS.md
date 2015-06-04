@@ -23,6 +23,15 @@ Features
   The primary reason to do this would be to use features of the
   library, if available, optionally.
 
+* The `riemann-client` utility can now forward messages from STDIN
+
+  The `riemann-client` utility gained an `--stdin` option. Using this
+  option, one can set up a template with the command line options, and
+  send multiple events with different metrics and/or states, by piping
+  lines to the utility's standard input.
+
+  See the manual page for more information and an example.
+
 Bugfixes
 --------
 

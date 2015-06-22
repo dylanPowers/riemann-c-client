@@ -44,7 +44,7 @@ START_TEST (test_riemann_client_connect)
   if (network_tests_enabled ())
     {
       ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
-                                               "127.0.0.1", 5557), ECONNREFUSED);
+                                               "127.0.0.1", 5559), ECONNREFUSED);
 
       ck_assert (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
                                          "127.0.0.1", 5555) == 0);
@@ -227,7 +227,7 @@ START_TEST (test_riemann_client_create)
 {
   riemann_client_t *client;
 
-  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5557);
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5559);
   ck_assert (client == NULL);
   ck_assert_errno (-errno, ECONNREFUSED);
 

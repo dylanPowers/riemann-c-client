@@ -1,25 +1,34 @@
-Makefile
-Makefile.in
+# automake artifacts
 /aclocal.m4
 /autom4te.cache/
 /autoscan.log
 /compile
 /config.guess
-/config.log
-/config.status
 /config.sub
 /configure
 /configure.scan
-/coverage.info
-/coverage.info.html
 /depcomp
-/docs/
-/Doxyfile
 /install-sh
 /libtool
 /ltmain.sh
+/Makefile.in
 /missing
-/stamp-h1
+
+# configure output
+/config.log
+/config.status
+/Doxyfile
+/Makefile
+
+# built stuff
+*.o
+*.lo
+.dirstamp
+.deps/
+.libs/
+stamp-h1
+
+/docs/
 /lib/libriemann-client.la
 /lib/riemann/proto/
 /lib/riemann/platform.h.in
@@ -30,16 +39,16 @@ Makefile.in
 /tests/check_symver
 /tests/data
 /test-driver
-*~
-*.o
-*.lo
-.deps/
-.libs/
-.dirstamp
-*.tar.*
+
+# Profiling & coverage
+/coverage.info
+/coverage.info.html
+
 *.gcno
 *.gcda
 *.gcov
-*.pc
 gmon.out
-stamp-h1
+
+# Miscellaneous
+*~
+*.tar.*

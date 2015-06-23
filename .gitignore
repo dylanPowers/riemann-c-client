@@ -30,16 +30,6 @@ Makefile.in
 /tests/check_symver
 /tests/data
 /test-driver
-/debian/autoreconf.*
-/debian/build-tree/
-/debian/files
-/debian/libriemann-client0/
-/debian/libriemann-client-dev/
-/debian/riemann-c-client/
-/debian/tmp/
-/debian/*.log
-/debian/*.debhelper
-/debian/*.substvars
 *~
 *.o
 *.lo

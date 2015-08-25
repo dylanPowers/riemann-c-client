@@ -197,6 +197,19 @@ START_TEST (test_riemann_simple_communicate_event)
   ck_assert (response == NULL);
   ck_assert_errno (-errno, EPROTO);
 
+  riemann_send
+    (client,
+     RIEMANN_EVENT_FIELD_HOST, "localhost",
+     RIEMANN_EVENT_FIELD_SERVICE, "test_riemann_simple_communicate_event",
+     RIEMANN_EVENT_FIELD_STATE, "ok",
+     RIEMANN_EVENT_FIELD_NONE);
+
+  response = riemann_communicate_event (client, RIEMANN_EVENT_FIELD_NONE);
+  ck_assert (response != NULL);
+  ck_assert (response->has_ok == 1);
+  ck_assert (response->ok == 1);
+  riemann_message_free (response);
+
   riemann_client_free (client);
 }
 END_TEST

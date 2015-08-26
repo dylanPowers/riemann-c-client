@@ -15,10 +15,6 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/** @file lib/riemann/riemann-client.h
- * The main entry point of the riemann-c-client API.
- */
-
 #ifndef __MADHOUSE_RIEMANN_RIEMANN_CLIENT_H__
 #define __MADHOUSE_RIEMANN_RIEMANN_CLIENT_H__
 
@@ -30,94 +26,10 @@
 #include <riemann/message.h>
 #include <riemann/client.h>
 
-/** @defgroup version_macros Version Macros
- *
- * Macros related to the library version.
- *
- * These macros can be used to determine the version of the library at
- * compile time, without the help of pkg-config. One use case for this
- * would be optional support for features provided by later versions
- * of the library.
- *
- * @addtogroup version_macros
- * @{
- */
-
-/** The major version of the library. */
 #define RCC_MAJOR_VERSION @MAJOR_VERSION@
-/** The minor version of the library. */
 #define RCC_MINOR_VERSION @MINOR_VERSION@
-/** The patch level of the library. */
 #define RCC_PATCH_VERSION @PATCH_VERSION@
 
-/** The library version as a hex number. */
 #define RCC_VERSION_NUMBER @NUMBER_VERSION@
-
-/** @} */
-
-/** @mainpage
- *
- * @section manual_intro Introduction
- *
- * This is a C client library for the [Riemann][riemann] monitoring
- * system, providing a convenient and simple API, high test coverage
- * and a copyleft license, along with API and ABI stability.
- *
- *  [riemann]: http://riemann.io/
- *
- * The library uses [semantic versioning](http://semver.org/).
- *
- * @section manual_howto How to read this manual
- *
- * The recommended order in which to read this manual is to start with
- * the @ref riemann_message chapter, followed by the @ref
- * riemann_client one. They will also reference the @ref riemann_event
- * chapter, likely the most common part of a @ref riemann_message,
- * along with @ref riemann_queries. If one needs to set attributes,
- * glancing through @ref riemann_attribute is also recommended. For
- * one-off messages, please see the @ref riemann_simple chapter.
- *
- * For an overview of the available APIs, see the @htmlonly<a
- * href="modules.html">modules page</a>@endhtmlonly!
- *
- * @section manual_conventions Common conventions in the library
- *
- * There are a few basic principles the library tries to follow,
- * namely:
- *
- * * Errors are `errno` values.
- *
- *   If a function returns an integer, `0` will signify success, and
- *   in case of an error, a negative `errno` value will be
- *   returned. The single exception to this rule is
- *   riemann_client_get_fd(), which returns a positive number on
- *   success.
- *
- *   If a function does not return an integer, but a pointer instead,
- *   then on error, NULL will be returned, and `errno` will be set to
- *   an error value.
- *
- *   On success, `errno` is not touched at all.
- *
- * * Riemann objects are borrowed by consumers.
- *
- *   Every function that accepts an object type defined in this
- *   library, will borrow that object (unless noted otherwise). This
- *   means that one can consider the consumer object the owner of the
- *   consumed ones. In case a list is consumed, the whole list (and
- *   not just its elements) will be owned by the consumer.
- *
- *   In contrast, whenever consuming primitive typed arguments, the
- *   library will make a copy of them.
- *
- * @section module_further_reading Further readin
- *
- * The library is really simple, and has an extensive [test
- * suite][test-suite], and a simple [demo application][demo]. Those
- * may be of interest too.
- *
- *  [test-suite]: https://github.com/algernon/riemann-c-client/tree/master/tests
- *  [demo]: https://github.com/algernon/riemann-c-client/tree/master/src
- */
 
 #endif

@@ -114,7 +114,6 @@ AC_DEFINE_UNQUOTED([HAVE_GNUTLS],
 
 AC_CONFIG_FILES([
         Makefile
-        Doxyfile
         lib/riemann/riemann-client.h
         lib/riemann/riemann-client.pc
 ])

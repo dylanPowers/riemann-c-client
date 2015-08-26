@@ -28,7 +28,8 @@
 .libs/
 stamp-h1
 
-/docs/
+/docs/html/
+/docs/*.db
 /lib/libriemann-client.la
 /lib/riemann/proto/
 /lib/riemann/platform.h.in

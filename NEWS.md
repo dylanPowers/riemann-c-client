@@ -1,3 +1,27 @@
+riemann-c-client 1.8.1
+======================
+UNRELEASED
+
+Bugfixes
+--------
+
+* Tests use a different port for connection refused tests
+
+  Because port 5557 is the default for (repl-server), use 5559 for
+  testing for library behaviour in the face of connection
+  refusal. This is to make local testing without a special config
+  easier.
+
+Miscellaneous changes
+---------------------
+
+* Completely new documentation
+
+  Instead of using Doxygen to document our API, a new, prosaic
+  documentation was written, that explains not only the hows, but the
+  whys too. It is hoped that the new documentation is more
+  approachable, and explains the library better.
+
 riemann-c-client 1.8.0
 ======================
 Released on 2015-06-04

@@ -15,7 +15,9 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT
 #define GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT -1
+#endif
 
 static int
 _verify_certificate_callback (gnutls_session_t session)

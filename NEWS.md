@@ -12,6 +12,11 @@ Bugfixes
   refusal. This is to make local testing without a special config
   easier.
 
+* Fixed a compile-time warning when compiling with GnuTLS 3.2
+
+  When compiling with TLS support enabled, using GnuTLS 3.2, there was
+  a harmless compile-time warning, which has now been corrected.
+
 Miscellaneous changes
 ---------------------
 

@@ -1,6 +1,6 @@
 riemann-c-client 1.8.1
 ======================
-UNRELEASED
+Released on 2015-08-28
 
 Bugfixes
 --------

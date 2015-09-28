@@ -44,7 +44,7 @@ START_TEST (test_riemann_client_connect)
   if (network_tests_enabled ())
     {
       ck_assert_errno (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
-                                               "127.0.0.1", 5557), ECONNREFUSED);
+                                               "127.0.0.1", 5559), ECONNREFUSED);
 
       ck_assert (riemann_client_connect (client, RIEMANN_CLIENT_TCP,
                                          "127.0.0.1", 5555) == 0);
@@ -103,7 +103,6 @@ START_TEST (test_riemann_client_connect)
           RIEMANN_CLIENT_OPTION_NONE),
          EPROTO);
 
-#if GNUTLS_VERSION_MAJOR > 2
       ck_assert_errno
         (riemann_client_connect
          (client, RIEMANN_CLIENT_TLS,
@@ -114,7 +113,6 @@ START_TEST (test_riemann_client_connect)
           RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT, 1000,
           RIEMANN_CLIENT_OPTION_NONE),
          EPROTO);
-#endif
 
 #endif
     }
@@ -135,6 +133,73 @@ START_TEST (test_riemann_client_get_fd)
 
       client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
       ck_assert (riemann_client_get_fd (client) != 0);
+      riemann_client_free (client);
+    }
+}
+END_TEST
+
+make_mock (setsockopt, int,
+           int sockfd, int level, int optname,
+           const void *optval, socklen_t optlen)
+{
+  STUB (setsockopt, sockfd, level, optname, optval, optlen);
+}
+
+static int
+_mock_setsockopt (int sockfd __attribute__((unused)),
+                  int level __attribute__((unused)),
+                  int optname,
+                  const void *optval __attribute__((unused)),
+                  socklen_t optlen __attribute__((unused)))
+{
+  if (optname == SO_RCVTIMEO)
+    {
+      errno = ENOSYS;
+      return -1;
+    }
+
+  return 0;
+}
+
+START_TEST (test_riemann_client_set_timeout)
+{
+  struct timeval timeout;
+  riemann_client_t *client;
+
+  timeout.tv_sec = 5;
+  timeout.tv_usec = 42;
+
+  ck_assert_errno (riemann_client_set_timeout (NULL, NULL), EINVAL);
+  ck_assert_errno (riemann_client_set_timeout (NULL, &timeout), EINVAL);
+
+  client = riemann_client_new ();
+  ck_assert_errno (riemann_client_set_timeout (client, &timeout), EINVAL);
+  riemann_client_free (client);
+
+  if (network_tests_enabled ())
+    {
+      int fd;
+
+      client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5555);
+      ck_assert_errno (riemann_client_set_timeout (client, NULL), EINVAL);
+      ck_assert_errno (riemann_client_set_timeout (client, &timeout), 0);
+
+      fd = client->sock;
+      client->sock = client->sock + 10;
+
+      ck_assert_errno (riemann_client_set_timeout (client, &timeout), EBADF);
+
+      mock (setsockopt, _mock_setsockopt);
+      ck_assert_errno (riemann_client_set_timeout (client, &timeout), ENOSYS);
+      restore (setsockopt);
+
+      client->sock = fd;
+
+      riemann_client_disconnect (client);
+
+      riemann_client_connect (client, RIEMANN_CLIENT_UDP, "127.0.0.1", 5555);
+      ck_assert_errno (riemann_client_set_timeout (client, &timeout), 0);
+
       riemann_client_free (client);
     }
 }
@@ -162,7 +227,7 @@ START_TEST (test_riemann_client_create)
 {
   riemann_client_t *client;
 
-  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5557);
+  client = riemann_client_create (RIEMANN_CLIENT_TCP, "127.0.0.1", 5559);
   ck_assert (client == NULL);
   ck_assert_errno (-errno, ECONNREFUSED);
 
@@ -560,6 +625,7 @@ test_riemann_client (void)
   tcase_add_test (test_client, test_riemann_client_connect);
   tcase_add_test (test_client, test_riemann_client_disconnect);
   tcase_add_test (test_client, test_riemann_client_get_fd);
+  tcase_add_test (test_client, test_riemann_client_set_timeout);
 
   if (network_tests_enabled ())
     {

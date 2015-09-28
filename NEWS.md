@@ -1,3 +1,76 @@
+riemann-c-client 1.8.1
+======================
+Released on 2015-08-28
+
+Bugfixes
+--------
+
+* Tests use a different port for connection refused tests
+
+  Because port 5557 is the default for (repl-server), use 5559 for
+  testing for library behaviour in the face of connection
+  refusal. This is to make local testing without a special config
+  easier.
+
+* Fixed a compile-time warning when compiling with GnuTLS 3.2
+
+  When compiling with TLS support enabled, using GnuTLS 3.2, there was
+  a harmless compile-time warning, which has now been corrected.
+
+Miscellaneous changes
+---------------------
+
+* Completely new documentation
+
+  Instead of using Doxygen to document our API, a new, prosaic
+  documentation was written, that explains not only the hows, but the
+  whys too. It is hoped that the new documentation is more
+  approachable, and explains the library better.
+
+riemann-c-client 1.8.0
+======================
+Released on 2015-06-04
+
+Features
+--------
+
+* Added the `riemann_client_set_timeout` function.
+
+  To be able to reliably detect whether a connection died, we need to
+  set a timeout for the blocking operations. The new
+  `riemann_client_set_timeout()` function does just that.
+
+  Suggested by Fabien Wernli and others.
+
+* Added a set of version macros.
+
+  The `RCC_MAJOR_VERSION`, `RCC_MINOR_VERSION`, `RCC_PATCH_VERSION`
+  and `RCC_VERSION_NUMBER` macros were added to aid developers in
+  determining the version of the library at build-time without the
+  need of `pkg-config`.
+
+  The primary reason to do this would be to use features of the
+  library, if available, optionally.
+
+* The `riemann-client` utility can now forward messages from STDIN
+
+  The `riemann-client` utility gained an `--stdin` option. Using this
+  option, one can set up a template with the command line options, and
+  send multiple events with different metrics and/or states, by piping
+  lines to the utility's standard input.
+
+  See the manual page for more information and an example.
+
+Bugfixes
+--------
+
+* Handshake timeouts now work with GnuTLS 2.x too.
+
+  When compiled with GnuTLS 2.x, the
+  RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT option was silently
+  ignored. Now the timeouts are properly set up, but the timeout
+  applies to all TLS operations, not only the handshake.
+
 riemann-c-client 1.7.0
 ======================
 Released on 2015-05-04

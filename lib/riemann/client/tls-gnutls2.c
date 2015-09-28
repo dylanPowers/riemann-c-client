@@ -15,7 +15,9 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT
 #define GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT -1
+#endif
 
 static int
 _verify_certificate_callback (gnutls_session_t session)
@@ -64,6 +66,17 @@ _tls_handshake_setup (riemann_client_t *client,
 #endif
   gnutls_transport_set_ptr (client->tls.session,
                             (gnutls_transport_ptr_t) client->sock);
+
+  if (tls_options->handshake_timeout != (unsigned int)GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT)
+    {
+      struct timeval timeout;
+
+      timeout.tv_sec = tls_options->handshake_timeout / 1000;
+      timeout.tv_usec = (tls_options->handshake_timeout % 1000) * 1000;
+
+      riemann_client_set_timeout (client, &timeout);
+    }
+
 #if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #pragma GCC diagnostic warning "-Wint-to-pointer-cast"
 #endif

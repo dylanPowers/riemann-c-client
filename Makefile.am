@@ -11,9 +11,9 @@ protodir			= ${pkgincludedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 7
-LRC_REVISION			= 0
-LRC_AGE				= 7
+LRC_CURRENT			= 8
+LRC_REVISION			= 1
+LRC_AGE				= 8
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 
@@ -113,7 +113,7 @@ src_riemann_client_EXTRA_DIST	= \
 	src/cmd-query.c
 
 # -- Extra files to distribute --
-EXTRA_DIST			= README.md NEWS.md GPL LGPL \
+EXTRA_DIST			= README.md NEWS.md GPL LGPL CONTRIBUTING.md \
 				  lib/riemann/proto/riemann.proto \
 				  lib/riemann/libriemann.ver \
 				  lib/riemann/riemann-client.pc \
@@ -142,12 +142,5 @@ coverage.info: check
 CLEANFILES			+= coverage.info
 
 clean-local:
-	rm -rf coverage.info.html
+	rm -rf coverage.info.html gmon.out
 	find ${top_builddir} -name '*.gcda' -or -name '*.gcno' | xargs rm -f
-
-docs/html: Doxyfile $(pkginclude_HEADERS)
-	$(AM_V_GEN)doxygen
-
-doxygen: docs/html
-
-.PHONY: doxygen

@@ -15,231 +15,60 @@
  * License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/** @file lib/riemann/client.h
- */
-
-/** @defgroup riemann_client Riemann Client
- *
- * The network-connected Riemann client to send and receive messages
- * over.
- *
- * @see riemann_message
- *
- * @addtogroup riemann_client
- * @{
- */
-
 #ifndef __MADHOUSE_RIEMANN_CLIENT_H__
 #define __MADHOUSE_RIEMANN_CLIENT_H__
 
 #include <riemann/message.h>
+#include <sys/time.h>
 
-/** Supported Riemann client types.
- */
 typedef enum
   {
-    RIEMANN_CLIENT_NONE, /**< Unspecified. Used for error handling only. */
-    RIEMANN_CLIENT_TCP, /**< TCP, for both events and queries. */
-    RIEMANN_CLIENT_UDP, /**< UDP, for events only. */
-    RIEMANN_CLIENT_TLS  /**< TLS, for both events and queries. */
+    RIEMANN_CLIENT_NONE,
+    RIEMANN_CLIENT_TCP,
+    RIEMANN_CLIENT_UDP,
+    RIEMANN_CLIENT_TLS
   } riemann_client_type_t;
 
-/** Supported client settings.
- */
 typedef enum
   {
-    /** The terminating option.
-     * This must be used as the last option passed to
-     * riemann_client_connect() or riemann_client_create(), to
-     * terminate the list of additional options.
-     *
-     * It takes no value.
-     */
     RIEMANN_CLIENT_OPTION_NONE,
-    /** Path to the CA trust file.
-     *
-     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
-     * string. The string is copied, ownership remains at the
-     * caller.
-     */
     RIEMANN_CLIENT_OPTION_TLS_CA_FILE,
-    /** Path to the client certificate file.
-     *
-     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
-     * string. The string is copied, ownership remains at the caller.
-     */
     RIEMANN_CLIENT_OPTION_TLS_CERT_FILE,
-    /** Path to the client private key file.
-     *
-     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be a
-     * string. The string is copied, ownership remains at the caller.
-     */
     RIEMANN_CLIENT_OPTION_TLS_KEY_FILE,
-    /** Timeout of the TLS handshake.
-     *
-     * Used only by #RIEMANN_CLIENT_TLS clients, the value must be an
-     * unsigned integer: the time in milliseconds to wait before
-     * timing out the TLS handshake.
-     */
     RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT,
   } riemann_client_option_t;
 
-/** The Riemann Client object.
- *
- * This is an opaque class, the internal state of the Riemann client.
- */
 typedef struct _riemann_client_t riemann_client_t;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/** Return the library version.
- *
- * @returns the compiled-in library version as a string.
- */
 const char *riemann_client_version (void);
-/** Return the library name and version.
- *
- * @returns the compiled-in library name and version, as a string.
- */
 const char *riemann_client_version_string (void);
 
-/** Allocate a new, unconnected client.
- *
- * Use riemann_client_connect() to connect the object to a Riemann
- * server.
- *
- * @returns a newly allocated client object, which must be freed with
- * riemann_client_free() once no longer needed.
- */
 riemann_client_t *riemann_client_new (void);
-
-/** Create a new, connected client.
- *
- * @param type is the client type to use.
- * @param hostname is the hostname to connect to.
- * @param port is the port number to connect to on the server.
- * @param ... are optional extra settings, based on the client type.
- *
- * The extra options are key-value pairs, where the key must be
- * #riemann_client_option_t. See the description of options there.
- *
- * @retval NULL is returned on error, and `errno` is set to any of the
- * values riemann_client_connect() can set it to.
- * @retval riemann_client_t object is returned on success, which must
- * be freed with riemann_client_free() once no longer needed.
- */
 riemann_client_t *riemann_client_create (riemann_client_type_t type,
                                          const char *hostname, int port,
                                          ...);
-
-/** Get the file descriptor associated to a client.
- *
- * To allow callers to set socket options and the like on an already
- * connected client, this function can be used to return the file
- * descriptor.
- *
- * @param client is the object whose file descriptor the caller wants.
- *
- * @retval -EINVAL if the client is NULL.
- * @retval -1 if the client is not connected.
- * @retval fd otherwise.
- */
-int riemann_client_get_fd (riemann_client_t *client);
-
-/** Free a Riemann client.
- *
- * Disconnects and frees up the supplied client. Sets `errno` to
- * `EINVAL` if the supplied client object is NULL, to `ENOTCONN` if
- * the client is not connected. Can also set `errno` to any value
- * `close()` can set it to.
- *
- * @param client is the client object to disconnect and free up.
- *
- * On success, `errno` is not touched at all.
- */
 void riemann_client_free (riemann_client_t *client);
 
-/** Create a new, connected client.
- *
- * @param client is the client to connect to a Riemann server.
- * @param type is the client type to use.
- * @param hostname is the hostname to connect to.
- * @param port is the port number to connect to on the server.
- * @param ... are optional extra settings, based on the client type.
- *
- * The extra options are key-value pairs, where the key must be
- * #riemann_client_option_t. See the description of options there.
- *
- * @retval NULL is returned on error, and `errno` is set to either
- * `EINVAL`, `ERANGE`, `EADDRNOTAVAIL`, or any of the errno values
- * `socket()` and `connect()` can set.
- * @retval riemann_client_t object is returned on success.
- */
+int riemann_client_get_fd (riemann_client_t *client);
+int riemann_client_set_timeout (riemann_client_t *client,
+                                struct timeval *timeout);
+
 int riemann_client_connect (riemann_client_t *client, riemann_client_type_t type,
                             const char *hostname, int port, ...);
-
-/** Disconnect an existing client.
- *
- * @param client is the client to disconnect.
- *
- * @retval 0 is returned on success.
- * @retval -ENOTCONN is returned if the client is NULL, or not
- * connected.
- * @retval -errno is returned if `close()` fails.
- *
- * @note The client is only disconnected, not freed. It can be
- * re-used, and connected again at a later point.
- */
 int riemann_client_disconnect (riemann_client_t *client);
 
-/** Send a message through a client.
- *
- * @param client is the client to send the message through.
- * @param message is the message to send.
- *
- * The message remains untouched, and can be sent with other client
- * instances too.
- *
- * @retval 0 is returned on success.
- * @retval -ENOTCONN is returned if the client is NULL, or not connected.
- * @retval -EINVAL is returned if the message is NULL.
- * @retval -errno is returned on any other error (from `send()`,
- * `sendto()`, etc).
- */
 int riemann_client_send_message (riemann_client_t *client,
                                  riemann_message_t *message);
-
-/** Send a message through a client, and free it.
- *
- * @param client is the client to send the message through.
- * @param message is the message to send.
- *
- * A convenience function that calls riemann_message_free() after
- * sending the message with riemann_client_send_message().
- *
- * @returns the same values as riemann_client_send_message().
- */
 int riemann_client_send_message_oneshot (riemann_client_t *client,
                                          riemann_message_t *message);
-
-/** Receive a reply message.
- *
- * @param client is the client object to read a reply message from.
- *
- * Only works over TCP, and only after a query was previously sent
- * over the same client.
- *
- * @retval NULL on error, in which case errno is set.
- * @retval riemann_message_t instance on success.
- */
 riemann_message_t *riemann_client_recv_message (riemann_client_t *client);
 
 #ifdef __cplusplus
-} /* extern "C" */
+}
 #endif
-
-/** @} */
 
 #endif

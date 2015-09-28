@@ -1,3 +1,11 @@
+riemann-c-client (1.8.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Updated the symbol file with new symbols.
+  * Include the API docs in the -dev package.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Mon, 28 Sep 2015 13:46:39 +0200
+
 riemann-c-client (1.7.0-1) unstable; urgency=low
 
   * New upstream release.

@@ -1,3 +1,10 @@
+riemann-c-client (1.8.1-2) unstable; urgency=medium
+
+  * Disable parallel build for now, to make sure the package builds
+    everywhere.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Tue, 29 Sep 2015 12:05:16 +0200
+
 riemann-c-client (1.8.1-1) unstable; urgency=medium
 
   * New upstream release.

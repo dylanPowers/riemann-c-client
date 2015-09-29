@@ -25,4 +25,4 @@ override_dh_gencontrol:
 	dh_gencontrol -- -Vprotobuf:Depends=${LPB_C}
 
 %:
-	dh $@ --parallel --with autoreconf
+	dh $@ --with autoreconf

@@ -1,4 +1,4 @@
-.TH "RIEMANN\-CLIENT" "1" "June 2015" "The MadHouse Project" "riemann-c-client"
+.TH "RIEMANN\-CLIENT" "1" "March 2016" "The MadHouse Project" "riemann-c-client"
 
 .SH "NAME"
 \fBriemann\-client\fR \- Riemann communication tool
@@ -70,6 +70,10 @@ for TLS connections.
 \fBkeyfile\fR
 Path to the file containing the private client key. Only used for TLS
 connections.
+
+.TP
+\fBpriorities\fR
+Priorities for the cipher suites to be used for the session.
 .RE
 
 .SS "Submit mode"
@@ -151,6 +155,10 @@ for TLS connections.
 \fBkeyfile\fR
 Path to the file containing the private client key. Only used for TLS
 connections.
+
+.TP
+\fBpriorities\fR
+Priorities for the cipher suites to be used for the session.
 .RE
 
 .TP
@@ -204,6 +212,7 @@ $ riemann\-client query 'host = "my\-host"' \e
                        \-\-option cafile=tests/data/cacert.pem \e
                        \-\-option certfile=tests/data/client.crt \e
                        \-\-option keyfile=tests/data/client.key \e
+                       \-\-option priorities=NORMAL \e
                        localhost 5554
 .fi
 

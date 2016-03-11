@@ -1,5 +1,5 @@
 /* riemann/client/tls.h -- Riemann C client library
- * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015, 2016  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -32,6 +32,7 @@ typedef struct
   char *certfn;
   char *keyfn;
   unsigned int handshake_timeout;
+  char *priorities;
 } riemann_client_tls_options_t;
 
 void _riemann_client_init_tls (riemann_client_t *client);

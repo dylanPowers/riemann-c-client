@@ -1,3 +1,16 @@
+riemann-c-client 1.9.0
+======================
+UNRELEASED
+
+Features
+--------
+
+* Added the `RIEMANN_CLIENT_OPTION_TLS_PRIORITIES` client option, which can be
+  used to set priorities for cipher suites to be used for a TLS session.
+
+  The `riemann-client` tool also learned to accept a `-o priorities=` option,
+  and set the above one appropriately.
+
 riemann-c-client 1.8.1
 ======================
 Released on 2015-08-28

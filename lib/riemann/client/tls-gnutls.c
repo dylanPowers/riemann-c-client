@@ -1,5 +1,5 @@
 /* riemann/client/tls-gnutls.c -- Riemann C client library
- * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015, 2016  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -104,6 +104,10 @@ _riemann_client_connect_setup_tls (riemann_client_t *client,
           tls_options->handshake_timeout = va_arg (ap, unsigned int);
           break;
 
+        case RIEMANN_CLIENT_OPTION_TLS_PRIORITIES:
+          tls_options->priorities = va_arg (ap, char *);
+          break;
+
         default:
           va_end (ap);
           return -EINVAL;
@@ -143,7 +147,16 @@ _riemann_client_connect_tls_handshake (riemann_client_t *client,
 
   gnutls_init (&client->tls.session, GNUTLS_CLIENT);
 
-  gnutls_set_default_priority (client->tls.session);
+  if (tls_options->priorities)
+    {
+      if (gnutls_priority_set_direct (client->tls.session, tls_options->priorities, NULL) != GNUTLS_E_SUCCESS)
+        {
+          e = -1;
+          goto end;
+        }
+    }
+  else
+    gnutls_set_default_priority (client->tls.session);
 
   gnutls_credentials_set (client->tls.session, GNUTLS_CRD_CERTIFICATE,
                           client->tls.creds);
@@ -160,6 +173,7 @@ _riemann_client_connect_tls_handshake (riemann_client_t *client,
       e = -1;
 #endif
 
+ end:
   if (e != 0)
     {
       gnutls_deinit (client->tls.session);

@@ -1,6 +1,6 @@
 riemann-c-client 1.9.0
 ======================
-UNRELEASED
+Released on 2016-04-25
 
 Features
 --------

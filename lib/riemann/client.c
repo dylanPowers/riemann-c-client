@@ -224,7 +224,7 @@ riemann_client_connect_1_0 (riemann_client_t *client,
   return riemann_client_connect (client, type, hostname, port);
 }
 
-#ifdef HAVE_VERSIONING
+#if HAVE_VERSIONING
 __asm__(".symver riemann_client_connect_1_0,riemann_client_connect@RIEMANN_C_1.0");
 #endif
 
@@ -259,7 +259,7 @@ riemann_client_create_1_0 (riemann_client_type_t type,
   return riemann_client_create (type, hostname, port);
 }
 
-#ifdef HAVE_VERSIONING
+#if HAVE_VERSIONING
 __asm__(".symver riemann_client_create_1_0,riemann_client_create@RIEMANN_C_1.0");
 #endif
 

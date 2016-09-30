@@ -1,3 +1,10 @@
+riemann-c-client (1.9.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Updated the symbol file with new symbols.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Fri, 30 Sep 2016 18:14:52 +0200
+
 riemann-c-client (1.8.1-2) unstable; urgency=medium
 
   * Disable parallel build for now, to make sure the package builds

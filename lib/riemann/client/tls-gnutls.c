@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/types.h>
+#include <sys/socket.h>
 
 #include "riemann/_private.h"
 #include "riemann/platform.h"

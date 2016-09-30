@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 9~),
                libjson-c-dev,
                libgnutls28-dev (>= 3.3.0~),
                check
-Standards-Version: 3.9.6
+Standards-Version: 3.9.8
 Section: libs
 Homepage: https://github.com/algernon/riemann-c-client
 Vcs-Git: https://github.com/algernon/riemann-c-client.git -b debian/master

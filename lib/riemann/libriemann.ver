@@ -37,7 +37,9 @@ RIEMANN_C_1.0 {
         riemann_message_from_buffer;
 
         riemann_client_new;
+        riemann_client_create;
         riemann_client_free;
+        riemann_client_connect;
         riemann_client_disconnect;
         riemann_client_send_message;
         riemann_client_send_message_oneshot;

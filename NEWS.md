@@ -1,3 +1,21 @@
+riemann-c-client 1.9.1
+======================
+UNRELEASED
+
+Bugfixes
+--------
+
+* Fix the build on non-ELF systems, and systems that lack symbol versioning.
+  (Thanks to @ilovezfs)
+* Use the `PROTOBUF_C_CFLAGS` environment variable, when set.
+  (Thanks to @ciomaire)
+* Added some missing includes that prevented the library from compiling on
+  FreeBSD.
+  (Thanks to Dave Cottlehuber, @dch)
+* Fixed an issue with how some of the symbols were versioned, which caused link
+  failures in some situations.
+  (Thanks to Dave Cottlehuber, @dch)
+
 riemann-c-client 1.9.0
 ======================
 Released on 2016-04-25

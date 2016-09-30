@@ -1,0 +1,11 @@
+/.debhelper/
+/autoreconf.*
+/build-tree/
+/files
+/*.substvars
+/tmp/
+/debhelper-build-stamp
+
+/libriemann-client-dev/
+/libriemann-client0/
+/riemann-c-client/

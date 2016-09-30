@@ -14,7 +14,6 @@ Vcs-Git: https://github.com/algernon/riemann-c-client.git -b debian/master
 Vcs-Browser: https://github.com/algernon/riemann-c-client/tree/debian/master
 
 Package: libriemann-client0
-Section: libs
 Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}

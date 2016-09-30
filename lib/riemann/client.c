@@ -202,10 +202,17 @@ riemann_client_connect_va (riemann_client_t *client,
   return 0;
 }
 
+#if HAVE_VERSIONING
+int
+riemann_client_connect_new (riemann_client_t *client,
+                            riemann_client_type_t type,
+                            const char *hostname, int port, ...)
+#else
 int
 riemann_client_connect (riemann_client_t *client,
                         riemann_client_type_t type,
                         const char *hostname, int port, ...)
+#endif
 {
   va_list ap;
   int r;
@@ -216,6 +223,10 @@ riemann_client_connect (riemann_client_t *client,
   return r;
 }
 
+#if HAVE_VERSIONING
+__asm__(".symver riemann_client_connect_new,riemann_client_connect@@RIEMANN_C_1.5");
+#endif
+
 int
 riemann_client_connect_1_0 (riemann_client_t *client,
                             riemann_client_type_t type,
@@ -224,13 +235,19 @@ riemann_client_connect_1_0 (riemann_client_t *client,
   return riemann_client_connect (client, type, hostname, port);
 }
 
-#ifdef HAVE_VERSIONING
+#if HAVE_VERSIONING
 __asm__(".symver riemann_client_connect_1_0,riemann_client_connect@RIEMANN_C_1.0");
 #endif
 
+#if HAVE_VERSIONING
+riemann_client_t *
+riemann_client_create_new (riemann_client_type_t type,
+                           const char *hostname, int port, ...)
+#else
 riemann_client_t *
 riemann_client_create (riemann_client_type_t type,
                        const char *hostname, int port, ...)
+#endif
 {
   riemann_client_t *client;
   int e;
@@ -252,6 +269,10 @@ riemann_client_create (riemann_client_type_t type,
   return client;
 }
 
+#if HAVE_VERSIONING
+__asm__(".symver riemann_client_create_new,riemann_client_create@@RIEMANN_C_1.5");
+#endif
+
 riemann_client_t *
 riemann_client_create_1_0 (riemann_client_type_t type,
                            const char *hostname, int port)
@@ -259,7 +280,7 @@ riemann_client_create_1_0 (riemann_client_type_t type,
   return riemann_client_create (type, hostname, port);
 }
 
-#ifdef HAVE_VERSIONING
+#if HAVE_VERSIONING
 __asm__(".symver riemann_client_create_1_0,riemann_client_create@RIEMANN_C_1.0");
 #endif
 

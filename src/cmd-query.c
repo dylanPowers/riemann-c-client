@@ -193,7 +193,8 @@ client_query (int argc, char *argv[])
     char *cafn;
     char *certfn;
     char *keyfn;
-  } tls = {NULL, NULL, NULL};
+    char *priorities;
+  } tls = {NULL, NULL, NULL, NULL};
 
 
   while (1)
@@ -236,6 +237,8 @@ client_query (int argc, char *argv[])
             tls.certfn = &optarg[strlen ("certfile=")];
           else if (strncmp (optarg, "keyfile=", strlen ("keyfile=")) == 0)
             tls.keyfn = &optarg[strlen ("keyfile=")];
+          else if (strncmp (optarg, "priorities=", strlen ("priorities=")) == 0)
+            tls.priorities = &optarg[strlen ("properties=")];
           else
             {
               fprintf (stderr, "Unknown client option: %s\n", optarg);
@@ -291,6 +294,7 @@ client_query (int argc, char *argv[])
      RIEMANN_CLIENT_OPTION_TLS_CA_FILE, tls.cafn,
      RIEMANN_CLIENT_OPTION_TLS_CERT_FILE, tls.certfn,
      RIEMANN_CLIENT_OPTION_TLS_KEY_FILE, tls.keyfn,
+     RIEMANN_CLIENT_OPTION_TLS_PRIORITIES, tls.priorities,
      RIEMANN_CLIENT_OPTION_NONE);
   if (!client)
     {

@@ -2,7 +2,6 @@ Riemann C client library
 ========================
 
 [![Build Status](https://img.shields.io/travis/algernon/riemann-c-client/master.svg?style=flat-square)](https://travis-ci.org/algernon/riemann-c-client)
-[![Coverage Status](https://img.shields.io/coveralls/algernon/riemann-c-client.svg?style=flat-square)](https://coveralls.io/r/algernon/riemann-c-client)
 [![Latest release](https://img.shields.io/github/release/algernon/riemann-c-client.svg?style=flat-square)](https://github.com/algernon/riemann-c-client/releases/latest)
 
 This is a C client library for the [Riemann][riemann] monitoring
@@ -124,8 +123,8 @@ then start over from `configure`.
 License
 -------
 
-Copyright (C) 2013, 2014, 2015 Gergely Nagy <algernon@madhouse-project.org>,
-released under the terms of the
-[GNU Lesser General Public License][lgpl], version 3+.
+Copyright (C) 2013, 2014, 2015, 2016 Gergely Nagy
+<algernon@madhouse-project.org>, released under the terms of
+the [GNU Lesser General Public License][lgpl], version 3+.
 
  [lgpl]: http://www.gnu.org/licenses/lgpl.html

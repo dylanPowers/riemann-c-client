@@ -1,3 +1,34 @@
+riemann-c-client 1.9.1
+======================
+Released on 2016-09-30
+
+Bugfixes
+--------
+
+* Fix the build on non-ELF systems, and systems that lack symbol versioning.
+  (Thanks to @ilovezfs)
+* Use the `PROTOBUF_C_CFLAGS` environment variable, when set.
+  (Thanks to @ciomaire)
+* Added some missing includes that prevented the library from compiling on
+  FreeBSD.
+  (Thanks to Dave Cottlehuber, @dch)
+* Fixed an issue with how some of the symbols were versioned, which caused link
+  failures in some situations.
+  (Thanks to Dave Cottlehuber, @dch)
+
+riemann-c-client 1.9.0
+======================
+Released on 2016-04-25
+
+Features
+--------
+
+* Added the `RIEMANN_CLIENT_OPTION_TLS_PRIORITIES` client option, which can be
+  used to set priorities for cipher suites to be used for a TLS session.
+
+  The `riemann-client` tool also learned to accept a `-o priorities=` option,
+  and set the above one appropriately.
+
 riemann-c-client 1.8.1
 ======================
 Released on 2015-08-28

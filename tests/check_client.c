@@ -114,6 +114,27 @@ START_TEST (test_riemann_client_connect)
           RIEMANN_CLIENT_OPTION_NONE),
          EPROTO);
 
+      ck_assert_errno
+        (riemann_client_connect
+         (client, RIEMANN_CLIENT_TLS,
+          "127.0.0.1", 5554,
+          RIEMANN_CLIENT_OPTION_TLS_CA_FILE, "tests/data/cacert.pem",
+          RIEMANN_CLIENT_OPTION_TLS_CERT_FILE, "tests/data/client.crt",
+          RIEMANN_CLIENT_OPTION_TLS_KEY_FILE, "tests/data/client.key",
+          RIEMANN_CLIENT_OPTION_TLS_PRIORITIES, "NONE",
+          RIEMANN_CLIENT_OPTION_NONE),
+         EPROTO);
+
+      ck_assert_errno
+        (riemann_client_connect
+         (client, RIEMANN_CLIENT_TLS,
+          "127.0.0.1", 5554,
+          RIEMANN_CLIENT_OPTION_TLS_CA_FILE, "tests/data/cacert.pem",
+          RIEMANN_CLIENT_OPTION_TLS_CERT_FILE, "tests/data/client.crt",
+          RIEMANN_CLIENT_OPTION_TLS_KEY_FILE, "tests/data/client.key",
+          RIEMANN_CLIENT_OPTION_TLS_PRIORITIES, "NORMAL:+INVALID",
+          RIEMANN_CLIENT_OPTION_NONE),
+         EPROTO);
 #endif
     }
 

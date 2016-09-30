@@ -11,9 +11,9 @@ protodir			= ${pkgincludedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 8
+LRC_CURRENT			= 9
 LRC_REVISION			= 1
-LRC_AGE				= 8
+LRC_AGE				= 9
 
 lib_LTLIBRARIES			= lib/libriemann-client.la
 
@@ -106,14 +106,14 @@ check_libriemann_srcs		= \
 bin_PROGRAMS			= \
 	src/riemann-client
 
-src_riemann_client_CFLAGS	= $(AM_CFLAGS) $(JSON_C_CFLAGS)
+src_riemann_client_CFLAGS	= $(AM_CFLAGS) $(JSON_C_CFLAGS) ${PROTOBUF_C_CFLAGS}
 src_riemann_client_LDADD	= $(JSON_C_LIBS) $(LDADD)
 src_riemann_client_EXTRA_DIST	= \
 	src/cmd-send.c		  \
 	src/cmd-query.c
 
 # -- Extra files to distribute --
-EXTRA_DIST			= README.md NEWS.md GPL LGPL CONTRIBUTING.md \
+EXTRA_DIST			= README.md NEWS.md LICENSE LICENSE.GPL CONTRIBUTING.md \
 				  lib/riemann/proto/riemann.proto \
 				  lib/riemann/libriemann.ver \
 				  lib/riemann/riemann-client.pc \

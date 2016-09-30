@@ -198,6 +198,8 @@ option-value pairs, terminated by a value-less
 * `RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT`, followed by an
   unsigned integer, the time - in milliseconds - to wait before timing
   out during a TLS handshake.
+* `RIEMANN_CLIENT_OPTION_TLS_PRIORITIES`, followed by a string, representing the
+  priority of cipher suites to be used for the session.
 
 Once a new connection is established, the function will disconnect
 from Riemann, if the client object is already connected. This

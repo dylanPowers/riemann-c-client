@@ -1,5 +1,5 @@
 /* riemann/client.h -- Riemann C client library
- * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015, 2016  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -36,6 +36,7 @@ typedef enum
     RIEMANN_CLIENT_OPTION_TLS_CERT_FILE,
     RIEMANN_CLIENT_OPTION_TLS_KEY_FILE,
     RIEMANN_CLIENT_OPTION_TLS_HANDSHAKE_TIMEOUT,
+    RIEMANN_CLIENT_OPTION_TLS_PRIORITIES,
   } riemann_client_option_t;
 
 typedef struct _riemann_client_t riemann_client_t;

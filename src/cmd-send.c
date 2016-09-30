@@ -1,5 +1,5 @@
 /* riemann-c-client -- Riemann C client library
- * Copyright (C) 2013, 2014, 2015  Gergely Nagy <algernon@madhouse-project.org>
+ * Copyright (C) 2013, 2014, 2015, 2016  Gergely Nagy <algernon@madhouse-project.org>
  *
  * This library is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public License
@@ -136,7 +136,8 @@ client_send (int argc, char *argv[])
     char *cafn;
     char *certfn;
     char *keyfn;
-  } tls = {NULL, NULL, NULL};
+    char *priorities;
+  } tls = {NULL, NULL, NULL, NULL};
   int stdin = 0;
 
   event = riemann_event_new ();
@@ -251,6 +252,8 @@ client_send (int argc, char *argv[])
             tls.certfn = &optarg[strlen ("certfile=")];
           else if (strncmp (optarg, "keyfile=", strlen ("keyfile=")) == 0)
             tls.keyfn = &optarg[strlen ("keyfile=")];
+          else if (strncmp (optarg, "priorities=", strlen ("priorities=")) == 0)
+            tls.priorities = &optarg[strlen ("properties=")];
           else
             {
               fprintf (stderr, "Unknown client option: %s\n", optarg);
@@ -300,6 +303,7 @@ client_send (int argc, char *argv[])
      RIEMANN_CLIENT_OPTION_TLS_CA_FILE, tls.cafn,
      RIEMANN_CLIENT_OPTION_TLS_CERT_FILE, tls.certfn,
      RIEMANN_CLIENT_OPTION_TLS_KEY_FILE, tls.keyfn,
+     RIEMANN_CLIENT_OPTION_TLS_PRIORITIES, tls.priorities,
      RIEMANN_CLIENT_OPTION_NONE);
   if (!client)
     {

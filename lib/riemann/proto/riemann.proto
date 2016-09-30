@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 message State {
   optional int64 time = 1;
   optional string state = 2;

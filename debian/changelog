@@ -1,3 +1,9 @@
+riemann-c-client (1.9.1-1~bpo8+1) jessie-backports; urgency=medium
+
+  * Backported to Jessie, to be used with collectd.
+
+ -- Gergely Nagy <algernon@madhouse-project.org>  Tue, 17 Jan 2017 12:17:02 +0100
+
 riemann-c-client (1.9.1-1) unstable; urgency=medium
 
   * New upstream release.

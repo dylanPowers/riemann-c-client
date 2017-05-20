@@ -338,6 +338,13 @@ library supports all fields that the Riemann protocol has support for.
   with directly specified values, the compiler does not know what kind
   of integer type to cast - say - `300` to. So one either has to cast
   it to `int64_t` by hand, or use a typed variable instead.
+* `RIEMANN_EVENT_FIELD_TIME_MICROS`: Since version 0.2.13, Riemann
+  supports microseconds resolution for events. The `time_micros`
+  field, a 64-bit signed integer (`int64_t`), is the time in unix
+  epoch microseconds. Be aware that when using variadic arguments with
+  directly specified values, the compiler does not know what kind of
+  integer type to cast - say - `300` to. So one either has to cast it
+  to `int64_t` by hand, or use a typed variable instead.
 * `RIEMANN_EVENT_FIELD_STATE`: The `state` field, a `NULL`-terminated
   string. The string is copied, and the caller is allowed to free the
   passed variable anytime, if it is necessary.
@@ -749,6 +756,9 @@ declares, but we include them here for the sake of completeness.
 
 * `->has_time` and `->time`: The timestamp, and a boolean flag that
   signals whether the timestamp is part of the event.
+* `->has_time_micros` and `->time_micros`: The timestamp in
+  microseconds, and a boolean flag that signals whether the timestamp
+  is part of the event.
 * `->state`: The event state, a `NULL`-terminated string.
 * `->service`: The service name, a `NULL`-terminated string.
 * `->host`: The host the event originates from, a `NULL`-terminated
@@ -843,6 +853,13 @@ values are listed below:
   with directly specified values, the compiler does not know what kind
   of integer type to cast - say - `300` to. So one either has to cast
   it to `int64_t` by hand, or use a typed variable instead.
+* `RIEMANN_EVENT_FIELD_TIME_MICROS`: Since version 0.2.13, Riemann
+  supports microseconds resolution for events. The `time_micros`
+  field, a 64-bit signed integer (`int64_t`), is the time in unix
+  epoch microseconds. Be aware that when using variadic arguments with
+  directly specified values, the compiler does not know what kind of
+  integer type to cast - say - `300` to. So one either has to cast it
+  to `int64_t` by hand, or use a typed variable instead.
 * `RIEMANN_EVENT_FIELD_STATE`: The `state` field, a `NULL`-terminated
   string. The string is copied, and the caller is allowed to free the
   passed variable anytime, if it is necessary.

@@ -1,3 +1,19 @@
+riemann-c-client 1.10.0
+=======================
+UNRELEASED
+
+Miscellaneous changes
+---------------------
+
+* The parts of the test suite that require a running Riemann server are now
+  disabled by default, and require setting the `RCC_NETWORK_TESTS` environment
+  variable to a non-zero value, before running the test suite.
+
+  Fixes an issue on systems that had something else listening on the port, or a
+  Riemann with a different config than the one the test suite expected.
+
+  Reported by Dave Cottlehuber.
+
 riemann-c-client 1.9.1
 ======================
 Released on 2016-09-30

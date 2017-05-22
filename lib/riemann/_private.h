@@ -47,4 +47,10 @@ struct _riemann_client_t
 #endif
 };
 
+#if HAVE_VERSIONING
+#define SYMVER(symbol) symbol ## _default
+#else
+#define SYMVER(symbol) symbol
+#endif
+
 #endif

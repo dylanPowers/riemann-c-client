@@ -2,6 +2,12 @@ riemann-c-client 1.10.0
 =======================
 UNRELEASED
 
+Features
+--------
+
+* Added support for micro-second timestamps (available since Riemann 0.2.13),
+  implemented by Mathieu Corbin, @mcorbin.
+
 Miscellaneous changes
 ---------------------
 
@@ -12,7 +18,7 @@ Miscellaneous changes
   Fixes an issue on systems that had something else listening on the port, or a
   Riemann with a different config than the one the test suite expected.
 
-  Reported by Dave Cottlehuber.
+  Reported by Dave Cottlehuber, @dch.
 
 riemann-c-client 1.9.1
 ======================

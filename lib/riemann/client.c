@@ -61,6 +61,10 @@ riemann_client_new (void)
   return client;
 }
 
+#if HAVE_VERSIONING
+__asm__(".symver riemann_client_new,riemann_client_new@@RIEMANN_C_1.10");
+#endif
+
 int
 riemann_client_disconnect (riemann_client_t *client)
 {
@@ -270,7 +274,13 @@ riemann_client_create (riemann_client_type_t type,
 }
 
 #if HAVE_VERSIONING
-__asm__(".symver riemann_client_create_new,riemann_client_create@@RIEMANN_C_1.5");
+riemann_client_t *
+riemann_client_create_1_5 (riemann_client_type_t type,
+                           const char *hostname, int port, ...)
+  __attribute__((alias ("riemann_client_create_new")));
+
+__asm__(".symver riemann_client_create_1_5,riemann_client_create@RIEMANN_C_1.5");
+__asm__(".symver riemann_client_create_new,riemann_client_create@@RIEMANN_C_1.10");
 #endif
 
 riemann_client_t *

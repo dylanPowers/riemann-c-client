@@ -1,4 +1,4 @@
-riemann-c-clietn 1.10.1
+riemann-c-client 1.10.1
 =======================
 Released on 2017-06-12
 

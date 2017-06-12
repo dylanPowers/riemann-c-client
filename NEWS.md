@@ -1,3 +1,14 @@
+riemann-c-clietn 1.10.1
+=======================
+Released on 2017-06-12
+
+Bugfixes
+--------
+
+* The library compiles on OSX/Darwin again, after fixing a symbol aliasing issue.
+
+  Reported by @ilovezfs.
+
 riemann-c-client 1.10.0
 =======================
 Released on 2017-06-09

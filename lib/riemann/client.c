@@ -46,7 +46,7 @@ riemann_client_version_string (void)
 }
 
 riemann_client_t *
-riemann_client_new_default (void)
+SYMVER(riemann_client_new) (void)
 {
   riemann_client_t *client;
 
@@ -66,8 +66,6 @@ riemann_client_t riemann_client_new_1_0 (void) __attribute__((alias("riemann_cli
 
 __asm__(".symver riemann_client_new_1_0,riemann_client_new@RIEMANN_C_1.0");
 __asm__(".symver riemann_client_new_default,riemann_client_new@@RIEMANN_C_1.10");
-#else
-riemann_client_t * riemann_client_new (void) __attribute__((alias("riemann_client_new_default")));
 #endif
 
 int

@@ -11,10 +11,6 @@ protodir			= ${pkgincludedir}/proto
 VERSION				= @VERSION@${SNAPSHOT_VERSION}
 
 # -- Libraries --
-LRC_CURRENT			= 10
-LRC_REVISION			= 1
-LRC_AGE				= 10
-
 lib_LTLIBRARIES			= lib/libriemann-client.la
 
 lib_libriemann_client_la_CFLAGS	= ${AM_CFLAGS} ${PROTOBUF_C_CFLAGS} \
@@ -22,7 +18,7 @@ lib_libriemann_client_la_CFLAGS	= ${AM_CFLAGS} ${PROTOBUF_C_CFLAGS} \
 lib_libriemann_client_la_LDFLAGS= \
 	${PROTOBUF_C_LIBS}	  \
 	${GNUTLS_LIBS}		  \
-	-version-info ${LRC_CURRENT}:${LRC_REVISION}:${LRC_AGE}
+	-version-info ${LRC_LT_VERSION}
 proto_files			= \
 	lib/riemann/proto/riemann.pb-c.c  \
 	lib/riemann/proto/riemann.pb-c.h

@@ -9,6 +9,17 @@ AC_CONFIG_SRCDIR([lib/riemann/client.c])
 AC_CONFIG_HEADERS([lib/riemann/platform.h])
 AC_CONFIG_MACRO_DIR([m4])
 
+# Before making a release, the LRC_LT_VERSION string should be modified.
+# The string is of the form C:R:A.
+# a) If binary compatibility has been broken (eg removed or changed interfaces)
+#    change to C+1:0:0. DO NOT DO THIS! Use symbol versioning instead and
+#    do b) instead.
+# b) If interfaces have been changed or added, but binary compatibility has
+#    been preserved, change to C+1:0:A+1
+# c) If the interface is the same as the previous version, change to C:R+1:A
+LRC_LT_VERSION=10:1:10
+AC_SUBST(LRC_LT_VERSION)
+
 AC_SUBST(MAJOR_VERSION, `echo $PACKAGE_VERSION | sed 's/\(.*\)\..*\..*/\1/g'`)
 AC_SUBST(MINOR_VERSION, `echo $PACKAGE_VERSION | sed 's/.*\.\(.*\)\..*/\1/g'`)
 AC_SUBST(PATCH_VERSION, [[`echo $PACKAGE_VERSION | sed 's/.*\..*\.\([0-9]*\).*/\1/g'`]])
